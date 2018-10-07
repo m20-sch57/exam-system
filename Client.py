@@ -8,11 +8,11 @@ def return_lambda(func, *args, **kwargs):
 
 
 def read_ip():
-    return open('server.txt', encoding=encoding).read()
+    return open('server.txt', encoding=ENCODING).read()
 
 
 def write_ip(ip):
-    print(ip, end='', file=open('server.txt', 'w', encoding=encoding))
+    print(ip, end='', file=open('server.txt', 'w', encoding=ENCODING))
 
 
 def try_connect():
@@ -28,8 +28,8 @@ def try_connect():
 
 
 def display_page(page, *args, **kwargs):
-    old_page = main_window_layout.itemAt(0).widget()
     timer.reset()
+    old_page = main_window_layout.itemAt(0).widget()
     main_window_layout.removeWidget(old_page)
     main_window_layout.addWidget(page(*args, **kwargs))
     old_page.deleteLater()
@@ -47,7 +47,7 @@ class Timer:
         self.timer_label = timer_label
         self.current_time = -1
 
-    def tick(self, func, *args, **kwargs):
+    def tick(self, func):
         if self.current_time > 0:
             self.current_time -= 1
             minutes, seconds = self.current_time // 60, self.current_time % 60
@@ -55,13 +55,13 @@ class Timer:
                 self.timer_label.setText('%02d:%02d' % (minutes, seconds))
                 if self.current_time < 10:
                     self.timer_label.setStyleSheet('color: red')
-            QTimer().singleShot(1000, lambda: self.tick(func, *args, **kwargs))
+            QTimer().singleShot(1000, lambda: self.tick(func))
         elif self.current_time == 0:
-            func(*args, **kwargs)
+            func()
 
     def start(self, duration_time, func, *args, **kwargs):
         self.current_time = duration_time
-        self.tick(func, *args, **kwargs)
+        self.tick(func)
 
     def reset(self):
         self.current_time = -1
@@ -70,27 +70,22 @@ class Timer:
 class QLabelClick(QLabel):
     clicked = pyqtSignal()
 
-    def __init__(self, text):
+    def __init__(self, text, normal_color='black', hover_color='blue'):
         QLabel.__init__(self, text)
         self.setCursor(Qt.PointingHandCursor)
-        self.normal_color = 'black'
-        self.hover_color = 'blue'
+        self.setStyleSheet('color: ' + normal_color)
+        self.normal_color = normal_color
+        self.hover_color = hover_color
+        self.mousePressEvent = lambda event: self.clicked.emit()
+        self.enterEvent = lambda event: self.setStyleSheet('color: ' + self.hover_color)
+        self.leaveEvent = lambda event: self.setStyleSheet('color: ' + self.normal_color)
 
-    def setDefaultColor(self, color):
-        self.normal_color = color
-        self.setStyleSheet('color: ' + color)
-
-    def setHoverColor(self, color):
-        self.hover_color = color
-
-    def mousePressEvent(self, event):
-        self.clicked.emit()
-
-    def enterEvent(self, event):
-        self.setStyleSheet('color: ' + self.hover_color)
-
-    def leaveEvent(self, event):
-        self.setStyleSheet('color: ' + self.normal_color)
+    # def setDefaultColor(self, color):
+    #     self.normal_color = color
+    #     self.setStyleSheet('color: ' + color)
+    #
+    # def setHoverColor(self, color):
+    #     self.hover_color = color
 
 
 class QLabelPixMapClick(QLabel):
@@ -98,24 +93,19 @@ class QLabelPixMapClick(QLabel):
 
     def __init__(self, normal_pic, hover_pic):
         QLabel.__init__(self)
-        self.setPixmap(QPixmap(normal_pic))
         self.setCursor(Qt.PointingHandCursor)
+        self.setPixmap(QPixmap(normal_pic))
         self.normal_pic = normal_pic
         self.hover_pic = hover_pic
-
-    def mousePressEvent(self, event):
-        self.clicked.emit()
-
-    def enterEvent(self, event):
-        self.setPixmap(QPixmap(self.hover_pic))
-
-    def leaveEvent(self, event):
-        self.setPixmap(QPixmap(self.normal_pic))
+        self.mousePressEvent = lambda event: self.clicked.emit()
+        self.enterEvent = lambda event: self.setPixmap(QPixmap(self.hover_pic))
+        self.leaveEvent = lambda event: self.setPixmap(QPixmap(self.normal_pic))
 
 
-class QuestionTestCheckedPage(QWidget):
+class QuestionShortCheckedPage(QWidget):
     def __init__(self, exam_name, question_number, question, answer):
         super().__init__(main_window)
+        result = server.check(global_group_name, global_user_name, exam_name, question_number, answer)
 
         global_layout = QVBoxLayout()
 
@@ -133,7 +123,171 @@ class QuestionTestCheckedPage(QWidget):
         global_layout.addWidget(statement_label)
         global_layout.addStretch(1)
 
+        answer_label = QLabel('Ваш ответ:')
+        answer_label.setAlignment(Qt.AlignCenter)
+        answer_label.setFont(QFont('Arial', 30))
+
+        global_layout.addWidget(answer_label)
+        global_layout.addItem(QSpacerItem(0, 20))
+
+        answer_edit = QLineEdit(answer)
+        answer_edit.setFont(QFont('Arial', 20))
+        answer_edit.setDisabled(True)
+
+        if result['score'] == 0:
+            answer_edit.setStyleSheet('border-width: 2px;'
+                                      'border-style: solid;'
+                                      'border-color: ' + RED)
+        else:
+            answer_edit.setStyleSheet('border-width: 2px;'
+                                      'border-style: solid;'
+                                      'border-color: ' + GREEN)
+
+        global_layout.addWidget(answer_edit)
+        global_layout.addItem(QSpacerItem(0, 20))
+
+        bottom_layout = QHBoxLayout()
+        bottom_layout.setSpacing(0)
+
+        if result['score'] == 0:
+            status_img_label = QLabel()
+            status_img_label.setPixmap(QPixmap('data\\cross-50x50.png'))
+            status_img_label.setFixedSize(QSize(50, 50))
+
+            status_label = QLabel('Неправильно')
+            status_label.setFont(QFont('Arial', 30))
+            status_label.setStyleSheet('color: ' + RED)
+
+            bottom_layout.addWidget(status_img_label)
+            bottom_layout.addItem(QSpacerItem(10, 0))
+            bottom_layout.addWidget(status_label)
+        else:
+            status_img_label = QLabel()
+            status_img_label.setPixmap(QPixmap('data\\tick-50x50.png'))
+            status_img_label.setFixedSize(QSize(50, 50))
+
+            status_label = QLabel('Правильно')
+            status_label.setFont(QFont('Arial', 30))
+            status_label.setStyleSheet('color: ' + GREEN)
+
+            bottom_layout.addWidget(status_img_label)
+            bottom_layout.addItem(QSpacerItem(10, 0))
+            bottom_layout.addWidget(status_label)
+
+        next_label = QLabelClick('Далее', normal_color=BLUE, hover_color=BLUE)
+        next_label.setAlignment(Qt.AlignCenter)
+        next_label.setFont(QFont('Arial', 30))
+        next_label.setFixedSize(QSize(130, 50))
+        # next_label.setDefaultColor(BLUE)
+        # next_label.setHoverColor(BLUE)
+        next_label.clicked.connect(lambda: display_page(WaitingPage, exam_name, question_number + 1))
+
+        next_img_label = QLabelPixMapClick('data\\right-50x50.png', 'data\\right-50x50.png')
+        next_img_label.setFixedSize(QSize(50, 50))
+        next_img_label.clicked.connect(lambda: display_page(WaitingPage, exam_name, question_number + 1))
+
+        bottom_layout.addStretch(1)
+        bottom_layout.addWidget(next_label)
+        bottom_layout.addWidget(next_img_label)
+
+        global_layout.addLayout(bottom_layout)
+
+        self.setLayout(global_layout)
+
+
+class QuestionShortPage(QWidget):
+    def __init__(self, exam_name, question_number, question):
+        global timer
+
+        super().__init__(main_window)
+
+        global_layout = QVBoxLayout()
+
+        question_label = QLabel('Вопрос ' + str(question_number))
+        question_label.setFont(QFont('Arial', 30))
+
+        timer_label = QLabel()
+        timer_label.setFont(QFont('Arial', 30))
+
+        top_layout = QHBoxLayout()
+        top_layout.addStretch(1)
+        top_layout.addWidget(question_label)
+        top_layout.addStretch(1)
+        top_layout.addWidget(timer_label)
+
+        global_layout.addLayout(top_layout)
+        global_layout.addItem(QSpacerItem(0, 20))
+
+        statement_label = QLabel(question['statement'])
+        statement_label.setFont(QFont('Arial', 20))
+        statement_label.setWordWrap(True)
+
+        global_layout.addWidget(statement_label)
+        global_layout.addStretch(1)
+
+        answer_label = QLabel('Ваш ответ:')
+        answer_label.setAlignment(Qt.AlignCenter)
+        answer_label.setFont(QFont('Arial', 30))
+
+        global_layout.addWidget(answer_label)
+        global_layout.addItem(QSpacerItem(0, 20))
+
+        answer_edit = QLineEdit()
+        answer_edit.setFont(QFont('Arial', 20))
+
+        global_layout.addWidget(answer_edit)
+        global_layout.addItem(QSpacerItem(0, 20))
+
+        next_label = QLabelClick('Проверить', normal_color=BLUE, hover_color=BLUE)
+        next_label.setAlignment(Qt.AlignCenter)
+        next_label.setFont(QFont('Arial', 30))
+        next_label.setFixedSize(QSize(210, 50))
+        # next_label.setDefaultColor(BLUE)
+        # next_label.setHoverColor(BLUE)
+        next_label.clicked.connect(lambda: display_page(
+            QuestionShortCheckedPage, exam_name, question_number, question, answer_edit.text()))
+
+        next_img_label = QLabelPixMapClick('data\\right-50x50.png', 'data\\right-50x50.png')
+        next_img_label.setFixedSize(QSize(50, 50))
+        next_img_label.clicked.connect(lambda: display_page(
+            QuestionShortCheckedPage, exam_name, question_number, question, answer_edit.text()))
+
+        bottom_layout = QHBoxLayout()
+        bottom_layout.setSpacing(0)
+        bottom_layout.addStretch(1)
+        bottom_layout.addWidget(next_label)
+        bottom_layout.addWidget(next_img_label)
+
+        global_layout.addLayout(bottom_layout)
+
+        self.setLayout(global_layout)
+
+        timer = Timer(timer_label)
+        timer.start(question['time'], lambda: display_page(
+            QuestionShortCheckedPage, exam_name, question_number, question, answer_edit.text()))
+
+
+class QuestionTestCheckedPage(QWidget):
+    def __init__(self, exam_name, question_number, question, answer):
+        super().__init__(main_window)
         result = server.check(global_group_name, global_user_name, exam_name, question_number, answer)
+
+        global_layout = QVBoxLayout()
+
+        question_label = QLabel('Вопрос ' + str(question_number))
+        question_label.setAlignment(Qt.AlignCenter)
+        question_label.setFont(QFont('Arial', 30))
+
+        global_layout.addWidget(question_label)
+        global_layout.addItem(QSpacerItem(0, 20))
+
+        statement_label = QLabel(question['statement'])
+        statement_label.setFont(QFont('Arial', 20))
+        statement_label.setWordWrap(True)
+
+        global_layout.addWidget(statement_label)
+        global_layout.addStretch(1)
+
         variants_layout = QVBoxLayout()
 
         for i in range(len(question['variants'])):
@@ -148,18 +302,18 @@ class QuestionTestCheckedPage(QWidget):
             if answer == i + 1:
                 if result['score'] == 0:
                     cur_img_label.setPixmap(QPixmap('data\\cross-50x50.png'))
-                    cur_label.setStyleSheet('color: ' + red_color + ';'
+                    cur_label.setStyleSheet('color: ' + RED + ';'
                                             'background: white; '
                                             'border-width: 2px;'
                                             'border-style: solid;'
-                                            'border-color: ' + red_color)
+                                            'border-color: ' + RED)
                 else:
                     cur_img_label.setPixmap(QPixmap('data\\tick-50x50.png'))
-                    cur_label.setStyleSheet('color: ' + green_color + ';'
+                    cur_label.setStyleSheet('color: ' + GREEN + ';'
                                             'background: white; '
                                             'border-width: 2px;'
                                             'border-style: solid;'
-                                            'border-color: ' + green_color)
+                                            'border-color: ' + GREEN)
 
             cur_layout = QHBoxLayout()
             cur_layout.addWidget(cur_img_label)
@@ -180,7 +334,7 @@ class QuestionTestCheckedPage(QWidget):
 
             status_label = QLabel('Неправильно')
             status_label.setFont(QFont('Arial', 30))
-            status_label.setStyleSheet('color: ' + red_color)
+            status_label.setStyleSheet('color: ' + RED)
 
             bottom_layout.addWidget(status_img_label)
             bottom_layout.addItem(QSpacerItem(10, 0))
@@ -192,18 +346,18 @@ class QuestionTestCheckedPage(QWidget):
 
             status_label = QLabel('Правильно')
             status_label.setFont(QFont('Arial', 30))
-            status_label.setStyleSheet('color: ' + green_color)
+            status_label.setStyleSheet('color: ' + GREEN)
 
             bottom_layout.addWidget(status_img_label)
             bottom_layout.addItem(QSpacerItem(10, 0))
             bottom_layout.addWidget(status_label)
 
-        next_label = QLabelClick('Далее')
+        next_label = QLabelClick('Далее', normal_color=BLUE, hover_color=BLUE)
         next_label.setAlignment(Qt.AlignCenter)
         next_label.setFont(QFont('Arial', 30))
         next_label.setFixedSize(QSize(130, 50))
-        next_label.setDefaultColor(blue_color)
-        next_label.setHoverColor(blue_color)
+        # next_label.setDefaultColor(BLUE)
+        # next_label.setHoverColor(BLUE)
         next_label.clicked.connect(lambda: display_page(WaitingPage, exam_name, question_number + 1))
 
         next_img_label = QLabelPixMapClick('data\\right-50x50.png', 'data\\right-50x50.png')
@@ -274,7 +428,8 @@ class QuestionTestPage(QWidget):
         self.setLayout(global_layout)
 
         timer = Timer(timer_label)
-        timer.start(question['time'], display_page, QuestionTestCheckedPage, exam_name, question_number, question, 0)
+        timer.start(question['time'], lambda: display_page(
+            QuestionTestCheckedPage, exam_name, question_number, question, 0))
 
 
 class WaitingPage(QWidget):
@@ -297,11 +452,11 @@ class WaitingPage(QWidget):
             question = server.get_question(global_group_name, exam_name, question_number)
             timer = Timer(None)
             if question['type'] == 'Тест':
-                timer.start(2, display_page, QuestionTestPage, exam_name, question_number, question)
+                timer.start(2, lambda: display_page(QuestionTestPage, exam_name, question_number, question))
             elif question['type'] == 'Короткий ответ':
-                timer.start(2, display_page, QuestionShortPage, exam_name, question_number, question)
+                timer.start(2, lambda: display_page(QuestionShortPage, exam_name, question_number, question))
             elif question['type'] == 'Развёрнутый ответ':
-                timer.start(2, display_page, QuestionLongPage, exam_name, question_number, question)
+                timer.start(2, lambda: display_page(QuestionLongPage, exam_name, question_number, question))
 
         else:
             global_layout = QVBoxLayout()
@@ -315,7 +470,7 @@ class WaitingPage(QWidget):
             self.setLayout(global_layout)
 
             timer = Timer(None)
-            timer.start(3, display_page, SummaryPage, exam_name)
+            timer.start(3, lambda: display_page(SummaryPage, exam_name))
 
 
 class MainPage(QWidget):
@@ -497,10 +652,10 @@ class LoginPage(QWidget):
 
 
 if __name__ == "__main__":
-    encoding = 'utf-8-sig'
-    green_color = '#6FCB36'
-    red_color = '#F10608'
-    blue_color = '#2EBACB'
+    GREEN = '#6FCB36'
+    RED = '#F10608'
+    BLUE = '#2EBACB'
+    ENCODING = 'utf-8-sig'
     global_group_name = ''
     global_user_name = ''
     timer = Timer(None)
