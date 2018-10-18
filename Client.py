@@ -1,5 +1,6 @@
-from xmlrpc.client import *
+from xmlrpc.client import ServerProxy
 from PyQt5.Qt import *
+import sys
 import socket
 
 
@@ -131,12 +132,13 @@ class QLabelPixMapClick(QLabel):
         self.leaveEvent = lambda event: self.setPixmap(QPixmap(self.normal_pic))
 
 
-class DetailsTestPage(QWidget):
+class DetailsPage(QWidget):
+    """
+    Page with question data and student's answer
+    """
     def __init__(self, exam_name, question_number, details):
         super().__init__(main_window)
         question = details[question_number - 1]
-        answer = question['variants'][int(question['answer'] - 1)] if question['answer'] != '0' else ''
-        correct = question['variants'][question['correct'] - 1]
 
         global_layout = QVBoxLayout()
 
@@ -166,9 +168,15 @@ class DetailsTestPage(QWidget):
         answer_title = QLabel('Ваш ответ:')
         answer_title.setFont(QFont('Arial', 30))
 
-        answer_label = QLabel(answer)
+        answer_label = QLabel(question['answer'])
+        answer_label.setFont(QFont('Arial', 20))
+        answer_label.setWordWrap(True)
 
         answer_layout = QHBoxLayout()
+        answer_layout.addWidget(answer_title)
+        answer_layout.addWidget(answer_label)
+
+        global_layout.addLayout(answer_layout)
 
         self.setLayout(global_layout)
 
@@ -229,7 +237,7 @@ class SummaryPage(QWidget):
             details_button = QPushButton('Просмотр')
             details_button.setFont(QFont('Arial', 20))
             details_button.setMinimumSize(QSize(150, 40))
-            details_button.clicked.connect(return_lambda(display_page, DetailsTestPage, exam_name, i + 1, details))
+            details_button.clicked.connect(return_lambda(display_page, DetailsPage, exam_name, i + 1, details))
 
             question_layout = QHBoxLayout()
             question_layout.addWidget(question_label)
@@ -457,16 +465,16 @@ class QuestionTestCheckedPage(QWidget):
 
         variants_layout = QVBoxLayout()
 
-        for i in range(len(question['variants'])):
+        for variant in question['variants']:
             cur_img_label = QLabel()
             cur_img_label.setPixmap(QPixmap('data\\triangle-50x50.png'))
             cur_img_label.setFixedSize(QSize(50, 50))
 
-            cur_label = QLabel(question['variants'][i])
+            cur_label = QLabel(variant)
             cur_label.setFont(QFont('Arial', 20))
             cur_label.setWordWrap(True)
 
-            if answer == i + 1:
+            if answer == variant:
                 if result['score'] == 0:
                     cur_img_label.setPixmap(QPixmap('data\\cross-50x50.png'))
                     cur_label.setStyleSheet(
@@ -567,16 +575,16 @@ class QuestionTestPage(QWidget):
 
         variants_layout = QVBoxLayout()
 
-        for i in range(len(question['variants'])):
+        for variant in question['variants']:
             var_img_label = QLabel()
             var_img_label.setPixmap(QPixmap('data\\triangle-50x50.png'))
             var_img_label.setFixedSize(QSize(50, 50))
 
-            var_label = QLabelClick(question['variants'][i])
+            var_label = QLabelClick(variant)
             var_label.setFont(QFont('Arial', 20))
             var_label.setWordWrap(True)
             var_label.clicked.connect(return_lambda(
-                display_page, QuestionTestCheckedPage, exam_name, question_number, question, i + 1))
+                display_page, QuestionTestCheckedPage, exam_name, question_number, question, variant))
 
             var_layout = QHBoxLayout()
             var_layout.addWidget(var_img_label)
@@ -591,7 +599,7 @@ class QuestionTestPage(QWidget):
 
         timer = Timer(timer_label)
         timer.start(question['time'], lambda: display_page(
-            QuestionTestCheckedPage, exam_name, question_number, question, 0))
+            QuestionTestCheckedPage, exam_name, question_number, question, ''))
 
 
 class WaitingPage(QWidget):
@@ -806,13 +814,13 @@ class LoginPage(QWidget):
         enter_button.clicked.connect(
             lambda: self.try_to_login(server_edit.text(), group_edit.text(), user_edit.text()))
 
-    def try_to_login(self, ip, group_name, user_name):
+    def try_to_login(self, ip_address, group_name, user_name):
         """
         Tries to login, if does not succeed, displays login page again
         """
         global server, global_group_name, global_user_name
 
-        write_ip(ip)
+        write_ip(ip_address)
         global_group_name = group_name
         global_user_name = user_name
 
@@ -845,7 +853,7 @@ if __name__ == "__main__":
     timer = Timer(None)
     socket.setdefaulttimeout(3)
 
-    APP = QApplication(sys.argv)
+    app = QApplication(sys.argv)
 
     main_window = QWidget()
     main_window.setWindowTitle('Student')
@@ -855,4 +863,4 @@ if __name__ == "__main__":
     main_window_layout.addWidget(LoginPage())
 
     main_window.show()
-    sys.exit(APP.exec_())
+    sys.exit(app.exec_())
