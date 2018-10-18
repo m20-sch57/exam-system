@@ -11,19 +11,28 @@ def return_lambda(func, *args, **kwargs):
 
 
 def read_ip():
+    """
+    Returns current ip-address of server
+    """
     return open('server.txt', encoding=ENCODING).read()
 
 
-def write_ip(ip):
-    print(ip, end='', file=open('server.txt', 'w', encoding=ENCODING))
+def write_ip(ip_address):
+    """
+    Updates ip-address of server
+    """
+    print(ip_address, end='', file=open('server.txt', 'w', encoding=ENCODING))
 
 
 def try_connect():
+    """
+    Checks if connection could be established
+    """
     global server
 
-    ip = read_ip()
+    ip_address = read_ip()
     try:
-        server = ServerProxy('http://' + ip + ':8000')
+        server = ServerProxy('http://' + ip_address + ':8000')
         server.check_connection()
         return True
     except:
@@ -31,6 +40,9 @@ def try_connect():
 
 
 def display_page(page, *args, **kwargs):
+    """
+    Destroys the previous page and displays the new one
+    """
     timer.reset()
     old_page = main_window_layout.itemAt(0).widget()
     main_window_layout.removeWidget(old_page)
@@ -39,6 +51,9 @@ def display_page(page, *args, **kwargs):
 
 
 def logout():
+    """
+    Logs user out and displays login page
+    """
     global global_group_name, global_user_name
     global_group_name = ''
     global_user_name = ''
@@ -46,11 +61,17 @@ def logout():
 
 
 class Timer:
+    """
+    Makes timer
+    """
     def __init__(self, timer_label):
         self.timer_label = timer_label
         self.current_time = -1
 
     def tick(self, func):
+        """
+        Updates timer every second
+        """
         if self.current_time > 0:
             self.current_time -= 1
             minutes, seconds = self.current_time // 60, self.current_time % 60
@@ -63,14 +84,23 @@ class Timer:
             func()
 
     def start(self, duration_time, func, *args, **kwargs):
+        """
+        Starts timer
+        """
         self.current_time = duration_time
         self.tick(func)
 
     def reset(self):
+        """
+        Resets timer
+        """
         self.current_time = -1
 
 
 class QLabelClick(QLabel):
+    """
+    Creates a link with text
+    """
     clicked = pyqtSignal()
 
     def __init__(self, text, normal_color='black', hover_color='blue'):
@@ -85,6 +115,9 @@ class QLabelClick(QLabel):
 
 
 class QLabelPixMapClick(QLabel):
+    """
+    Creates a link with picture
+    """
     clicked = pyqtSignal()
 
     def __init__(self, normal_pic, hover_pic):
@@ -141,6 +174,9 @@ class DetailsTestPage(QWidget):
 
 
 class SummaryPage(QWidget):
+    """
+    Page where student can see his results
+    """
     def __init__(self, exam_name, details):
         super().__init__(main_window)
 
@@ -235,6 +271,9 @@ class SummaryPage(QWidget):
 
 
 class QuestionShortCheckedPage(QWidget):
+    """
+    Page that is displayed after answering Short question
+    """
     def __init__(self, exam_name, question_number, question, answer):
         super().__init__(main_window)
         result = server.check(global_group_name, global_user_name, exam_name, question_number, answer)
@@ -267,13 +306,15 @@ class QuestionShortCheckedPage(QWidget):
         answer_edit.setDisabled(True)
 
         if result['score'] == 0:
-            answer_edit.setStyleSheet('border-width: 2px;'
-                                      'border-style: solid;'
-                                      'border-color: ' + RED)
+            answer_edit.setStyleSheet(
+                'border-width: 2px;'
+                'border-style: solid;'
+                'border-color: ' + RED)
         else:
-            answer_edit.setStyleSheet('border-width: 2px;'
-                                      'border-style: solid;'
-                                      'border-color: ' + GREEN)
+            answer_edit.setStyleSheet(
+                'border-width: 2px;'
+                'border-style: solid;'
+                'border-color: ' + GREEN)
 
         global_layout.addWidget(answer_edit)
         global_layout.addItem(QSpacerItem(0, 20))
@@ -318,6 +359,9 @@ class QuestionShortCheckedPage(QWidget):
 
 
 class QuestionShortPage(QWidget):
+    """
+    Page that is displayed while student is answering Short question
+    """
     def __init__(self, exam_name, question_number, question):
         global timer
 
@@ -388,6 +432,9 @@ class QuestionShortPage(QWidget):
 
 
 class QuestionTestCheckedPage(QWidget):
+    """
+    Page that is displayed after answering Test question
+    """
     def __init__(self, exam_name, question_number, question, answer):
         super().__init__(main_window)
         result = server.check(global_group_name, global_user_name, exam_name, question_number, answer)
@@ -422,18 +469,20 @@ class QuestionTestCheckedPage(QWidget):
             if answer == i + 1:
                 if result['score'] == 0:
                     cur_img_label.setPixmap(QPixmap('data\\cross-50x50.png'))
-                    cur_label.setStyleSheet('color: ' + RED + ';'
-                                            'background: white; '
-                                            'border-width: 2px;'
-                                            'border-style: solid;'
-                                            'border-color: ' + RED)
+                    cur_label.setStyleSheet(
+                        'color: ' + RED + ';'
+                        'background: white; '
+                        'border-width: 2px;'
+                        'border-style: solid;'
+                        'border-color: ' + RED)
                 else:
                     cur_img_label.setPixmap(QPixmap('data\\tick-50x50.png'))
-                    cur_label.setStyleSheet('color: ' + GREEN + ';'
-                                            'background: white; '
-                                            'border-width: 2px;'
-                                            'border-style: solid;'
-                                            'border-color: ' + GREEN)
+                    cur_label.setStyleSheet(
+                        'color: ' + GREEN + ';'
+                        'background: white; '
+                        'border-width: 2px;'
+                        'border-style: solid;'
+                        'border-color: ' + GREEN)
 
             cur_layout = QHBoxLayout()
             cur_layout.addWidget(cur_img_label)
@@ -484,6 +533,9 @@ class QuestionTestCheckedPage(QWidget):
 
 
 class QuestionTestPage(QWidget):
+    """
+    Page that is displayed while student is answering Test question
+    """
     def __init__(self, exam_name, question_number, question):
         global timer
 
@@ -543,6 +595,9 @@ class QuestionTestPage(QWidget):
 
 
 class WaitingPage(QWidget):
+    """
+    Page that is displayed before each question and summary page
+    """
     def __init__(self, exam_name, question_number=-1):
         global timer
 
@@ -592,6 +647,9 @@ class WaitingPage(QWidget):
 
 
 class MainPage(QWidget):
+    """
+    Page with list of available exams
+    """
     def __init__(self):
         super().__init__(main_window)
 
@@ -640,7 +698,7 @@ class MainPage(QWidget):
 
         exit_label = QLabelClick('Выход')
         exit_label.setFont(QFont('Arial', 20))
-        exit_label.clicked.connect(lambda: logout())
+        exit_label.clicked.connect(logout)
 
         bottom_layout = QHBoxLayout()
         bottom_layout.addWidget(user_label)
@@ -653,6 +711,9 @@ class MainPage(QWidget):
 
 
 class LoginPage(QWidget):
+    """
+    Login page
+    """
     def __init__(self, state=''):
         super().__init__(main_window)
 
@@ -746,6 +807,9 @@ class LoginPage(QWidget):
             lambda: self.try_to_login(server_edit.text(), group_edit.text(), user_edit.text()))
 
     def try_to_login(self, ip, group_name, user_name):
+        """
+        Tries to login, if does not succeed, displays login page again
+        """
         global server, global_group_name, global_user_name
 
         write_ip(ip)
@@ -781,7 +845,7 @@ if __name__ == "__main__":
     timer = Timer(None)
     socket.setdefaulttimeout(3)
 
-    app = QApplication(sys.argv)
+    APP = QApplication(sys.argv)
 
     main_window = QWidget()
     main_window.setWindowTitle('Student')
@@ -791,4 +855,4 @@ if __name__ == "__main__":
     main_window_layout.addWidget(LoginPage())
 
     main_window.show()
-    sys.exit(app.exec_())
+    sys.exit(APP.exec_())
