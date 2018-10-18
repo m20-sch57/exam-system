@@ -4,6 +4,9 @@ import socket
 
 
 def return_lambda(func, *args, **kwargs):
+    """
+    Returns lambda: func(*args, **kwargs)
+    """
     return lambda: func(*args, **kwargs)
 
 
@@ -99,6 +102,8 @@ class DetailsTestPage(QWidget):
     def __init__(self, exam_name, question_number, details):
         super().__init__(main_window)
         question = details[question_number - 1]
+        answer = question['variants'][int(question['answer'] - 1)] if question['answer'] != '0' else ''
+        correct = question['variants'][question['correct'] - 1]
 
         global_layout = QVBoxLayout()
 
@@ -124,6 +129,13 @@ class DetailsTestPage(QWidget):
 
         global_layout.addWidget(statement_label)
         global_layout.addStretch(1)
+
+        answer_title = QLabel('Ваш ответ:')
+        answer_title.setFont(QFont('Arial', 30))
+
+        answer_label = QLabel(answer)
+
+        answer_layout = QHBoxLayout()
 
         self.setLayout(global_layout)
 
