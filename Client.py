@@ -1,7 +1,9 @@
-from xmlrpc.client import ServerProxy
-from PyQt5.Qt import *
 import sys
 import socket
+from xmlrpc.client import ServerProxy
+from PyQt5.Qt import Qt, QApplication, QWidget, QHBoxLayout, QVBoxLayout
+from PyQt5.Qt import QLabel, QLineEdit, QScrollArea, QPushButton
+from PyQt5.Qt import QFont, QPixmap, QSize, QSpacerItem, QFrame, QCursor, QTimer, pyqtSignal
 
 
 def return_lambda(func, *args, **kwargs):
@@ -29,12 +31,10 @@ def try_connect():
     """
     Checks if connection could be established
     """
-    global server
-
     ip_address = read_ip()
     try:
-        server = ServerProxy('http://' + ip_address + ':8000')
-        server.check_connection()
+        APP.server = ServerProxy('http://' + ip_address + ':8000')
+        APP.server.check_connection()
         return True
     except:
         return False
@@ -44,10 +44,10 @@ def display_page(page, *args, **kwargs):
     """
     Destroys the previous page and displays the new one
     """
-    timer.reset()
-    old_page = main_window_layout.itemAt(0).widget()
-    main_window_layout.removeWidget(old_page)
-    main_window_layout.addWidget(page(*args, **kwargs))
+    APP.timer.reset()
+    old_page = APP.window_layout.itemAt(0).widget()
+    APP.window_layout.removeWidget(old_page)
+    APP.window_layout.addWidget(page(*args, **kwargs))
     old_page.deleteLater()
 
 
@@ -55,9 +55,8 @@ def logout():
     """
     Logs user out and displays login page
     """
-    global global_group_name, global_user_name
-    global_group_name = ''
-    global_user_name = ''
+    APP.group_name = ''
+    APP.user_name = ''
     display_page(LoginPage)
 
 
@@ -84,7 +83,7 @@ class Timer:
         elif self.current_time == 0:
             func()
 
-    def start(self, duration_time, func, *args, **kwargs):
+    def start(self, duration_time, func):
         """
         Starts timer
         """
@@ -137,7 +136,7 @@ class DetailsPage(QWidget):
     Page with question data and student's answer
     """
     def __init__(self, exam_name, question_number, details):
-        super().__init__(main_window)
+        super().__init__(APP.window)
         question = details[question_number - 1]
 
         global_layout = QVBoxLayout()
@@ -186,7 +185,7 @@ class SummaryPage(QWidget):
     Page where student can see his results
     """
     def __init__(self, exam_name, details):
-        super().__init__(main_window)
+        super().__init__(APP.window)
 
         global_layout = QVBoxLayout()
 
@@ -283,8 +282,9 @@ class QuestionShortCheckedPage(QWidget):
     Page that is displayed after answering Short question
     """
     def __init__(self, exam_name, question_number, question, answer):
-        super().__init__(main_window)
-        result = server.check(global_group_name, global_user_name, exam_name, question_number, answer)
+        super().__init__(APP.window)
+        result = APP.server.check(
+            APP.group_name, APP.user_name, exam_name, question_number, answer)
 
         global_layout = QVBoxLayout()
 
@@ -371,9 +371,7 @@ class QuestionShortPage(QWidget):
     Page that is displayed while student is answering Short question
     """
     def __init__(self, exam_name, question_number, question):
-        global timer
-
-        super().__init__(main_window)
+        super().__init__(APP.window)
 
         global_layout = QVBoxLayout()
 
@@ -444,8 +442,9 @@ class QuestionTestCheckedPage(QWidget):
     Page that is displayed after answering Test question
     """
     def __init__(self, exam_name, question_number, question, answer):
-        super().__init__(main_window)
-        result = server.check(global_group_name, global_user_name, exam_name, question_number, answer)
+        super().__init__(APP.window)
+        result = APP.server.check(
+            APP.group_name, APP.user_name, exam_name, question_number, answer)
 
         global_layout = QVBoxLayout()
 
@@ -545,9 +544,7 @@ class QuestionTestPage(QWidget):
     Page that is displayed while student is answering Test question
     """
     def __init__(self, exam_name, question_number, question):
-        global timer
-
-        super().__init__(main_window)
+        super().__init__(APP.window)
 
         global_layout = QVBoxLayout()
 
@@ -597,8 +594,8 @@ class QuestionTestPage(QWidget):
 
         self.setLayout(global_layout)
 
-        timer = Timer(timer_label)
-        timer.start(question['time'], lambda: display_page(
+        APP.timer = Timer(timer_label)
+        APP.timer.start(question['time'], lambda: display_page(
             QuestionTestCheckedPage, exam_name, question_number, question, ''))
 
 
@@ -607,14 +604,13 @@ class WaitingPage(QWidget):
     Page that is displayed before each question and summary page
     """
     def __init__(self, exam_name, question_number=-1):
-        global timer
-
-        super().__init__(main_window)
+        super().__init__(APP.window)
 
         if question_number == -1:
-            question_number = server.first_not_passed_question(global_group_name, global_user_name, exam_name)
+            question_number = APP.server.first_not_passed_question(
+                APP.group_name, APP.user_name, exam_name)
 
-        if question_number <= server.number_of_questions(global_group_name, exam_name):
+        if question_number <= APP.server.number_of_questions(APP.group_name, exam_name):
             global_layout = QVBoxLayout()
 
             question_label = QLabel('Вопрос ' + str(question_number))
@@ -625,14 +621,15 @@ class WaitingPage(QWidget):
 
             self.setLayout(global_layout)
 
-            question = server.view_question(global_group_name, global_user_name, exam_name, question_number)
-            timer = Timer(None)
+            question = APP.server.view_question(
+                APP.group_name, APP.user_name, exam_name, question_number)
+            APP.timer = Timer(None)
             if question['type'] == 'Тест':
-                timer.start(1, lambda: display_page(QuestionTestPage, exam_name, question_number, question))
+                APP.timer.start(1, lambda: display_page(QuestionTestPage, exam_name, question_number, question))
             elif question['type'] == 'Короткий ответ':
-                timer.start(1, lambda: display_page(QuestionShortPage, exam_name, question_number, question))
+                APP.timer.start(1, lambda: display_page(QuestionShortPage, exam_name, question_number, question))
             elif question['type'] == 'Развёрнутый ответ':
-                timer.start(1, lambda: display_page(QuestionLongPage, exam_name, question_number, question))
+                APP.timer.start(1, lambda: display_page(QuestionLongPage, exam_name, question_number, question))
 
         else:
             global_layout = QVBoxLayout()
@@ -648,8 +645,9 @@ class WaitingPage(QWidget):
             self.setLayout(global_layout)
 
             details = []
-            for question_number in range(1, server.number_of_questions(global_group_name, exam_name) + 1):
-                details.append(server.view_details(global_group_name, global_user_name, exam_name, question_number))
+            for question_number in range(1, APP.server.number_of_questions(APP.group_name, exam_name) + 1):
+                details.append(APP.server.view_details(
+                    APP.group_name, APP.user_name, exam_name, question_number))
             timer = Timer(None)
             timer.start(1, lambda: display_page(SummaryPage, exam_name, details))
 
@@ -659,11 +657,11 @@ class MainPage(QWidget):
     Page with list of available exams
     """
     def __init__(self):
-        super().__init__(main_window)
+        super().__init__(APP.window)
 
         global_layout = QVBoxLayout()
 
-        group_label = QLabel('Группа "' + global_group_name + '"')
+        group_label = QLabel('Группа "' + APP.group_name + '"')
         group_label.setAlignment(Qt.AlignCenter)
         group_label.setFont(QFont('Arial', 30))
 
@@ -671,7 +669,7 @@ class MainPage(QWidget):
         global_layout.addItem(QSpacerItem(0, 20))
 
         scroll_layout = QVBoxLayout()
-        for exam_name in server.list_of_exams(global_group_name):
+        for exam_name in APP.server.list_of_exams(APP.group_name):
             var_img_label = QLabel()
             var_img_label.setPixmap(QPixmap('data\\exam-30x30.png'))
             var_img_label.setFixedSize(QSize(30, 30))
@@ -701,7 +699,7 @@ class MainPage(QWidget):
         global_layout.addWidget(scroll_area)
         global_layout.addItem(QSpacerItem(0, 20))
 
-        user_label = QLabel('Вы зашли как ' + global_user_name)
+        user_label = QLabel('Вы зашли как ' + APP.user_name)
         user_label.setFont(QFont('Arial', 20))
 
         exit_label = QLabelClick('Выход')
@@ -723,7 +721,7 @@ class LoginPage(QWidget):
     Login page
     """
     def __init__(self, state=''):
-        super().__init__(main_window)
+        super().__init__(APP.window)
 
         global_layout = QVBoxLayout()
 
@@ -818,11 +816,9 @@ class LoginPage(QWidget):
         """
         Tries to login, if does not succeed, displays login page again
         """
-        global server, global_group_name, global_user_name
-
         write_ip(ip_address)
-        global_group_name = group_name
-        global_user_name = user_name
+        APP.group_name = group_name
+        APP.user_name = user_name
 
         self.status_label.setText('Подождите...')
         self.status_label.setStyleSheet('color: black')
@@ -832,15 +828,36 @@ class LoginPage(QWidget):
         if not try_connect():
             display_page(LoginPage, state='Сервер не отвечает')
             return
-        global_group_name = server.search_group(group_name)
-        if not global_group_name:
+        APP.group_name = APP.server.search_group(group_name)
+        if not APP.group_name:
             display_page(LoginPage, state='Неверное название группы')
             return
-        global_user_name = server.search_user(global_group_name, user_name)
-        if not global_user_name:
+        APP.user_name = APP.server.search_user(APP.group_name, user_name)
+        if not APP.user_name:
             display_page(LoginPage, state='Неверное имя пользователя')
             return
         display_page(MainPage)
+
+
+class Application(QApplication):
+    """
+    Main window
+    """
+    def __init__(self):
+        super().__init__(sys.argv)
+
+        self.group_name = ''
+        self.user_name = ''
+        self.timer = Timer(None)
+        self.server = None
+
+        self.window = QWidget()
+        self.window.setWindowTitle('Student')
+        self.window.setGeometry(200, 100, 800, 600)
+
+        self.window_layout = QHBoxLayout(self.window)
+
+        self.window.show()
 
 
 if __name__ == "__main__":
@@ -848,19 +865,7 @@ if __name__ == "__main__":
     RED = '#F10608'
     BLUE = '#2EBACB'
     ENCODING = 'utf-8-sig'
-    global_group_name = ''
-    global_user_name = ''
-    timer = Timer(None)
+    APP = Application()
+    APP.window_layout.addWidget(LoginPage())
     socket.setdefaulttimeout(3)
-
-    app = QApplication(sys.argv)
-
-    main_window = QWidget()
-    main_window.setWindowTitle('Student')
-    main_window.setGeometry(200, 100, 800, 600)
-
-    main_window_layout = QHBoxLayout(main_window)
-    main_window_layout.addWidget(LoginPage())
-
-    main_window.show()
-    sys.exit(app.exec_())
+    sys.exit(APP.exec_())
