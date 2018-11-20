@@ -1,2 +1,2 @@
-# exam-student
-Examiner project, student module
+# examiner
+Examiner project
