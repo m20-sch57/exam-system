@@ -22,6 +22,12 @@ class Label(QLabel):
         if hover_color is not None:
             self.enterEvent = lambda event: self.setStyleSheet('color: ' + self.hover_color)
 
+    def connect(self, function, *args, **kwargs):
+        """
+        Connects mouse press event to the function.
+        """
+        self.clicked.connect(lambda: function(*args, **kwargs))
+
 
 class Pixmap(QLabel):
     """
@@ -37,6 +43,12 @@ class Pixmap(QLabel):
         self.mousePressEvent = lambda event: self.clicked.emit()
         self.enterEvent = lambda event: self.setPixmap(self.hover_pic)
         self.leaveEvent = lambda event: self.setPixmap(self.normal_pic)
+
+    def connect(self, function):
+        """
+        Connects mouse press event to the function.
+        """
+        self.clicked.connect(function)
 
 
 class Timer:
@@ -68,11 +80,13 @@ class Timer:
             return
         self.current_time -= 1
         minutes, seconds = self.current_time // 60, self.current_time % 60
-        if self.timer_label is not None:
+        try:
             self.timer_label.setText('%02d:%02d' % (minutes, seconds))
             if self.current_time <= 10:
                 self.timer_label.setStyleSheet('color: red')
             QTimer().singleShot(1000, lambda: self.update(func))
+        except RuntimeError:
+            return
 
     def start(self, duration, func):
         """
