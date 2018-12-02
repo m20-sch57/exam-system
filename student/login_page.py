@@ -12,7 +12,7 @@ class LoginPage(QWidget):
     """
     Login page for student.
     """
-    def __init__(self, application, login_function, current_ip, status=''):
+    def __init__(self, user, current_ip, status, login_function):
         super().__init__()
 
         enter_title = QLabel('Вход в систему')
@@ -22,7 +22,7 @@ class LoginPage(QWidget):
         group_title = QLabel('Группа:')
         group_title.setFont(QFont('Arial', 20))
 
-        group_input = QLineEdit(application.group)
+        group_input = QLineEdit(user.group)
         group_input.setFont(QFont('Arial', 20))
         group_input.setMinimumWidth(400)
         group_input.setText('M20 История') # TODO: REMOVE THEN!
@@ -30,7 +30,7 @@ class LoginPage(QWidget):
         user_title = QLabel('Логин:')
         user_title.setFont(QFont('Arial', 20))
 
-        user_input = QLineEdit(application.user)
+        user_input = QLineEdit(user.user)
         user_input.setFont(QFont('Arial', 20))
         user_input.setMinimumWidth(400)
         user_input.setText('Фёдор Куянов') # TODO: REMOVE THEN!
@@ -38,7 +38,7 @@ class LoginPage(QWidget):
         password_title = QLabel('Пароль:')
         password_title.setFont(QFont('Arial', 20))
 
-        password_input = QLineEdit(application.password)
+        password_input = QLineEdit(user.password)
         password_input.setFont(QFont('Arial', 20))
         password_input.setMinimumWidth(400)
         password_input.setEchoMode(QLineEdit.Password)

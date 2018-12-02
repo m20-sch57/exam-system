@@ -76,6 +76,7 @@ class QuestionShortDetails(QWidget):
         your_answer_layout.addWidget(your_answer_label)
         your_answer_layout.addSpacerItem(QSpacerItem(10, 0))
         your_answer_layout.addWidget(status_img)
+        your_answer_layout.addStretch(1)
 
         correct_answer_layout = QHBoxLayout()
         correct_answer_layout.addWidget(correct_answer_title)

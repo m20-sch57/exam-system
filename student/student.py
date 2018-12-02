@@ -4,8 +4,8 @@ Examiner project, student module
 
 
 import sys
+from user import User
 from PyQt5.Qt import QApplication, QWidget, QHBoxLayout
-import server
 from login_page import LoginPage
 from home_page import HomePage
 from start_exam_page import StartExamPage
@@ -20,10 +20,7 @@ class Application(QApplication):
     """
     def __init__(self):
         super().__init__(sys.argv)
-        self.group = ''
-        self.user = ''
-        self.password = ''
-        self.server = None
+        self.user = User(self)
         self.window = QWidget()
         self.window.setWindowTitle('Школьник')
         self.window.setGeometry(200, 100, 1000, 700)
@@ -46,46 +43,39 @@ class Application(QApplication):
         """
         Starts application.
         """
-        self.display_widget(LoginPage(self, self.login, server.read_ip()))
+        self.display_login_page('')
         self.exit(self.exec_())
 
     def display_login_page(self, status):
         """
         Displays login page for student.
         """
-        self.display_widget(LoginPage(
-            self, self.login, server.read_ip(), status=status))
+        self.display_widget(LoginPage(self.user, self.user.read_ip(), status,
+                                      self.user.safe(self.login)))
 
     def display_home_page(self):
         """
         Displays home page with list of exams.
         """
-        list_of_exams = server.list_of_exams(self)
-        if list_of_exams is None:
-            return
-        self.display_widget(HomePage(self, list_of_exams, self.display_exam))
+        list_of_exams = self.user.list_of_exams()
+        self.display_widget(HomePage(self.user, list_of_exams, self.user.safe(self.display_exam)))
 
     def display_start_exam_page(self, exam):
         """
         Displays page before starting the exam.
         """
-        exam_info = server.get_exam_info(self, exam)
-        if exam_info is None:
-            return
-        self.display_widget(StartExamPage(exam, exam_info, self.display_home_page, self.start_exam))
+        exam_info = self.user.get_exam_info(exam)
+        self.display_widget(StartExamPage(exam, exam_info, self.user.safe(self.display_exam),
+                                          self.user.safe(self.start_exam)))
 
     def login(self, group, user, password, ip_address):
         """
         Tries to login the student.
         """
         self.widget.set_waiting_state()
-        self.group = group
-        self.user = user
-        self.password = password
-        server.update_ip(self, ip_address)
-        success = server.login(self)
-        if success is None:
-            return
+        self.user.update_user_info(group, user, password)
+        self.user.update_ip(ip_address)
+        success = self.user.login()
         if not success:
             self.display_login_page('Данные неверны')
             return
@@ -95,25 +85,21 @@ class Application(QApplication):
         """
         Starts the exam.
         """
-        success = server.start_exam(self, exam)
-        if success is not None:
-            self.display_exam(exam)
+        self.user.start_exam(exam)
+        self.display_exam(exam)
 
     def finish_exam(self, exam):
         """
         Finishes the exam.
         """
-        success = server.finish_exam(self, exam)
-        if success is not None:
-            self.display_exam(exam)
+        self.user.finish_exam(exam)
+        self.display_exam(exam)
 
     def display_exam(self, exam):
         """
         Displays the exam depending on it's current state.
         """
-        exam_info = server.get_exam_info(self, exam)
-        if exam_info is None:
-            return
+        exam_info = self.user.get_exam_info(exam)
         if exam_info['state'] == 'Not started':
             self.display_start_exam_page(exam)
         else:
@@ -124,10 +110,8 @@ class Application(QApplication):
         """
         Displays selected question.
         """
-        exam_data = server.get_exam(self, exam)
-        exam_info = server.get_exam_info(self, exam)
-        if exam_data is None or exam_info is None:
-            return
+        exam_data = self.user.get_exam(exam)
+        exam_info = self.user.get_exam_info(exam)
         self.widget.display(question, exam_data, exam_info, self.view_question,
                             self.get_exam_status_widget, self.get_question_widget)
 
@@ -157,12 +141,8 @@ class Application(QApplication):
         """
         Checks the student's answer and refreshes the page.
         """
-        success = server.save_answer(self, exam, question, answer)
-        if success is None:
-            return
-        success = server.check(self, exam, question)
-        if success is None:
-            return
+        self.user.save_answer(exam, question, answer)
+        self.user.check(exam, question)
         self.view_question(exam, question)
 
 

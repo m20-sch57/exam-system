@@ -14,10 +14,10 @@ class HomePage(QWidget):
     """
     Student's home page with list of exams.
     """
-    def __init__(self, application, list_of_exams, exam_function):
+    def __init__(self, user, list_of_exams, exam_function):
         super().__init__()
 
-        group_title = QLabel('Группа ' + application.group)
+        group_title = QLabel('Группа ' + user.group)
         group_title.setFont(QFont('Arial', 30))
         group_title.setAlignment(Qt.AlignCenter)
 

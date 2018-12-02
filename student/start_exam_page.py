@@ -39,7 +39,7 @@ class StartExamPage(QWidget):
 
         start_button = QPushButton('Начать экзамен')
         start_button.setFont(QFont('Arial', 20))
-        start_button.setMinimumSize(QSize(230, 50))
+        start_button.setMinimumSize(QSize(250, 50))
         start_button.clicked.connect(lambda: start_function(exam))
 
         upper_layout = QHBoxLayout()
@@ -47,7 +47,7 @@ class StartExamPage(QWidget):
         upper_layout.addWidget(exam_title)
 
         button_layout = QHBoxLayout()
-        button_layout.addStretch(1)
+        button_layout.addSpacerItem(QSpacerItem(30, 0))
         button_layout.addWidget(start_button)
         button_layout.addStretch(1)
 
@@ -55,7 +55,7 @@ class StartExamPage(QWidget):
         layout.addLayout(upper_layout)
         layout.addSpacerItem(QSpacerItem(0, 20))
         layout.addWidget(info_label)
-        layout.addSpacerItem(QSpacerItem(0, 20))
+        layout.addSpacerItem(QSpacerItem(0, 30))
         layout.addLayout(button_layout)
         layout.addStretch(1)
         self.setLayout(layout)

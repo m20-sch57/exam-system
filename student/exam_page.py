@@ -44,7 +44,6 @@ class ExamPage(QWidget):
         self.questions_layout.setSpacing(0)
 
         scroll_layout = QHBoxLayout()
-        scroll_layout.addStretch(1)
         scroll_layout.addLayout(self.questions_layout)
         scroll_layout.addStretch(1)
 
@@ -107,7 +106,6 @@ class ExamPage(QWidget):
                     'border-style: solid;'
                     'border-width: 1px')
 
-        #APP.timer.reset()
         status_widget = get_exam_status_function(self)
         question_widget = get_question_function(self)
         old_widget = self.layout().itemAt(4).widget()
