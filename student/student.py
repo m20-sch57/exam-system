@@ -4,6 +4,7 @@ Examiner project, student module
 
 
 import sys
+import socket
 from user import User
 from PyQt5.Qt import QApplication, QWidget, QHBoxLayout
 from login_page import LoginPage
@@ -46,27 +47,38 @@ class Application(QApplication):
         self.display_login_page('')
         self.exit(self.exec_())
 
+    def safe(self, function):
+        """
+        Returns safe function.
+        """
+        def result(*args, **kwargs):
+            try:
+                return function(*args, **kwargs)
+            except socket.error:
+                self.display_login_page('Сервер не отвечает')
+        return result
+
     def display_login_page(self, status):
         """
         Displays login page for student.
         """
         self.display_widget(LoginPage(self.user, self.user.read_ip(), status,
-                                      self.user.safe(self.login)))
+                                      self.safe(self.login)))
 
     def display_home_page(self):
         """
         Displays home page with list of exams.
         """
         list_of_exams = self.user.list_of_exams()
-        self.display_widget(HomePage(self.user, list_of_exams, self.user.safe(self.display_exam)))
+        self.display_widget(HomePage(self.user, list_of_exams, self.safe(self.display_exam)))
 
     def display_start_exam_page(self, exam):
         """
         Displays page before starting the exam.
         """
         exam_info = self.user.get_exam_info(exam)
-        self.display_widget(StartExamPage(exam, exam_info, self.user.safe(self.display_exam),
-                                          self.user.safe(self.start_exam)))
+        self.display_widget(StartExamPage(exam, exam_info, self.safe(self.display_exam),
+                                          self.safe(self.start_exam)))
 
     def login(self, group, user, password, ip_address):
         """
@@ -103,7 +115,7 @@ class Application(QApplication):
         if exam_info['state'] == 'Not started':
             self.display_start_exam_page(exam)
         else:
-            self.display_widget(ExamPage(exam, self.display_home_page))
+            self.display_widget(ExamPage(exam, self.safe(self.display_home_page)))
             self.view_question(exam, 1)
 
     def view_question(self, exam, question):
@@ -112,15 +124,16 @@ class Application(QApplication):
         """
         exam_data = self.user.get_exam(exam)
         exam_info = self.user.get_exam_info(exam)
-        self.widget.display(question, exam_data, exam_info, self.view_question,
-                            self.get_exam_status_widget, self.get_question_widget)
+        self.widget.display(question, exam_data, exam_info, self.safe(self.view_question),
+                            self.safe(self.get_exam_status_widget),
+                            self.safe(self.get_question_widget))
 
     def get_exam_status_widget(self, parent):
         """
         Returns exam status widget.
         """
         if parent.exam_info['state'] == 'Running':
-            return ExamRunning(parent, self.finish_exam)
+            return ExamRunning(parent, self.safe(self.finish_exam))
         else:
             return ExamFinished(parent)
 
@@ -133,9 +146,10 @@ class Application(QApplication):
             if parent.exam_info['state'] == 'Finished':
                 return QuestionShortDetails(parent)
             elif question_data['score'] is not False:
-                return QuestionShortChecked(parent, self.finish_exam, self.view_question)
+                return QuestionShortChecked(parent, self.safe(self.finish_exam),
+                                            self.safe(self.view_question))
             else:
-                return QuestionShort(parent, self.check_answer)
+                return QuestionShort(parent, self.safe(self.check_answer))
 
     def check_answer(self, exam, question, answer):
         """

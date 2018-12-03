@@ -18,17 +18,6 @@ class User:
         self.user = ''
         self.password = ''
 
-    def safe(self, function, *args, **kwargs):
-        """
-        Returns safe function.
-        """
-        def result():
-            try:
-                function(*args, **kwargs)
-            except socket.error:
-                self.application.display_login_page('Сервер не отвечает')
-        return result
-
     def update_user_info(self, group, user, password):
         """
         Updates client's data: group, user, password.
