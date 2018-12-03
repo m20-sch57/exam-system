@@ -77,7 +77,7 @@ class Application(QApplication):
         Displays page before starting the exam.
         """
         exam_info = self.user.get_exam_info(exam)
-        self.display_widget(StartExamPage(exam, exam_info, self.safe(self.display_exam),
+        self.display_widget(StartExamPage(exam, exam_info, self.safe(self.display_home_page),
                                           self.safe(self.start_exam)))
 
     def login(self, group, user, password, ip_address):

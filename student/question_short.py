@@ -15,9 +15,9 @@ def get_status(score, maxscore):
     Returns color and picture depending on the result.
     """
     if score == maxscore:
-        return {'color': '#6FCB36', 'picture': QPixmap(os.path.join('data', 'tick-50x50.png'))}
+        return {'color': '#6FCB36', 'picture': QPixmap(os.path.join('images', 'tick-50x50.png'))}
     else:
-        return {'color': '#F10608', 'picture': QPixmap(os.path.join('data', 'cross-50x50.png'))}
+        return {'color': '#F10608', 'picture': QPixmap(os.path.join('images', 'cross-50x50.png'))}
 
 
 class QuestionShortDetails(QWidget):
@@ -47,9 +47,10 @@ class QuestionShortDetails(QWidget):
         your_answer_label.setFont(QFont('Arial', 20))
         your_answer_label.setWordWrap(True)
         your_answer_label.setStyleSheet(
+            'background: white;'
             'border-style: solid;'
             'border-width: 2px;'
-            'border-color: ' + status['color'] + ';')
+            'border-color: ' + status['color'])
 
         status_img = QLabel()
         status_img.setPixmap(status['picture'])
@@ -151,8 +152,8 @@ class QuestionShortChecked(QWidget):
         next_label.setFont(QFont('Arial', 30))
         next_label.connect(next_func)
 
-        next_img = Pixmap(normal_pic=QPixmap(os.path.join('data', 'right-50x50.png')),
-                          hover_pic=QPixmap(os.path.join('data', 'right-50x50.png')))
+        next_img = Pixmap(normal_pic=QPixmap(os.path.join('images', 'right-50x50.png')),
+                          hover_pic=QPixmap(os.path.join('images', 'right-50x50.png')))
         next_img.connect(next_func)
 
         answer_layout = QHBoxLayout()
@@ -209,8 +210,8 @@ class QuestionShort(QWidget):
         check_label.connect(
             lambda: check_function(parent.exam, parent.question, answer_input.text()))
 
-        check_img = Pixmap(normal_pic=QPixmap(os.path.join('data', 'right-50x50.png')),
-                           hover_pic=QPixmap(os.path.join('data', 'right-50x50.png')))
+        check_img = Pixmap(normal_pic=QPixmap(os.path.join('images', 'right-50x50.png')),
+                           hover_pic=QPixmap(os.path.join('images', 'right-50x50.png')))
         check_img.connect(
             lambda: check_function(parent.exam, parent.question, answer_input.text()))
 

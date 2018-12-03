@@ -21,8 +21,8 @@ class ExamPage(QWidget):
         self.exam_data = None
         self.exam_info = None
 
-        back_img = Pixmap(normal_pic=QPixmap(os.path.join('data', 'left-50x50.png')),
-                          hover_pic=QPixmap(os.path.join('data', 'left-50x50.png')))
+        back_img = Pixmap(normal_pic=QPixmap(os.path.join('images', 'left-50x50.png')),
+                          hover_pic=QPixmap(os.path.join('images', 'left-50x50.png')))
         back_img.setFixedSize(QSize(50, 50))
         back_img.clicked.connect(back_function)
 

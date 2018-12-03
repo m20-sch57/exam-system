@@ -3,8 +3,9 @@ Safe connection to server.
 """
 
 
-from xmlrpc.client import ServerProxy
+import os
 import socket
+from xmlrpc.client import ServerProxy
 
 
 class User:
@@ -31,13 +32,13 @@ class User:
         """
         Returns current ip-address of server.
         """
-        return open('server.txt', encoding='utf-8-sig').read()
+        return open(os.path.join('client', 'server.txt'), encoding='utf-8-sig').read()
 
     def update_ip(self, ip_address):
         """
         Updates current ip-address of server.
         """
-        open('server.txt', 'w', encoding='utf-8-sig').write(ip_address)
+        open(os.path.join('client', 'server.txt'), 'w', encoding='utf-8-sig').write(ip_address)
         self.server = ServerProxy('http://' + ip_address + ':8000')
 
     def login(self):

@@ -29,7 +29,7 @@ class HomePage(QWidget):
 
         for exam in list_of_exams:
             exam_image = QLabel()
-            exam_image.setPixmap(QPixmap(os.path.join('data', 'exam-30x30.png')))
+            exam_image.setPixmap(QPixmap(os.path.join('images', 'exam-30x30.png')))
             exam_image.setFixedSize(QSize(30, 30))
 
             exam_label = Label(exam, normal_color='black', hover_color='blue')

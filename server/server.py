@@ -47,9 +47,9 @@ def login(group, user, password):
     """
     Checks if the user is valid.
     """
-    if not group in os.listdir('groups'):
+    if not group in os.listdir('root'):
         return False
-    if not user in os.listdir(os.path.join('groups', group, 'users')):
+    if not user in os.listdir(os.path.join('root', group, 'users')):
         return False
     # TODO: add password verification
     return True
@@ -59,15 +59,15 @@ def list_of_exams(group):
     """
     Returns list of all available exams in the group.
     """
-    return os.listdir(os.path.join('groups', group, 'exams'))
+    return os.listdir(os.path.join('root', group, 'exams'))
 
 
 def get_question(group, user, exam, question):
     """
     Returns the question data.
     """
-    question_item = Item(os.path.join('groups', group, 'exams', exam, str(question)))
-    answer_item = Item(os.path.join('groups', group, 'users', user, exam, str(question)))
+    question_item = Item(os.path.join('root', group, 'exams', exam, str(question)))
+    answer_item = Item(os.path.join('root', group, 'users', user, exam, str(question)))
     return {'type': question_item.get_attr('type'),
             'statement': question_item.get_attr('statement'),
             'correct': question_item.get_attr('correct'),
@@ -80,7 +80,7 @@ def get_exam(group, user, exam):
     """
     Returns all question data in the exam.
     """
-    quantity = len(os.listdir(os.path.join('groups', group, 'exams', exam))) - 1
+    quantity = len(os.listdir(os.path.join('root', group, 'exams', exam))) - 1
     exam_data = [get_question(group, user, exam, question) for question in range(1, quantity + 1)]
     return exam_data
 
@@ -89,10 +89,10 @@ def get_exam_info(group, user, exam):
     """
     Returns exam's info: start time, duration time, total student's score, total maximum score.
     """
-    exam_item = Item(os.path.join('groups', group, 'exams', exam, 'settings'))
-    user_item = Item(os.path.join('groups', group, 'users', user, exam, 'settings'))
+    exam_item = Item(os.path.join('root', group, 'exams', exam, 'settings'))
+    user_item = Item(os.path.join('root', group, 'users', user, exam, 'settings'))
     exam_data = get_exam(group, user, exam)
-    quantity = len(os.listdir(os.path.join('groups', group, 'exams', exam))) - 1
+    quantity = len(os.listdir(os.path.join('root', group, 'exams', exam))) - 1
     if user_item.get_attr('start') is False:
         state = 'Not started'
     elif int(time.time()) < int(user_item.get_attr('end')):
@@ -120,8 +120,8 @@ def start_exam(group, user, exam):
     """
     Starts the exam.
     """
-    exam_item = Item(os.path.join('groups', group, 'exams', exam, 'settings'))
-    user_item = Item(os.path.join('groups', group, 'users', user, exam, 'settings'))
+    exam_item = Item(os.path.join('root', group, 'exams', exam, 'settings'))
+    user_item = Item(os.path.join('root', group, 'users', user, exam, 'settings'))
     current_time = int(time.time())
     duration_time = int(exam_item.get_attr('duration')) * 60
     user_item.set_attr('start', current_time)
@@ -133,7 +133,7 @@ def finish_exam(group, user, exam):
     """
     Finishes the exam.
     """
-    user_item = Item(os.path.join('groups', group, 'users', user, exam, 'settings'))
+    user_item = Item(os.path.join('root', group, 'users', user, exam, 'settings'))
     current_time = int(time.time())
     user_item.set_attr('end', current_time)
     return True
@@ -143,7 +143,7 @@ def save_answer(group, user, exam, question, answer):
     """
     Saves student's answer.
     """
-    answer_item = Item(os.path.join('groups', group, 'users', user, exam, str(question)))
+    answer_item = Item(os.path.join('root', group, 'users', user, exam, str(question)))
     answer_item.set_attr('answer', answer)
     return True
 
@@ -152,8 +152,8 @@ def check(group, user, exam, question):
     """
     Checks student's answer to the short question.
     """
-    question_item = Item(os.path.join('groups', group, 'exams', exam, str(question)))
-    answer_item = Item(os.path.join('groups', group, 'users', user, exam, str(question)))
+    question_item = Item(os.path.join('root', group, 'exams', exam, str(question)))
+    answer_item = Item(os.path.join('root', group, 'users', user, exam, str(question)))
     if question_item.get_attr('type') == 'Short':
         answer = answer_item.get_attr('answer')
         correct = question_item.get_attr('correct')
