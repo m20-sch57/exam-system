@@ -3,6 +3,7 @@ Examiner project, server.
 Version 1.0
 """
 
+
 import os
 import time
 from xmlrpc.server import SimpleXMLRPCServer
@@ -36,10 +37,9 @@ def format_str(string):
     """
     Formats string: lowers letters and removes all other symbols except numbers.
     """
-    # string = string.lower()
-    # string = string.replace('ё', 'е')
-    # string = ''.join([c for c in string if c.isalnum()])
-    # TODO: configure!
+    string = string.lower()
+    string = string.replace('ё', 'е')
+    string = ''.join([c for c in string if c.isalnum()])
     return string
 
 
@@ -51,7 +51,9 @@ def login(group, user, password):
         return False
     if not user in os.listdir(os.path.join('root', group, 'users')):
         return False
-    # TODO: add password verification
+    user_item = Item(os.path.join('root', group, 'users', user))
+    if user_item.get_attr('password') != password:
+        return False
     return True
 
 
@@ -156,8 +158,8 @@ def check(group, user, exam, question):
     answer_item = Item(os.path.join('root', group, 'users', user, exam, str(question)))
     if question_item.get_attr('type') == 'Short':
         answer = answer_item.get_attr('answer')
-        correct = question_item.get_attr('correct')
-        if format_str(answer) == format_str(correct):
+        correct = question_item.get_attr('correct').split('\n')
+        if format_str(answer) in [format_str(s) for s in correct]:
             answer_item.set_attr('score', 1)
         else:
             answer_item.set_attr('score', 0)

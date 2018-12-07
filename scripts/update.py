@@ -47,6 +47,18 @@ def process():
                     open(to_dir + '\\statement', 'w', encoding=encoding).write(statement)
                     open(to_dir + '\\correct', 'w', encoding=encoding).write(correct)
                     open(to_dir + '\\maxscore', 'w', encoding=encoding).write('1')
+                elif tp == 'Короткий ответ':
+                    PrintLog('  type: ' + tp + '\n')
+                    statement = open(cur_dir + '\\statement', encoding=encoding).read()
+                    variants = open(cur_dir + '\\variants', encoding=encoding).read().split('\n')
+                    correct = open(cur_dir + '\\correct', encoding=encoding).read()
+                    PrintLog('  adding ' + to_dir + '\n')
+                    if not os.path.exists(to_dir):
+                        os.makedirs(to_dir)
+                    open(to_dir + '\\type', 'w', encoding=encoding).write('Short')
+                    open(to_dir + '\\statement', 'w', encoding=encoding).write(statement)
+                    open(to_dir + '\\correct', 'w', encoding=encoding).write(correct)
+                    open(to_dir + '\\maxscore', 'w', encoding=encoding).write('1')
                 else:
                     PrintLog('  WARNING: type "' + tp + '" not supported\n')
             PrintLog('updating exam settings...\n')

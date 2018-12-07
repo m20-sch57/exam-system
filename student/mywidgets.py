@@ -79,9 +79,11 @@ class Timer:
             func()
             return
         self.current_time -= 1
-        minutes, seconds = self.current_time // 60, self.current_time % 60
+        hours = self.current_time // 3600
+        minutes = self.current_time % 3600 // 60
+        seconds = self.current_time % 60
         try:
-            self.timer_label.setText('%02d:%02d' % (minutes, seconds))
+            self.timer_label.setText('%02d:%02d:%02d' % (hours, minutes, seconds))
             if self.current_time <= 10:
                 self.timer_label.setStyleSheet('color: red')
             QTimer().singleShot(1000, lambda: self.update(func))

@@ -4,13 +4,11 @@ Page that is displayed when student is passing the exam.
 
 
 import os
-from PyQt5.Qt import Qt, QWidget, QHBoxLayout, QVBoxLayout
-from PyQt5.Qt import QLabel, QScrollArea
-from PyQt5.Qt import QFont, QPixmap, QSize, QSizePolicy, QSpacerItem, QFrame
+from PyQt5 import Qt
 from mywidgets import Label, Pixmap
 
 
-class ExamPage(QWidget):
+class ExamPage(Qt.QWidget):
     """
     Page that is displayed when student is passing the exam.
     """
@@ -21,43 +19,43 @@ class ExamPage(QWidget):
         self.exam_data = None
         self.exam_info = None
 
-        back_img = Pixmap(normal_pic=QPixmap(os.path.join('images', 'left-50x50.png')),
-                          hover_pic=QPixmap(os.path.join('images', 'left-50x50.png')))
-        back_img.setFixedSize(QSize(50, 50))
+        back_img = Pixmap(normal_pic=Qt.QPixmap(os.path.join('images', 'left-50x50.png')),
+                          hover_pic=Qt.QPixmap(os.path.join('images', 'left-50x50.png')))
+        back_img.setFixedSize(Qt.QSize(50, 50))
         back_img.clicked.connect(back_function)
 
-        exam_title = QLabel(exam)
-        exam_title.setFont(QFont('Arial', 30))
-        exam_title.setAlignment(Qt.AlignCenter)
+        exam_title = Qt.QLabel(exam)
+        exam_title.setFont(Qt.QFont('Arial', 30))
+        exam_title.setAlignment(Qt.Qt.AlignCenter)
         exam_title.setWordWrap(True)
 
-        scroll_area = QScrollArea()
+        scroll_area = Qt.QScrollArea()
         scroll_area.setWidgetResizable(True)
-        scroll_area.setFrameShape(QFrame.NoFrame)
+        scroll_area.setFrameShape(Qt.QFrame.NoFrame)
         scroll_area.setMinimumHeight(85)
-        scroll_area.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        scroll_area.setSizePolicy(Qt.QSizePolicy.Minimum, Qt.QSizePolicy.Minimum)
 
-        status_widget = QWidget()
-        question_widget = QWidget()
+        status_widget = Qt.QWidget()
+        question_widget = Qt.QWidget()
 
-        self.questions_layout = QHBoxLayout()
+        self.questions_layout = Qt.QHBoxLayout()
         self.questions_layout.setSpacing(0)
 
-        scroll_layout = QHBoxLayout()
+        scroll_layout = Qt.QHBoxLayout()
         scroll_layout.addLayout(self.questions_layout)
         scroll_layout.addStretch(1)
 
-        scroll_widget = QWidget()
+        scroll_widget = Qt.QWidget()
         scroll_widget.setLayout(scroll_layout)
         scroll_area.setWidget(scroll_widget)
 
-        upper_layout = QHBoxLayout()
+        upper_layout = Qt.QHBoxLayout()
         upper_layout.addWidget(back_img)
         upper_layout.addWidget(exam_title)
 
-        layout = QVBoxLayout()
+        layout = Qt.QVBoxLayout()
         layout.addLayout(upper_layout)
-        layout.addSpacerItem(QSpacerItem(0, 10))
+        layout.addSpacerItem(Qt.QSpacerItem(0, 10))
         layout.addWidget(scroll_area)
         layout.addWidget(status_widget)
         layout.addWidget(question_widget)
@@ -80,9 +78,9 @@ class ExamPage(QWidget):
         for question in range(1, len(exam_data) + 1):
             question_data = exam_data[question - 1]
             question_label = Label(str(question))
-            question_label.setFont(QFont('Arial', 20))
-            question_label.setAlignment(Qt.AlignCenter)
-            question_label.setFixedSize(QSize(50, 50))
+            question_label.setFont(Qt.QFont('Arial', 20))
+            question_label.setAlignment(Qt.Qt.AlignCenter)
+            question_label.setFixedSize(Qt.QSize(50, 50))
             question_label.connect(view_question_function, self.exam, question)
 
             self.questions_layout.addWidget(question_label)
