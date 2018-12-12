@@ -37,7 +37,7 @@ class StartExamPage(Qt.QWidget):
 
         start_button = Qt.QPushButton('Начать экзамен')
         start_button.setFont(Qt.QFont('Arial', 20))
-        start_button.setMinimumSize(Qt.QSize(250, 50))
+        start_button.setMinimumSize(Qt.QSize(240, 50))
         start_button.clicked.connect(lambda: start_function(exam))
 
         upper_layout = Qt.QHBoxLayout()

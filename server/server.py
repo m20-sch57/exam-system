@@ -1,6 +1,5 @@
 """
-Examiner project, server.
-Version 1.0
+Examiner project, server module.
 """
 
 
@@ -76,6 +75,7 @@ def get_question(group, user, exam, question):
             'maxscore': question_item.get_attr('maxscore'),
             'answer': answer_item.get_attr('answer'),
             'score': answer_item.get_attr('score')}
+    # TODO: add more types!
 
 
 def get_exam(group, user, exam):

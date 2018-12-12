@@ -15,8 +15,10 @@ class ExamRunning(Qt.QWidget):
     def __init__(self, parent, finish_function):
         super().__init__()
 
-        info_label = Qt.QLabel('Экзамен идёт.')
-        info_label.setFont(Qt.QFont('Arial', 25))
+        finish_button = Qt.QPushButton('Закончить экзамен')
+        finish_button.setFont(Qt.QFont('Arial', 20))
+        finish_button.setMinimumSize(Qt.QSize(270, 50))
+        finish_button.clicked.connect(lambda: finish_function(parent.exam))
 
         timer_label = Qt.QLabel()
         timer_label.setFont(Qt.QFont('Arial', 25))
@@ -26,7 +28,7 @@ class ExamRunning(Qt.QWidget):
                     lambda: finish_function(parent.exam))
 
         status_layout = Qt.QHBoxLayout()
-        status_layout.addWidget(info_label)
+        status_layout.addWidget(finish_button)
         status_layout.addStretch(1)
         status_layout.addWidget(timer_label)
         self.setLayout(status_layout)
