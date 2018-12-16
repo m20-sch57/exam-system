@@ -69,13 +69,19 @@ def get_question(group, user, exam, question):
     """
     question_item = Item(os.path.join('root', group, 'exams', exam, str(question)))
     answer_item = Item(os.path.join('root', group, 'users', user, exam, str(question)))
-    return {'type': question_item.get_attr('type'),
-            'statement': question_item.get_attr('statement'),
-            'correct': question_item.get_attr('correct'),
-            'maxscore': question_item.get_attr('maxscore'),
-            'answer': answer_item.get_attr('answer'),
-            'score': answer_item.get_attr('score')}
-    # TODO: add more types!
+    if question_item.get_attr('type') == 'Short':
+        return {'type': question_item.get_attr('type'),
+                'statement': question_item.get_attr('statement'),
+                'correct': question_item.get_attr('correct'),
+                'maxscore': question_item.get_attr('maxscore'),
+                'answer': answer_item.get_attr('answer'),
+                'score': answer_item.get_attr('score')}
+    elif question_item.get_attr('type') == 'Long':
+        return {'type': question_item.get_attr('type'),
+                'statement': question_item.get_attr('statement'),
+                'maxscore': question_item.get_attr('maxscore'),
+                'answer': answer_item.get_attr('answer'),
+                'score': answer_item.get_attr('score')}
 
 
 def get_exam(group, user, exam):
@@ -138,6 +144,11 @@ def finish_exam(group, user, exam):
     user_item = Item(os.path.join('root', group, 'users', user, exam, 'settings'))
     current_time = int(time.time())
     user_item.set_attr('end', current_time)
+    exam_data = get_exam(group, user, exam)
+    for question in range(1, len(exam_data) + 1):
+        if exam_data[question - 1]['score'] == '-1':
+            # TODO: add notification to teacher
+            print("adding notification of question " + str(question))
     return True
 
 
@@ -163,7 +174,8 @@ def check(group, user, exam, question):
             answer_item.set_attr('score', 1)
         else:
             answer_item.set_attr('score', 0)
-    # TODO: add more types!
+    elif question_item.get_attr('type') == 'Long':
+        answer_item.set_attr('score', -1)
     return True
 
 

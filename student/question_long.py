@@ -22,10 +22,13 @@ class QuestionLong(Qt.QWidget):
         statement_label.setFont(Qt.QFont('Arial', 20))
         statement_label.setWordWrap(True)
 
+        answer_input = Qt.QPlainTextEdit()
+        answer_input.setFont(Qt.QFont('Arial', 20))
+
         scroll_layout = Qt.QVBoxLayout()
         scroll_layout.addWidget(statement_label)
-        scroll_layout.addStretch(1)
         scroll_layout.addSpacerItem(Qt.QSpacerItem(0, 10))
+        scroll_layout.addWidget(answer_input)
 
         scroll_widget = Qt.QWidget()
         scroll_widget.setLayout(scroll_layout)

@@ -167,8 +167,6 @@ class Application(Qt.QApplication):
         elif question_data['type'] == 'Long':
             if parent.exam_info['state'] == 'Finished':
                 pass
-            elif question_data['score'] is not False:
-                pass
             else:
                 return QuestionLong(parent, self.view_question)
 
