@@ -16,7 +16,7 @@ from start_exam_page import StartExamPage
 from exam_page import ExamPage
 from exam_status import ExamRunning, ExamFinished
 from question_short import QuestionShort, QuestionShortChecked, QuestionShortDetails
-from question_long import QuestionLong
+from question_long import QuestionLong, QuestionLongDetails
 
 
 def safe(function):
@@ -166,9 +166,9 @@ class Application(Qt.QApplication):
                 return QuestionShort(parent, self.check_answer)
         elif question_data['type'] == 'Long':
             if parent.exam_info['state'] == 'Finished':
-                pass
+                return QuestionLongDetails(parent)
             else:
-                return QuestionLong(parent, self.view_question)
+                return QuestionLong(parent, self.check_answer, self.view_question)
 
     @safe
     def check_answer(self, exam, question, answer):

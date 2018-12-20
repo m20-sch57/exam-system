@@ -3,9 +3,9 @@ Student's home page with list of exams.
 """
 
 
-import os
 from PyQt5 import Qt
 from mywidgets import Label
+import common
 
 
 class HomePage(Qt.QWidget):
@@ -27,7 +27,7 @@ class HomePage(Qt.QWidget):
 
         for exam in list_of_exams:
             exam_image = Qt.QLabel()
-            exam_image.setPixmap(Qt.QPixmap(os.path.join('images', 'exam-30x30.png')))
+            exam_image.setPixmap(Qt.QPixmap(common.EXAM30))
             exam_image.setFixedSize(Qt.QSize(30, 30))
 
             exam_label = Label(exam, normal_color='black', hover_color='blue')

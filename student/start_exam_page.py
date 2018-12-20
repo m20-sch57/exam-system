@@ -3,9 +3,9 @@ Page before starting the exam.
 """
 
 
-import os
 from PyQt5 import Qt
 from mywidgets import Pixmap
+import common
 
 
 class StartExamPage(Qt.QWidget):
@@ -21,8 +21,8 @@ class StartExamPage(Qt.QWidget):
             'Прервать выполнение заданий будет невозможно.\n'
             'Вы уверены, что хотите начать экзамен?')
 
-        back_img = Pixmap(normal_pic=Qt.QPixmap(os.path.join('images', 'left-50x50.png')),
-                          hover_pic=Qt.QPixmap(os.path.join('images', 'left-50x50.png')))
+        back_img = Pixmap(normal_pic=Qt.QPixmap(common.LEFT50),
+                          hover_pic=Qt.QPixmap(common.LEFT50))
         back_img.setFixedSize(Qt.QSize(50, 50))
         back_img.clicked.connect(back_function)
 

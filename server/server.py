@@ -48,9 +48,9 @@ def login(group, user, password):
     """
     if not group in os.listdir('root'):
         return False
-    if not user in os.listdir(os.path.join('root', group, 'users')):
+    if not user in os.listdir(os.path.join('root', group, 'students')):
         return False
-    user_item = Item(os.path.join('root', group, 'users', user))
+    user_item = Item(os.path.join('root', group, 'students', user))
     if user_item.get_attr('password') != password:
         return False
     return True
@@ -68,7 +68,7 @@ def get_question(group, user, exam, question):
     Returns the question data.
     """
     question_item = Item(os.path.join('root', group, 'exams', exam, str(question)))
-    answer_item = Item(os.path.join('root', group, 'users', user, exam, str(question)))
+    answer_item = Item(os.path.join('root', group, 'students', user, exam, str(question)))
     if question_item.get_attr('type') == 'Short':
         return {'type': question_item.get_attr('type'),
                 'statement': question_item.get_attr('statement'),
@@ -98,7 +98,7 @@ def get_exam_info(group, user, exam):
     Returns exam's info: start time, duration time, total student's score, total maximum score.
     """
     exam_item = Item(os.path.join('root', group, 'exams', exam, 'settings'))
-    user_item = Item(os.path.join('root', group, 'users', user, exam, 'settings'))
+    user_item = Item(os.path.join('root', group, 'students', user, exam, 'settings'))
     exam_data = get_exam(group, user, exam)
     quantity = len(os.listdir(os.path.join('root', group, 'exams', exam))) - 1
     if user_item.get_attr('start') is False:
@@ -112,7 +112,7 @@ def get_exam_info(group, user, exam):
     for question in range(1, len(exam_data) + 1):
         question_data = exam_data[question - 1]
         if question_data['score'] is not False:
-            total_score += int(question_data['score'])
+            total_score += max(int(question_data['score']), 0)
         if question_data['maxscore'] is not False:
             total_maxscore += int(question_data['maxscore'])
     return {'state': state,
@@ -129,7 +129,7 @@ def start_exam(group, user, exam):
     Starts the exam.
     """
     exam_item = Item(os.path.join('root', group, 'exams', exam, 'settings'))
-    user_item = Item(os.path.join('root', group, 'users', user, exam, 'settings'))
+    user_item = Item(os.path.join('root', group, 'students', user, exam, 'settings'))
     current_time = int(time.time())
     duration_time = int(exam_item.get_attr('duration')) * 60
     user_item.set_attr('start', current_time)
@@ -141,7 +141,7 @@ def finish_exam(group, user, exam):
     """
     Finishes the exam.
     """
-    user_item = Item(os.path.join('root', group, 'users', user, exam, 'settings'))
+    user_item = Item(os.path.join('root', group, 'students', user, exam, 'settings'))
     current_time = int(time.time())
     user_item.set_attr('end', current_time)
     exam_data = get_exam(group, user, exam)
@@ -156,7 +156,7 @@ def save_answer(group, user, exam, question, answer):
     """
     Saves student's answer.
     """
-    answer_item = Item(os.path.join('root', group, 'users', user, exam, str(question)))
+    answer_item = Item(os.path.join('root', group, 'students', user, exam, str(question)))
     answer_item.set_attr('answer', answer)
     return True
 
@@ -166,12 +166,12 @@ def check(group, user, exam, question):
     Checks student's answer to the short question.
     """
     question_item = Item(os.path.join('root', group, 'exams', exam, str(question)))
-    answer_item = Item(os.path.join('root', group, 'users', user, exam, str(question)))
+    answer_item = Item(os.path.join('root', group, 'students', user, exam, str(question)))
     if question_item.get_attr('type') == 'Short':
         answer = answer_item.get_attr('answer')
         correct = question_item.get_attr('correct').split('\n')
         if format_str(answer) in [format_str(s) for s in correct]:
-            answer_item.set_attr('score', 1)
+            answer_item.set_attr('score', question_item.get_attr('maxscore'))
         else:
             answer_item.set_attr('score', 0)
     elif question_item.get_attr('type') == 'Long':

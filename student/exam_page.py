@@ -3,9 +3,9 @@ Page that is displayed when student is passing the exam.
 """
 
 
-import os
 from PyQt5 import Qt
 from mywidgets import Label, Pixmap
+import common
 
 
 class ExamPage(Qt.QWidget):
@@ -19,15 +19,10 @@ class ExamPage(Qt.QWidget):
         self.exam_data = None
         self.exam_info = None
 
-        back_img = Pixmap(normal_pic=Qt.QPixmap(os.path.join('images', 'left-50x50.png')),
-                          hover_pic=Qt.QPixmap(os.path.join('images', 'left-50x50.png')))
+        back_img = Pixmap(normal_pic=Qt.QPixmap(common.LEFT50),
+                          hover_pic=Qt.QPixmap(common.LEFT50))
         back_img.setFixedSize(Qt.QSize(50, 50))
         back_img.clicked.connect(back_function)
-
-        exam_title = Qt.QLabel(exam)
-        exam_title.setFont(Qt.QFont('Arial', 30))
-        exam_title.setAlignment(Qt.Qt.AlignCenter)
-        exam_title.setWordWrap(True)
 
         scroll_area = Qt.QScrollArea()
         scroll_area.setWidgetResizable(True)
@@ -42,6 +37,7 @@ class ExamPage(Qt.QWidget):
         self.questions_layout.setSpacing(0)
 
         scroll_layout = Qt.QHBoxLayout()
+        scroll_layout.addStretch(1)
         scroll_layout.addLayout(self.questions_layout)
         scroll_layout.addStretch(1)
 
@@ -51,12 +47,12 @@ class ExamPage(Qt.QWidget):
 
         upper_layout = Qt.QHBoxLayout()
         upper_layout.addWidget(back_img)
-        upper_layout.addWidget(exam_title)
+        upper_layout.addSpacerItem(Qt.QSpacerItem(10, 0))
+        upper_layout.addWidget(scroll_area)
 
         layout = Qt.QVBoxLayout()
         layout.addLayout(upper_layout)
         layout.addSpacerItem(Qt.QSpacerItem(0, 10))
-        layout.addWidget(scroll_area)
         layout.addWidget(status_widget)
         layout.addWidget(question_widget)
         self.setLayout(layout)
@@ -94,7 +90,9 @@ class ExamPage(Qt.QWidget):
                     'border-color: #99D1FF')
             else:
                 if question_data['score'] is False:
-                    background = 'white'
+                    background = 'white' # not answered
+                elif int(question_data['score']) == -1:
+                    background = '#FFFA95' # not checked
                 elif int(question_data['score']) == int(question_data['maxscore']):
                     background = '#9CFB8E' # correct
                 else:
@@ -106,10 +104,10 @@ class ExamPage(Qt.QWidget):
 
         status_widget = get_exam_status_function(self)
         question_widget = get_question_function(self)
-        old_widget = self.layout().itemAt(4).widget()
+        old_widget = self.layout().itemAt(3).widget()
         old_widget.deleteLater()
         self.layout().removeWidget(old_widget)
-        old_widget = self.layout().itemAt(3).widget()
+        old_widget = self.layout().itemAt(2).widget()
         old_widget.deleteLater()
         self.layout().removeWidget(old_widget)
         self.layout().addWidget(status_widget)
