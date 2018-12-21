@@ -90,13 +90,13 @@ class ExamPage(Qt.QWidget):
                     'border-color: #99D1FF')
             else:
                 if question_data['score'] is False:
-                    background = 'white' # not answered
+                    background = 'white'
                 elif int(question_data['score']) == -1:
-                    background = '#FFFA95' # not checked
+                    background = common.YELLOW2
                 elif int(question_data['score']) == int(question_data['maxscore']):
-                    background = '#9CFB8E' # correct
+                    background = common.GREEN2
                 else:
-                    background = '#F94D51' # incorrect
+                    background = common.RED2
                 question_label.setStyleSheet(
                     'background: ' + background + ';'
                     'border-style: solid;'

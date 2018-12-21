@@ -42,7 +42,7 @@ class QuestionLong(Qt.QWidget):
         save_button.clicked.connect(
             lambda: check_function(parent.exam, parent.question, answer_input.toPlainText()))
 
-        next_label = Label('Далее', normal_color='#2EBACB', hover_color='#2EBACB')
+        next_label = Label('Далее', normal_color=common.BLUE1, hover_color=common.BLUE1)
         next_label.setFont(Qt.QFont('Arial', 30))
         next_label.connect(lambda: view_question_function(parent.exam, parent.question + 1))
 
@@ -82,10 +82,10 @@ class QuestionLong(Qt.QWidget):
         """
         if saved_answer == current_answer:
             self.status_label.setText('Изменения сохранены')
-            self.status_label.setStyleSheet('color: #6FCB36')
+            self.status_label.setStyleSheet('color: ' + common.GREEN1)
         else:
             self.status_label.setText('Сохраните изменения')
-            self.status_label.setStyleSheet('color: #E8DC00')
+            self.status_label.setStyleSheet('color: ' + common.RED1)
 
 
 class QuestionLongDetails(Qt.QWidget):

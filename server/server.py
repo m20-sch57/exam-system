@@ -14,13 +14,13 @@ class Item:
     """
     def __init__(self, path):
         self.path = path
-        if not os.path.exists(path):
-            os.makedirs(path)
 
     def set_attr(self, attr, value):
         """
         Sets value of the attribute.
         """
+        if not os.path.exists(self.path):
+            os.makedirs(self.path)
         open(os.path.join(self.path, attr), 'w', encoding=ENCODING).write(str(value))
 
     def get_attr(self, attr):

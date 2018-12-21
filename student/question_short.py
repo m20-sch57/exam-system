@@ -31,7 +31,7 @@ class QuestionShort(Qt.QWidget):
         answer_input.setFont(Qt.QFont('Arial', 20))
         answer_input.setMinimumWidth(400)
 
-        check_label = Label('Проверить', normal_color='#2EBACB', hover_color='#2EBACB')
+        check_label = Label('Проверить', normal_color=common.BLUE1, hover_color=common.BLUE1)
         check_label.setFont(Qt.QFont('Arial', 30))
         check_label.connect(
             lambda: check_function(parent.exam, parent.question, answer_input.text()))
@@ -98,7 +98,7 @@ class QuestionShortChecked(Qt.QWidget):
         status_img = Qt.QLabel()
         status_img.setPixmap(status['picture'])
 
-        next_label = Label('Далее', normal_color='#2EBACB', hover_color='#2EBACB')
+        next_label = Label('Далее', normal_color=common.BLUE1, hover_color=common.BLUE1)
         next_label.setFont(Qt.QFont('Arial', 30))
         next_label.connect(lambda: view_question_function(parent.exam, parent.question + 1))
 
