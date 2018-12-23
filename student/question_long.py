@@ -4,7 +4,6 @@ Contains all widgets for long question.
 
 
 from PyQt5 import Qt
-from mywidgets import Label, Pixmap
 import common
 
 
@@ -42,24 +41,20 @@ class QuestionLong(Qt.QWidget):
         save_button.clicked.connect(
             lambda: check_function(parent.exam, parent.question, answer_input.toPlainText()))
 
-        next_label = Label('Далее', normal_color=common.BLUE1, hover_color=common.BLUE1)
-        next_label.setFont(Qt.QFont('Arial', 30))
-        next_label.connect(lambda: view_question_function(parent.exam, parent.question + 1))
-
-        next_img = Pixmap(normal_pic=Qt.QPixmap(common.RIGHT50),
-                          hover_pic=Qt.QPixmap(common.RIGHT50))
-        next_img.connect(lambda: view_question_function(parent.exam, parent.question + 1))
+        next_button = Qt.QPushButton('Далее')
+        next_button.setFont(Qt.QFont('Arial', 20))
+        next_button.setMinimumSize(Qt.QSize(130, 50))
+        next_button.clicked.connect(
+            lambda: view_question_function(parent.exam, parent.question + 1))
 
         save_layout = Qt.QHBoxLayout()
-        save_layout.setSpacing(0)
         save_layout.addWidget(save_button)
         save_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         save_layout.addWidget(self.status_label)
         save_layout.addStretch(1)
         if parent.question < len(parent.exam_data):
             save_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
-            save_layout.addWidget(next_label)
-            save_layout.addWidget(next_img)
+            save_layout.addWidget(next_button)
 
         scroll_layout = Qt.QVBoxLayout()
         scroll_layout.addWidget(statement_label)

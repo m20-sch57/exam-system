@@ -4,7 +4,6 @@ Contains all widgets for short question.
 
 
 from PyQt5 import Qt
-from mywidgets import Label, Pixmap
 import common
 
 
@@ -31,25 +30,19 @@ class QuestionShort(Qt.QWidget):
         answer_input.setFont(Qt.QFont('Arial', 20))
         answer_input.setMinimumWidth(400)
 
-        check_label = Label('Проверить', normal_color=common.BLUE1, hover_color=common.BLUE1)
-        check_label.setFont(Qt.QFont('Arial', 30))
-        check_label.connect(
-            lambda: check_function(parent.exam, parent.question, answer_input.text()))
-
-        check_img = Pixmap(normal_pic=Qt.QPixmap(common.RIGHT50),
-                           hover_pic=Qt.QPixmap(common.RIGHT50))
-        check_img.connect(
+        check_button = Qt.QPushButton('Проверить')
+        check_button.setFont(Qt.QFont('Arial', 20))
+        check_button.setMinimumSize(Qt.QSize(170, 50))
+        check_button.clicked.connect(
             lambda: check_function(parent.exam, parent.question, answer_input.text()))
 
         answer_layout = Qt.QHBoxLayout()
-        answer_layout.setSpacing(0)
         answer_layout.addWidget(answer_title)
         answer_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         answer_layout.addWidget(answer_input)
         answer_layout.addStretch(1)
         answer_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
-        answer_layout.addWidget(check_label)
-        answer_layout.addWidget(check_img)
+        answer_layout.addWidget(check_button)
 
         scroll_layout = Qt.QVBoxLayout()
         scroll_layout.addWidget(statement_label)
@@ -91,23 +84,19 @@ class QuestionShortChecked(Qt.QWidget):
         answer_input.setDisabled(True)
         answer_input.setMinimumWidth(400)
         answer_input.setStyleSheet(
-            'border-style: solid;'
             'border-width: 2px;'
             'border-color: ' + status['color'] + ';')
 
         status_img = Qt.QLabel()
         status_img.setPixmap(status['picture'])
 
-        next_label = Label('Далее', normal_color=common.BLUE1, hover_color=common.BLUE1)
-        next_label.setFont(Qt.QFont('Arial', 30))
-        next_label.connect(lambda: view_question_function(parent.exam, parent.question + 1))
-
-        next_img = Pixmap(normal_pic=Qt.QPixmap(common.RIGHT50),
-                          hover_pic=Qt.QPixmap(common.RIGHT50))
-        next_img.connect(lambda: view_question_function(parent.exam, parent.question + 1))
+        next_button = Qt.QPushButton('Далее')
+        next_button.setFont(Qt.QFont('Arial', 20))
+        next_button.setMinimumSize(Qt.QSize(130, 50))
+        next_button.clicked.connect(
+            lambda: view_question_function(parent.exam, parent.question + 1))
 
         answer_layout = Qt.QHBoxLayout()
-        answer_layout.setSpacing(0)
         answer_layout.addWidget(answer_title)
         answer_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         answer_layout.addWidget(answer_input)
@@ -116,8 +105,7 @@ class QuestionShortChecked(Qt.QWidget):
         answer_layout.addStretch(1)
         answer_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         if parent.question < len(parent.exam_data):
-            answer_layout.addWidget(next_label)
-            answer_layout.addWidget(next_img)
+            answer_layout.addWidget(next_button)
 
         scroll_layout = Qt.QVBoxLayout()
         scroll_layout.addWidget(statement_label)

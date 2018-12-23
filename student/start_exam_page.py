@@ -16,10 +16,9 @@ class StartExamPage(Qt.QWidget):
         super().__init__()
         info_str = (
             'Информация об экзамене:\n\n'
-            '    Продолжительность - ' + str(exam_info['duration']) + ' минут\n' +
-            '    Количество заданий - ' + str(exam_info['quantity']) + '\n\n' +
-            'Прервать выполнение заданий будет невозможно.\n'
-            'Вы уверены, что хотите начать экзамен?')
+            'Продолжительность - ' + str(exam_info['duration']) + ' минут\n' +
+            'Количество заданий - ' + str(exam_info['quantity'])
+        )
 
         back_img = Pixmap(normal_pic=Qt.QPixmap(common.LEFT50),
                           hover_pic=Qt.QPixmap(common.LEFT50))
