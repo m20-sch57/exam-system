@@ -4,7 +4,7 @@ Page that is displayed when student is passing the exam.
 
 
 from PyQt5 import Qt
-from mywidgets import Label, Pixmap
+from mywidgets import Pixmap
 import common
 
 
@@ -73,21 +73,23 @@ class ExamPage(Qt.QWidget):
 
         for question in range(1, len(exam_data) + 1):
             question_data = exam_data[question - 1]
-            question_label = Label(str(question))
-            question_label.setFont(Qt.QFont('Arial', 20))
-            question_label.setAlignment(Qt.Qt.AlignCenter)
-            question_label.setFixedSize(Qt.QSize(50, 50))
-            question_label.connect(view_question_function, self.exam, question)
+            question_button = Qt.QPushButton(str(question))
+            question_button.setFont(Qt.QFont('Arial', 20))
+            question_button.setCursor(Qt.Qt.PointingHandCursor)
+            question_button.setFixedSize(Qt.QSize(50, 50))
+            question_button.clicked.connect(
+                common.return_lambda(view_question_function, self.exam, question))
 
-            self.questions_layout.addWidget(question_label)
+            self.questions_layout.addWidget(question_button)
 
             if question == current_question:
-                question_label.setStyleSheet(
+                question_button.setStyleSheet(
                     'color: blue;'
                     'background: #CCE8FF;'
                     'border-style: solid;'
                     'border-width: 1px;'
-                    'border-color: #99D1FF')
+                    'border-color: #99D1FF;'
+                    'border-radius: 5px;')
             else:
                 if question_data['score'] is False:
                     background = 'white'
@@ -97,10 +99,12 @@ class ExamPage(Qt.QWidget):
                     background = common.GREEN2
                 else:
                     background = common.RED2
-                question_label.setStyleSheet(
+                question_button.setStyleSheet(
                     'background: ' + background + ';'
                     'border-style: solid;'
-                    'border-width: 1px')
+                    'border-width: 1px;'
+                    'border-color: grey;'
+                    'border-radius: 5px;')
 
         status_widget = get_exam_status_function(self)
         question_widget = get_question_function(self)

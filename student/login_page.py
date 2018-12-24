@@ -44,7 +44,6 @@ class LoginPage(Qt.QWidget):
 
         enter_button = Qt.QPushButton('Войти в систему')
         enter_button.setFont(Qt.QFont('Arial', 20))
-        enter_button.setMinimumSize(Qt.QSize(250, 50))
         enter_button.clicked.connect(lambda: login_function(
             group_input.text(), user_input.text(), password_input.text(), server_input.text()))
 

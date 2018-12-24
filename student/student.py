@@ -4,6 +4,7 @@ Examiner project, student module.
 
 
 import sys
+import os
 import socket
 import functools
 import hashlib
@@ -40,7 +41,7 @@ class Application(Qt.QApplication):
         super().__init__(sys.argv)
         self.user = User(self)
         self.window = Qt.QWidget()
-        self.window.setStyleSheet(open('style.css').read())
+        self.window.setStyleSheet(open(os.path.join('css', 'style.css')).read())
         self.window.setWindowTitle('Школьник')
         self.window.setGeometry(200, 100, 1000, 700)
         self.widget = Qt.QWidget(self.window)

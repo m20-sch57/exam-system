@@ -4,22 +4,18 @@ Contains all widgets for short question.
 
 
 from PyQt5 import Qt
+from question_base import QuestionBase
 import common
 
 
-class QuestionShort(Qt.QWidget):
+class QuestionShort(QuestionBase):
     """
     Returns widget for short question.
     """
     def __init__(self, parent, check_function):
-        super().__init__()
-        question_data = parent.exam_data[parent.question - 1]
+        super().__init__(parent)
 
-        scroll_area = Qt.QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setFrameShape(Qt.QFrame.NoFrame)
-
-        statement_label = Qt.QLabel(question_data['statement'])
+        statement_label = Qt.QLabel(self.question_data['statement'])
         statement_label.setFont(Qt.QFont('Arial', 20))
         statement_label.setWordWrap(True)
 
@@ -32,7 +28,6 @@ class QuestionShort(Qt.QWidget):
 
         check_button = Qt.QPushButton('Проверить')
         check_button.setFont(Qt.QFont('Arial', 20))
-        check_button.setMinimumSize(Qt.QSize(170, 50))
         check_button.clicked.connect(
             lambda: check_function(parent.exam, parent.question, answer_input.text()))
 
@@ -44,42 +39,28 @@ class QuestionShort(Qt.QWidget):
         answer_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         answer_layout.addWidget(check_button)
 
-        scroll_layout = Qt.QVBoxLayout()
-        scroll_layout.addWidget(statement_label)
-        scroll_layout.addStretch(1)
-        scroll_layout.addSpacerItem(Qt.QSpacerItem(0, 10))
-        scroll_layout.addLayout(answer_layout)
-
-        scroll_widget = Qt.QWidget()
-        scroll_widget.setLayout(scroll_layout)
-        scroll_area.setWidget(scroll_widget)
-
-        layout = Qt.QVBoxLayout()
-        layout.addWidget(scroll_area)
-        self.setLayout(layout)
+        self.layout.addWidget(statement_label)
+        self.layout.addStretch(1)
+        self.layout.addSpacerItem(Qt.QSpacerItem(0, 10))
+        self.layout.addLayout(answer_layout)
 
 
-class QuestionShortChecked(Qt.QWidget):
+class QuestionShortChecked(QuestionBase):
     """
     Returns widget for checked short question.
     """
     def __init__(self, parent, view_question_function):
-        super().__init__()
-        question_data = parent.exam_data[parent.question - 1]
-        status = common.get_status(question_data['score'], question_data['maxscore'])
+        super().__init__(parent)
+        status = common.get_status(self.question_data['score'], self.question_data['maxscore'])
 
-        scroll_area = Qt.QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setFrameShape(Qt.QFrame.NoFrame)
-
-        statement_label = Qt.QLabel(question_data['statement'])
+        statement_label = Qt.QLabel(self.question_data['statement'])
         statement_label.setFont(Qt.QFont('Arial', 20))
         statement_label.setWordWrap(True)
 
         answer_title = Qt.QLabel('Ответ:')
         answer_title.setFont(Qt.QFont('Arial', 30))
 
-        answer_input = Qt.QLineEdit(question_data['answer'])
+        answer_input = Qt.QLineEdit(self.question_data['answer'])
         answer_input.setFont(Qt.QFont('Arial', 20))
         answer_input.setDisabled(True)
         answer_input.setMinimumWidth(400)
@@ -92,7 +73,6 @@ class QuestionShortChecked(Qt.QWidget):
 
         next_button = Qt.QPushButton('Далее')
         next_button.setFont(Qt.QFont('Arial', 20))
-        next_button.setMinimumSize(Qt.QSize(130, 50))
         next_button.clicked.connect(
             lambda: view_question_function(parent.exam, parent.question + 1))
 
@@ -107,38 +87,28 @@ class QuestionShortChecked(Qt.QWidget):
         if parent.question < len(parent.exam_data):
             answer_layout.addWidget(next_button)
 
-        scroll_layout = Qt.QVBoxLayout()
-        scroll_layout.addWidget(statement_label)
-        scroll_layout.addStretch(1)
-        scroll_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        scroll_layout.addLayout(answer_layout)
-
-        scroll_widget = Qt.QWidget()
-        scroll_widget.setLayout(scroll_layout)
-        scroll_area.setWidget(scroll_widget)
-
-        layout = Qt.QVBoxLayout()
-        layout.addWidget(scroll_area)
-        self.setLayout(layout)
+        self.layout.addWidget(statement_label)
+        self.layout.addStretch(1)
+        self.layout.addSpacerItem(Qt.QSpacerItem(0, 20))
+        self.layout.addLayout(answer_layout)
 
 
-class QuestionShortDetails(Qt.QWidget):
+class QuestionShortDetails(QuestionBase):
     """
     Returns widget for details of short question.
     """
     def __init__(self, parent):
-        super().__init__()
-        question_data = parent.exam_data[parent.question - 1]
-        current_answer = question_data['answer'] if question_data['answer'] is not False else ''
-        correct_answer = question_data['correct'].replace('\n', '; ')
-        current_score = question_data['score'] if question_data['score'] is not False else '0'
-        status = common.get_status(current_score, question_data['maxscore'])
+        super().__init__(parent)
+        current_answer = self.question_data['answer']
+        if current_answer is False:
+            current_answer = ''
+        correct_answer = self.question_data['correct'].replace('\n', '; ')
+        current_score = self.question_data['score']
+        if current_score is False:
+            current_score = '0'
+        status = common.get_status(current_score, self.question_data['maxscore'])
 
-        scroll_area = Qt.QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setFrameShape(Qt.QFrame.NoFrame)
-
-        statement_label = Qt.QLabel(question_data['statement'])
+        statement_label = Qt.QLabel(self.question_data['statement'])
         statement_label.setFont(Qt.QFont('Arial', 20))
         statement_label.setWordWrap(True)
 
@@ -146,7 +116,7 @@ class QuestionShortDetails(Qt.QWidget):
         score_title.setFont(Qt.QFont('Arial', 25))
         score_title.setFixedWidth(300)
 
-        score_label = Qt.QLabel(current_score + ' (' + question_data['maxscore'] + ')')
+        score_label = Qt.QLabel(current_score + ' (' + self.question_data['maxscore'] + ')')
         score_label.setFont(Qt.QFont('Arial', 20))
         score_label.setStyleSheet('color: ' + status['color'])
 
@@ -182,20 +152,11 @@ class QuestionShortDetails(Qt.QWidget):
         correct_answer_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         correct_answer_layout.addWidget(correct_answer_label)
 
-        scroll_layout = Qt.QVBoxLayout()
-        scroll_layout.addWidget(statement_label)
-        scroll_layout.addStretch(1)
-        scroll_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        scroll_layout.addLayout(score_layout)
-        scroll_layout.addSpacerItem(Qt.QSpacerItem(0, 10))
-        scroll_layout.addLayout(your_answer_layout)
-        scroll_layout.addSpacerItem(Qt.QSpacerItem(0, 10))
-        scroll_layout.addLayout(correct_answer_layout)
-
-        scroll_widget = Qt.QWidget()
-        scroll_widget.setLayout(scroll_layout)
-        scroll_area.setWidget(scroll_widget)
-
-        layout = Qt.QVBoxLayout()
-        layout.addWidget(scroll_area)
-        self.setLayout(layout)
+        self.layout.addWidget(statement_label)
+        self.layout.addStretch(1)
+        self.layout.addSpacerItem(Qt.QSpacerItem(0, 20))
+        self.layout.addLayout(score_layout)
+        self.layout.addSpacerItem(Qt.QSpacerItem(0, 10))
+        self.layout.addLayout(your_answer_layout)
+        self.layout.addSpacerItem(Qt.QSpacerItem(0, 10))
+        self.layout.addLayout(correct_answer_layout)

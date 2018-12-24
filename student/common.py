@@ -7,6 +7,13 @@ import os
 from PyQt5 import Qt
 
 
+def return_lambda(function, *args, **kwargs):
+    """
+    Returns lambda: function(*args, **kwargs)
+    """
+    return lambda: function(*args, **kwargs)
+
+
 def get_status(score, maxscore):
     """
     Returns color and picture depending on the result.
