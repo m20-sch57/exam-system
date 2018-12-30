@@ -14,29 +14,45 @@ def return_lambda(function, *args, **kwargs):
     return lambda: function(*args, **kwargs)
 
 
-def get_status(score, maxscore):
+def get_question_style(question_data, question=None, current_question=None):
     """
-    Returns color and picture depending on the result.
+    Returns style of current question depending on the result.
     """
-    if score == 'Неизв.':
-        return {'color': YELLOW1}
-    elif score == maxscore:
-        return {'color': GREEN1,
-                'picture': Qt.QPixmap(TICK50)}
+    background_color = 'white'
+    foreground_color = 'black'
+    border_color = 'grey'
+    if question_data['score'] == '-1':
+        main_color = YELLOW
+        main_picture = None
+        background_color = '#FFFA95'
+    elif question_data['score'] == question_data['maxscore']:
+        main_color = GREEN
+        main_picture = Qt.QPixmap(TICK)
+        background_color = '#9CFB8E'
     else:
-        return {'color': RED1,
-                'picture': Qt.QPixmap(CROSS50)}
+        main_color = RED
+        main_picture = Qt.QPixmap(CROSS)
+        background_color = '#F94D51'
+    if question_data['score'] is False:
+        background_color = 'white'
+    if question == current_question:
+        foreground_color = 'blue'
+        background_color = '#CCE8FF'
+        border_color = '#99D1FF'
+    return {
+        'background_color': background_color,
+        'foreground_color': foreground_color,
+        'border_color': border_color,
+        'main_color': main_color,
+        'main_picture': main_picture
+    }
 
 
-GREEN1 = '#6FCB36'
-GREEN2 = '#9CFB8E'
-YELLOW1 = '#E8DC00'
-YELLOW2 = '#FFFA95'
-RED1 = '#F10608'
-RED2 = '#F94D51'
-BLUE1 = '#2EBACB'
-LEFT50 = os.path.join('images', 'left-50x50.png')
-RIGHT50 = os.path.join('images', 'right-50x50.png')
-TICK50 = os.path.join('images', 'tick-50x50.png')
-CROSS50 = os.path.join('images', 'cross-50x50.png')
+GREEN = '#6DC180'
+RED = '#FF6643'
+YELLOW = '#FFDB2D'
 EXAM30 = os.path.join('images', 'exam-30x30.png')
+LEFT = os.path.join('images', 'left.png')
+TICK = os.path.join('images', 'tick.png')
+CROSS = os.path.join('images', 'cross.png')
+SETTINGS = os.path.join('images', 'settings.png')

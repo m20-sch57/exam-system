@@ -26,7 +26,6 @@ class QuestionLong(QuestionBase):
         self.status_label.setFont(Qt.QFont('Arial', 20))
 
         answer_input = Qt.QPlainTextEdit()
-        answer_input.setFont(Qt.QFont('Arial', 20))
         answer_input.setPlainText(answer)
         answer_input.textChanged.connect(
             lambda: self.update_saved_status(answer, answer_input.toPlainText()))
@@ -34,12 +33,10 @@ class QuestionLong(QuestionBase):
             self.update_saved_status(answer, answer_input.toPlainText())
 
         save_button = Qt.QPushButton('Сохранить')
-        save_button.setFont(Qt.QFont('Arial', 20))
         save_button.clicked.connect(
             lambda: check_function(parent.exam, parent.question, answer_input.toPlainText()))
 
         next_button = Qt.QPushButton('Далее')
-        next_button.setFont(Qt.QFont('Arial', 20))
         next_button.clicked.connect(
             lambda: view_question_function(parent.exam, parent.question + 1))
 
@@ -64,10 +61,10 @@ class QuestionLong(QuestionBase):
         """
         if saved_answer == current_answer:
             self.status_label.setText('Изменения сохранены')
-            self.status_label.setStyleSheet('color: ' + common.GREEN1)
+            self.status_label.setStyleSheet('color: ' + common.GREEN)
         else:
             self.status_label.setText('Сохраните изменения')
-            self.status_label.setStyleSheet('color: ' + common.RED1)
+            self.status_label.setStyleSheet('color: ' + common.RED)
 
 
 class QuestionLongDetails(QuestionBase):
@@ -84,14 +81,13 @@ class QuestionLongDetails(QuestionBase):
             current_score = '0'
         if current_score == '-1':
             current_score = 'Неизв.'
-        status = common.get_status(current_score, self.question_data['maxscore'])
+        question_style = common.get_question_style(self.question_data)
 
         statement_label = Qt.QLabel(self.question_data['statement'])
         statement_label.setFont(Qt.QFont('Arial', 20))
         statement_label.setWordWrap(True)
 
         answer_input = Qt.QPlainTextEdit()
-        answer_input.setFont(Qt.QFont('Arial', 20))
         answer_input.setPlainText(current_answer)
         answer_input.setDisabled(True)
 
@@ -101,7 +97,7 @@ class QuestionLongDetails(QuestionBase):
 
         score_label = Qt.QLabel(current_score + ' (' + self.question_data['maxscore'] + ')')
         score_label.setFont(Qt.QFont('Arial', 20))
-        score_label.setStyleSheet('color: ' + status['color'])
+        score_label.setStyleSheet('color: ' + question_style['main_color'])
 
         score_layout = Qt.QHBoxLayout()
         score_layout.addWidget(score_title)

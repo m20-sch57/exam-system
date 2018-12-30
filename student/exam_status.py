@@ -16,7 +16,6 @@ class ExamRunning(Qt.QWidget):
         super().__init__()
 
         finish_button = Qt.QPushButton('Закончить экзамен')
-        finish_button.setFont(Qt.QFont('Arial', 20))
         finish_button.setMinimumSize(Qt.QSize(270, 50))
         finish_button.clicked.connect(lambda: finish_function(parent.exam))
 

@@ -7,11 +7,12 @@ import sys
 import os
 import socket
 import functools
-import hashlib
 
 from user import User
 from PyQt5 import Qt
+from settings_page import SettingsPage
 from login_page import LoginPage
+from register_page import RegisterPage
 from home_page import HomePage
 from start_exam_page import StartExamPage
 from exam_page import ExamPage
@@ -29,7 +30,8 @@ def safe(function):
         try:
             return function(self, *args, **kwargs)
         except socket.error:
-            self.display_login_page('Сервер не отвечает')
+            self.display_settings_page(self.display_login_page)
+            self.widget.set_failed_state()
     return result
 
 
@@ -39,9 +41,9 @@ class Application(Qt.QApplication):
     """
     def __init__(self):
         super().__init__(sys.argv)
-        self.user = User(self)
+        self.user = User()
         self.window = Qt.QWidget()
-        self.window.setStyleSheet(open(os.path.join('css', 'style.css')).read())
+        self.window.setStyleSheet(open(os.path.join('css', 'common_style.css')).read())
         self.window.setWindowTitle('Школьник')
         self.window.setGeometry(200, 100, 1000, 700)
         self.widget = Qt.QWidget(self.window)
@@ -63,15 +65,74 @@ class Application(Qt.QApplication):
         """
         Starts application.
         """
-        self.display_login_page('')
+        self.display_login_page()
         self.exit(self.exec_())
 
     @safe
-    def display_login_page(self, status):
+    def save_ip(self, ip_address):
+        """
+        Saves ip-address of server.
+        """
+        self.widget.set_waiting_state()
+        self.user.update_ip(ip_address)
+        self.user.ping()
+        self.widget.set_succeeded_state()
+
+    def display_login_page(self):
         """
         Displays login page for student.
         """
-        self.display_widget(LoginPage(self.user, self.user.read_ip(), status, self.login))
+        self.display_widget(LoginPage(
+            self.user, self.login, self.display_register_page,
+            lambda: self.display_settings_page(self.display_login_page)))
+
+    def display_register_page(self):
+        """
+        Displays register page for student.
+        """
+        self.display_widget(RegisterPage(
+            self.user, self.register, self.display_login_page,
+            lambda: self.display_settings_page(self.display_register_page)))
+
+    def display_settings_page(self, back_function):
+        """
+        Displays server error page.
+        """
+        self.display_widget(SettingsPage(
+            self.user.read_ip(), self.save_ip, back_function))
+
+    @safe
+    def register(self):
+        """
+        Tries to register the student.
+        """
+        self.widget.set_waiting_state()
+        success = self.user.register()
+        if not success:
+            self.widget.set_failed_state()
+        else:
+            self.user.clear_user_info()
+            self.widget.set_succeeded_state()
+
+    @safe
+    def login(self):
+        """
+        Tries to login the student.
+        """
+        self.widget.set_waiting_state()
+        success = self.user.login()
+        if not success:
+            self.widget.set_failed_state()
+        else:
+            self.display_home_page()
+
+    @safe
+    def logout(self):
+        """
+        Logs out the student.
+        """
+        self.user.clear_user_info()
+        self.display_login_page()
 
     @safe
     def display_home_page(self):
@@ -79,7 +140,7 @@ class Application(Qt.QApplication):
         Displays home page with list of exams.
         """
         list_of_exams = self.user.list_of_exams()
-        self.display_widget(HomePage(self.user, list_of_exams, self.display_exam))
+        self.display_widget(HomePage(self.user, list_of_exams, self.display_exam, self.logout))
 
     @safe
     def display_start_exam_page(self, exam):
@@ -88,21 +149,6 @@ class Application(Qt.QApplication):
         """
         exam_info = self.user.get_exam_info(exam)
         self.display_widget(StartExamPage(exam, exam_info, self.display_home_page, self.start_exam))
-
-    @safe
-    def login(self, group, user, password, ip_address):
-        """
-        Tries to login the student.
-        """
-        self.widget.set_waiting_state()
-        password = hashlib.sha1(password.encode('utf-8')).hexdigest()
-        self.user.update_user_info(group, user, password)
-        self.user.update_ip(ip_address)
-        success = self.user.login()
-        if not success:
-            self.display_login_page('Попробуйте ещё раз')
-            return
-        self.display_home_page()
 
     @safe
     def start_exam(self, exam):

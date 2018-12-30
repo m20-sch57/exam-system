@@ -5,6 +5,7 @@ Safe connection to server.
 
 import os
 import socket
+import hashlib
 from xmlrpc.client import ServerProxy
 
 
@@ -12,12 +13,12 @@ class User:
     """
     Safe connection to server.
     """
-    def __init__(self, application):
-        self.application = application
-        self.server = None
-        self.group = ''
-        self.user = ''
-        self.password = ''
+    def __init__(self):
+        ip_address = open(os.path.join('client', 'server.txt'), encoding='utf-8-sig').read()
+        self.server = ServerProxy('http://' + ip_address + ':8000')
+        self.group = 'M20 История'
+        self.user = 'Фёдор Куянов'
+        self.password = '12345'
 
     def update_user_info(self, group, user, password):
         """
@@ -26,6 +27,14 @@ class User:
         self.group = group
         self.user = user
         self.password = password
+
+    def clear_user_info(self):
+        """
+        Clears client's data: group, user, password.
+        """
+        self.group = ''
+        self.user = ''
+        self.password = ''
 
     @staticmethod
     def read_ip():
@@ -41,11 +50,18 @@ class User:
         open(os.path.join('client', 'server.txt'), 'w', encoding='utf-8-sig').write(ip_address)
         self.server = ServerProxy('http://' + ip_address + ':8000')
 
+    def ping(self):
+        """
+        Checks if server is available.
+        """
+        self.server.ping()
+
     def login(self):
         """
         Tries to login the student.
         """
-        return self.server.login(self.group, self.user, self.password)
+        password_hash = hashlib.sha1(self.password.encode('utf-8')).hexdigest()
+        return self.server.login(self.group, self.user, password_hash)
 
     def list_of_exams(self):
         """

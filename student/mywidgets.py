@@ -2,53 +2,17 @@
 Contains my widgets.
 """
 
-from PyQt5.Qt import Qt, QLabel, QPixmap, pyqtSignal, QTimer
+
+from PyQt5 import Qt
 
 
-class Label(QLabel):
+class FlatButton(Qt.QPushButton):
     """
-    Link with text.
+    Link with text and picture.
     """
-    clicked = pyqtSignal()
-    def __init__(self, text, normal_color=None, hover_color=None):
-        super().__init__(text)
-        self.setCursor(Qt.PointingHandCursor)
-        self.normal_color = normal_color
-        self.hover_color = hover_color
-        self.mousePressEvent = lambda event: self.clicked.emit()
-        if normal_color is not None:
-            self.setStyleSheet('color: ' + normal_color)
-            self.leaveEvent = lambda event: self.setStyleSheet('color: ' + self.normal_color)
-        if hover_color is not None:
-            self.enterEvent = lambda event: self.setStyleSheet('color: ' + self.hover_color)
-
-    def connect(self, function, *args, **kwargs):
-        """
-        Connects mouse press event to the function.
-        """
-        self.clicked.connect(lambda: function(*args, **kwargs))
-
-
-class Pixmap(QLabel):
-    """
-    Link with image.
-    """
-    clicked = pyqtSignal()
-    def __init__(self, normal_pic, hover_pic):
-        super().__init__()
-        self.setCursor(Qt.PointingHandCursor)
-        self.setPixmap(QPixmap(normal_pic))
-        self.normal_pic = normal_pic
-        self.hover_pic = hover_pic
-        self.mousePressEvent = lambda event: self.clicked.emit()
-        self.enterEvent = lambda event: self.setPixmap(self.hover_pic)
-        self.leaveEvent = lambda event: self.setPixmap(self.normal_pic)
-
-    def connect(self, function):
-        """
-        Connects mouse press event to the function.
-        """
-        self.clicked.connect(function)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setCursor(Qt.Qt.PointingHandCursor)
 
 
 class Timer:
@@ -86,7 +50,7 @@ class Timer:
             self.timer_label.setText('%02d:%02d:%02d' % (hours, minutes, seconds))
             if self.current_time <= 10:
                 self.timer_label.setStyleSheet('color: red')
-            QTimer().singleShot(1000, lambda: self.update(func))
+            Qt.QTimer().singleShot(1000, lambda: self.update(func))
         except RuntimeError:
             return
 

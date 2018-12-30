@@ -4,7 +4,7 @@ Page that is displayed when student is passing the exam.
 
 
 from PyQt5 import Qt
-from mywidgets import Pixmap
+from mywidgets import FlatButton
 import common
 
 
@@ -19,10 +19,10 @@ class ExamPage(Qt.QWidget):
         self.exam_data = None
         self.exam_info = None
 
-        back_img = Pixmap(normal_pic=Qt.QPixmap(common.LEFT50),
-                          hover_pic=Qt.QPixmap(common.LEFT50))
-        back_img.setFixedSize(Qt.QSize(50, 50))
-        back_img.clicked.connect(back_function)
+        back_button = FlatButton(Qt.QIcon(common.LEFT), '')
+        back_button.setIconSize(Qt.QSize(40, 40))
+        back_button.setFixedSize(back_button.sizeHint())
+        back_button.clicked.connect(lambda arg: back_function())
 
         scroll_area = Qt.QScrollArea()
         scroll_area.setWidgetResizable(True)
@@ -46,7 +46,7 @@ class ExamPage(Qt.QWidget):
         scroll_area.setWidget(scroll_widget)
 
         upper_layout = Qt.QHBoxLayout()
-        upper_layout.addWidget(back_img)
+        upper_layout.addWidget(back_button)
         upper_layout.addSpacerItem(Qt.QSpacerItem(10, 0))
         upper_layout.addWidget(scroll_area)
 
@@ -74,37 +74,22 @@ class ExamPage(Qt.QWidget):
         for question in range(1, len(exam_data) + 1):
             question_data = exam_data[question - 1]
             question_button = Qt.QPushButton(str(question))
-            question_button.setFont(Qt.QFont('Arial', 20))
             question_button.setCursor(Qt.Qt.PointingHandCursor)
             question_button.setFixedSize(Qt.QSize(50, 50))
             question_button.clicked.connect(
                 common.return_lambda(view_question_function, self.exam, question))
-
             self.questions_layout.addWidget(question_button)
 
-            if question == current_question:
-                question_button.setStyleSheet(
-                    'color: blue;'
-                    'background: #CCE8FF;'
-                    'border-style: solid;'
-                    'border-width: 1px;'
-                    'border-color: #99D1FF;'
-                    'border-radius: 5px;')
-            else:
-                if question_data['score'] is False:
-                    background = 'white'
-                elif int(question_data['score']) == -1:
-                    background = common.YELLOW2
-                elif int(question_data['score']) == int(question_data['maxscore']):
-                    background = common.GREEN2
-                else:
-                    background = common.RED2
-                question_button.setStyleSheet(
-                    'background: ' + background + ';'
-                    'border-style: solid;'
-                    'border-width: 1px;'
-                    'border-color: grey;'
-                    'border-radius: 5px;')
+            current_style = common.get_question_style(question_data, question, current_question)
+            question_button.setStyleSheet(
+                'color: ' + current_style['foreground_color'] + ';'
+                'background: ' + current_style['background_color'] + ';'
+                'border-style: solid;'
+                'border-width: 1px;'
+                'border-color: ' + current_style['border_color'] + ';'
+                'border-radius: 5px;'
+                'padding: 5px;'
+            )
 
         status_widget = get_exam_status_function(self)
         question_widget = get_question_function(self)

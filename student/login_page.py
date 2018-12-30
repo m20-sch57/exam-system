@@ -4,13 +4,15 @@ Login page for student.
 
 
 from PyQt5 import Qt
+from mywidgets import FlatButton
+import common
 
 
 class LoginPage(Qt.QWidget):
     """
     Login page for student.
     """
-    def __init__(self, user, current_ip, status, login_function):
+    def __init__(self, user, login_function, register_function, settings_function):
         super().__init__()
 
         enter_title = Qt.QLabel('Вход в систему')
@@ -21,44 +23,41 @@ class LoginPage(Qt.QWidget):
         group_title.setFont(Qt.QFont('Arial', 20))
 
         group_input = Qt.QLineEdit(user.group)
-        group_input.setFont(Qt.QFont('Arial', 20))
         group_input.setMinimumWidth(400)
-        group_input.setText('M20 История') # TODO: REMOVE THEN!
+        group_input.textChanged.connect(lambda: user.update_user_info(
+            group_input.text(), user_input.text(), password_input.text()))
 
         user_title = Qt.QLabel('Логин:')
         user_title.setFont(Qt.QFont('Arial', 20))
 
         user_input = Qt.QLineEdit(user.user)
-        user_input.setFont(Qt.QFont('Arial', 20))
         user_input.setMinimumWidth(400)
-        user_input.setText('Фёдор Куянов') # TODO: REMOVE THEN!
+        user_input.textChanged.connect(lambda: user.update_user_info(
+            group_input.text(), user_input.text(), password_input.text()))
 
         password_title = Qt.QLabel('Пароль:')
         password_title.setFont(Qt.QFont('Arial', 20))
 
         password_input = Qt.QLineEdit(user.password)
-        password_input.setFont(Qt.QFont('Arial', 20))
         password_input.setMinimumWidth(400)
         password_input.setEchoMode(Qt.QLineEdit.Password)
-        password_input.setText('12345') # TODO: REMOVE THEN!
+        password_input.textChanged.connect(lambda: user.update_user_info(
+            group_input.text(), user_input.text(), password_input.text()))
 
         enter_button = Qt.QPushButton('Войти в систему')
-        enter_button.setFont(Qt.QFont('Arial', 20))
-        enter_button.clicked.connect(lambda: login_function(
-            group_input.text(), user_input.text(), password_input.text(), server_input.text()))
+        enter_button.clicked.connect(lambda arg: login_function())
 
-        self.status_label = Qt.QLabel(status)
+        self.status_label = Qt.QLabel('')
         self.status_label.setFont(Qt.QFont('Arial', 20))
         self.status_label.setMinimumWidth(270)
-        self.status_label.setStyleSheet('color: red')
 
-        server_title = Qt.QLabel('IP-адрес сервера:')
-        server_title.setFont(Qt.QFont('Arial', 15))
+        settings_button = FlatButton(Qt.QIcon(common.SETTINGS), '')
+        settings_button.setIconSize(Qt.QSize(40, 40))
+        settings_button.clicked.connect(lambda arg: settings_function())
 
-        server_input = Qt.QLineEdit(current_ip)
-        server_input.setFont(Qt.QFont('Arial', 15))
-        server_input.setMinimumWidth(300)
-        server_input.setStyleSheet('background: #F0F0F0')
+        register_button = FlatButton('Регистрация')
+        register_button.clicked.connect(lambda arg: register_function())
+        register_button.setStyleSheet('color: #546A74')
 
         title_layout = Qt.QVBoxLayout()
         title_layout.addWidget(group_title)
@@ -88,12 +87,10 @@ class LoginPage(Qt.QWidget):
         button_layout.addWidget(self.status_label)
         button_layout.addStretch(1)
 
-        server_layout = Qt.QHBoxLayout()
-        server_layout.addStretch(1)
-        server_layout.addWidget(server_title)
-        server_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
-        server_layout.addWidget(server_input)
-        server_layout.addStretch(1)
+        lower_layout = Qt.QHBoxLayout()
+        lower_layout.addWidget(settings_button)
+        lower_layout.addStretch(1)
+        lower_layout.addWidget(register_button)
 
         layout = Qt.QVBoxLayout()
         layout.addWidget(enter_title)
@@ -102,14 +99,22 @@ class LoginPage(Qt.QWidget):
         layout.addSpacerItem(Qt.QSpacerItem(0, 60))
         layout.addLayout(button_layout)
         layout.addStretch(1)
-        layout.addLayout(server_layout)
+        layout.addLayout(lower_layout)
         self.setLayout(layout)
 
     def set_waiting_state(self):
         """
-        Sets state to waiting.
+        Sets waiting state.
         """
         self.setCursor(Qt.Qt.WaitCursor)
         self.status_label.setText('Подождите...')
         self.status_label.setStyleSheet('color: black')
         self.status_label.repaint()
+
+    def set_failed_state(self):
+        """
+        Sets failed state.
+        """
+        self.setCursor(Qt.Qt.ArrowCursor)
+        self.status_label.setText('Попробуйте ещё раз')
+        self.status_label.setStyleSheet('color: red')

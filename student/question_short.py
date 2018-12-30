@@ -23,11 +23,9 @@ class QuestionShort(QuestionBase):
         answer_title.setFont(Qt.QFont('Arial', 30))
 
         answer_input = Qt.QLineEdit()
-        answer_input.setFont(Qt.QFont('Arial', 20))
         answer_input.setMinimumWidth(400)
 
         check_button = Qt.QPushButton('Проверить')
-        check_button.setFont(Qt.QFont('Arial', 20))
         check_button.clicked.connect(
             lambda: check_function(parent.exam, parent.question, answer_input.text()))
 
@@ -51,7 +49,7 @@ class QuestionShortChecked(QuestionBase):
     """
     def __init__(self, parent, view_question_function):
         super().__init__(parent)
-        status = common.get_status(self.question_data['score'], self.question_data['maxscore'])
+        question_style = common.get_question_style(self.question_data)
 
         statement_label = Qt.QLabel(self.question_data['statement'])
         statement_label.setFont(Qt.QFont('Arial', 20))
@@ -61,18 +59,19 @@ class QuestionShortChecked(QuestionBase):
         answer_title.setFont(Qt.QFont('Arial', 30))
 
         answer_input = Qt.QLineEdit(self.question_data['answer'])
-        answer_input.setFont(Qt.QFont('Arial', 20))
         answer_input.setDisabled(True)
         answer_input.setMinimumWidth(400)
         answer_input.setStyleSheet(
             'border-width: 2px;'
-            'border-color: ' + status['color'] + ';')
+            'border-color: ' + question_style['main_color'] + ';'
+        )
 
         status_img = Qt.QLabel()
-        status_img.setPixmap(status['picture'])
+        status_img.setScaledContents(True)
+        status_img.setPixmap(question_style['main_picture'])
+        status_img.setFixedSize(Qt.QSize(50, 50))
 
         next_button = Qt.QPushButton('Далее')
-        next_button.setFont(Qt.QFont('Arial', 20))
         next_button.clicked.connect(
             lambda: view_question_function(parent.exam, parent.question + 1))
 
@@ -106,7 +105,7 @@ class QuestionShortDetails(QuestionBase):
         current_score = self.question_data['score']
         if current_score is False:
             current_score = '0'
-        status = common.get_status(current_score, self.question_data['maxscore'])
+        question_style = common.get_question_style(self.question_data)
 
         statement_label = Qt.QLabel(self.question_data['statement'])
         statement_label.setFont(Qt.QFont('Arial', 20))
@@ -118,7 +117,7 @@ class QuestionShortDetails(QuestionBase):
 
         score_label = Qt.QLabel(current_score + ' (' + self.question_data['maxscore'] + ')')
         score_label.setFont(Qt.QFont('Arial', 20))
-        score_label.setStyleSheet('color: ' + status['color'])
+        score_label.setStyleSheet('color: ' + question_style['main_color'])
 
         your_answer_title = Qt.QLabel('Ваш ответ:')
         your_answer_title.setFont(Qt.QFont('Arial', 25))
