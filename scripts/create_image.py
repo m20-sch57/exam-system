@@ -10,6 +10,6 @@ height = img.size[1]
 pix = img.load()
 for i in range(width):
     for j in range(height):
-        if abs(pix[i, j][0] - 0) < c and abs(pix[i, j][1] - 0) < c and abs(pix[i, j][2] - 0) < c:
+        if abs(pix[i, j][0] - 250) < c and abs(pix[i, j][1] - 250) < c and abs(pix[i, j][2] - 250) < c:
             pix[i, j] = (pix[i, j][0], pix[i, j][1], pix[i, j][2], 0)
 img.save(t)

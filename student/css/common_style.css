@@ -43,3 +43,13 @@ QPlainTextEdit, QLineEdit {
 QPlainTextEdit:focus, QLineEdit:focus {
     border-color: #99D1FF;
 }
+QCheckBox::indicator {
+    width: 30px;
+    height: 30px;
+}
+QCheckBox::indicator:unchecked {
+    image: url(images/blank.png);
+}
+QCheckBox::indicator:checked {
+    image: url(images/checked.png);
+}

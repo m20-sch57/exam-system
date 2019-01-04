@@ -12,7 +12,7 @@ class RegisterPage(Qt.QWidget):
     """
     Registration page for student.
     """
-    def __init__(self, user, register_function, login_function, settings_function):
+    def __init__(self, register_function, login_function, settings_function):
         super().__init__()
 
         register_title = Qt.QLabel('Регистрация')
@@ -22,39 +22,36 @@ class RegisterPage(Qt.QWidget):
         group_title = Qt.QLabel('Название группы:')
         group_title.setFont(Qt.QFont('Arial', 20))
 
-        group_input = Qt.QLineEdit(user.group)
+        group_input = Qt.QLineEdit()
         group_input.setMinimumWidth(400)
-        group_input.textChanged.connect(lambda: user.update_user_info(
-            group_input.text(), user_input.text(), password_input.text()))
 
         user_title = Qt.QLabel('Ваш логин:')
         user_title.setFont(Qt.QFont('Arial', 20))
 
-        user_input = Qt.QLineEdit(user.user)
+        user_input = Qt.QLineEdit()
         user_input.setMinimumWidth(400)
-        user_input.textChanged.connect(lambda: user.update_user_info(
-            group_input.text(), user_input.text(), password_input.text()))
 
         password_title = Qt.QLabel('Придумайте пароль:')
         password_title.setFont(Qt.QFont('Arial', 20))
 
-        password_input = Qt.QLineEdit(user.password)
-        password_input.setMinimumWidth(400)
-        password_input.setEchoMode(Qt.QLineEdit.Password)
-        password_input.textChanged.connect(lambda: user.update_user_info(
-            group_input.text(), user_input.text(), password_input.text()))
+        self.password_input = Qt.QLineEdit()
+        self.password_input.setMinimumWidth(400)
+        self.password_input.setEchoMode(Qt.QLineEdit.Password)
+        self.password_input.textChanged.connect(self.update_button_state)
 
         repeat_title = Qt.QLabel('Повторите пароль:')
         repeat_title.setFont(Qt.QFont('Arial', 20))
 
-        repeat_input = Qt.QLineEdit()
-        repeat_input.setMinimumWidth(400)
-        repeat_input.setEchoMode(Qt.QLineEdit.Password)
+        self.repeat_input = Qt.QLineEdit()
+        self.repeat_input.setMinimumWidth(400)
+        self.repeat_input.setEchoMode(Qt.QLineEdit.Password)
+        self.repeat_input.textChanged.connect(self.update_button_state)
 
-        register_button = Qt.QPushButton('Зарегистрироваться')
-        register_button.clicked.connect(lambda arg: register_function())
+        self.register_button = Qt.QPushButton('Зарегистрироваться')
+        self.register_button.clicked.connect(lambda: register_function(
+            group_input.text(), user_input.text(), self.password_input.text()))
 
-        self.status_label = Qt.QLabel('')
+        self.status_label = Qt.QLabel()
         self.status_label.setFont(Qt.QFont('Arial', 20))
         self.status_label.setMinimumWidth(380)
 
@@ -64,7 +61,7 @@ class RegisterPage(Qt.QWidget):
 
         enter_button = FlatButton('Вход')
         enter_button.clicked.connect(lambda arg: login_function())
-        enter_button.setStyleSheet('color: #546A74')
+        enter_button.setStyleSheet('color: ' + common.GREY)
 
         title_layout = Qt.QVBoxLayout()
         title_layout.addWidget(group_title)
@@ -80,9 +77,9 @@ class RegisterPage(Qt.QWidget):
         input_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         input_layout.addWidget(user_input)
         input_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        input_layout.addWidget(password_input)
+        input_layout.addWidget(self.password_input)
         input_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        input_layout.addWidget(repeat_input)
+        input_layout.addWidget(self.repeat_input)
 
         main_layout = Qt.QHBoxLayout()
         main_layout.addStretch(1)
@@ -93,7 +90,7 @@ class RegisterPage(Qt.QWidget):
 
         button_layout = Qt.QHBoxLayout()
         button_layout.addStretch(1)
-        button_layout.addWidget(register_button)
+        button_layout.addWidget(self.register_button)
         button_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         button_layout.addWidget(self.status_label)
         button_layout.addStretch(1)
@@ -112,3 +109,31 @@ class RegisterPage(Qt.QWidget):
         layout.addStretch(1)
         layout.addLayout(lower_layout)
         self.setLayout(layout)
+
+    def update_button_state(self):
+        """
+        Determines the state of register button.
+        """
+        if self.password_input.text() == self.repeat_input.text():
+            self.register_button.setEnabled(True)
+            self.repeat_input.setStyleSheet('border-color: ' + common.GREEN)
+        else:
+            self.register_button.setDisabled(True)
+            self.repeat_input.setStyleSheet('border-color: ' + common.RED)
+
+    def set_waiting_state(self):
+        """
+        Sets waiting state.
+        """
+        self.setCursor(Qt.Qt.WaitCursor)
+        self.status_label.setText('Подождите...')
+        self.status_label.setStyleSheet('color: black')
+        self.status_label.repaint()
+
+    def set_failed_state(self):
+        """
+        Sets failed state.
+        """
+        self.setCursor(Qt.Qt.ArrowCursor)
+        self.status_label.setText('Попробуйте ещё раз')
+        self.status_label.setStyleSheet('color: ' + common.RED)

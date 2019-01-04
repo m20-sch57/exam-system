@@ -22,32 +22,27 @@ class LoginPage(Qt.QWidget):
         group_title = Qt.QLabel('Группа:')
         group_title.setFont(Qt.QFont('Arial', 20))
 
-        group_input = Qt.QLineEdit(user.group)
+        group_input = Qt.QLineEdit()
         group_input.setMinimumWidth(400)
-        group_input.textChanged.connect(lambda: user.update_user_info(
-            group_input.text(), user_input.text(), password_input.text()))
 
         user_title = Qt.QLabel('Логин:')
         user_title.setFont(Qt.QFont('Arial', 20))
 
-        user_input = Qt.QLineEdit(user.user)
+        user_input = Qt.QLineEdit()
         user_input.setMinimumWidth(400)
-        user_input.textChanged.connect(lambda: user.update_user_info(
-            group_input.text(), user_input.text(), password_input.text()))
 
         password_title = Qt.QLabel('Пароль:')
         password_title.setFont(Qt.QFont('Arial', 20))
 
-        password_input = Qt.QLineEdit(user.password)
+        password_input = Qt.QLineEdit()
         password_input.setMinimumWidth(400)
         password_input.setEchoMode(Qt.QLineEdit.Password)
-        password_input.textChanged.connect(lambda: user.update_user_info(
-            group_input.text(), user_input.text(), password_input.text()))
 
         enter_button = Qt.QPushButton('Войти в систему')
-        enter_button.clicked.connect(lambda arg: login_function())
+        enter_button.clicked.connect(lambda: login_function(
+            group_input.text(), user_input.text(), password_input.text()))
 
-        self.status_label = Qt.QLabel('')
+        self.status_label = Qt.QLabel()
         self.status_label.setFont(Qt.QFont('Arial', 20))
         self.status_label.setMinimumWidth(270)
 
@@ -57,7 +52,7 @@ class LoginPage(Qt.QWidget):
 
         register_button = FlatButton('Регистрация')
         register_button.clicked.connect(lambda arg: register_function())
-        register_button.setStyleSheet('color: #546A74')
+        register_button.setStyleSheet('color: ' + common.GREY)
 
         title_layout = Qt.QVBoxLayout()
         title_layout.addWidget(group_title)
@@ -72,6 +67,10 @@ class LoginPage(Qt.QWidget):
         input_layout.addWidget(user_input)
         input_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         input_layout.addWidget(password_input)
+        if user.get_item('autofill') == 'True':
+            group_input.setText(user.group)
+            user_input.setText(user.user)
+            password_input.setText(user.password)
 
         main_layout = Qt.QHBoxLayout()
         main_layout.addStretch(1)
@@ -117,4 +116,4 @@ class LoginPage(Qt.QWidget):
         """
         self.setCursor(Qt.Qt.ArrowCursor)
         self.status_label.setText('Попробуйте ещё раз')
-        self.status_label.setStyleSheet('color: red')
+        self.status_label.setStyleSheet('color: ' + common.RED)

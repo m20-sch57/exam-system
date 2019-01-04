@@ -14,47 +14,59 @@ class User:
     Safe connection to server.
     """
     def __init__(self):
-        ip_address = open(os.path.join('client', 'server.txt'), encoding='utf-8-sig').read()
-        self.server = ServerProxy('http://' + ip_address + ':8000')
-        self.group = 'M20 История'
+        self.path = os.path.join('client')
+        self.update_server()
+        self.group = 'm20'
         self.user = 'Фёдор Куянов'
         self.password = '12345'
 
+    def get_item(self, item):
+        """
+        Returns value of the item.
+        """
+        return open(os.path.join(self.path, item), encoding='utf-8-sig').read()
+
+    def set_item(self, item, value):
+        """
+        Sets value of the item.
+        """
+        open(os.path.join(self.path, item), 'w', encoding='utf-8-sig').write(value)
+
+    def get_settings(self):
+        """
+        Returns map of all settings.
+        """
+        settings = {}
+        for item in os.listdir(self.path):
+            settings[item] = self.get_item(item)
+        return settings
+
     def update_user_info(self, group, user, password):
         """
-        Updates client's data: group, user, password.
+        Updates client's info: group, user, password.
         """
         self.group = group
         self.user = user
         self.password = password
 
-    def clear_user_info(self):
+    def update_server(self):
         """
-        Clears client's data: group, user, password.
+        Updates self.server.
         """
-        self.group = ''
-        self.user = ''
-        self.password = ''
-
-    @staticmethod
-    def read_ip():
-        """
-        Returns current ip-address of server.
-        """
-        return open(os.path.join('client', 'server.txt'), encoding='utf-8-sig').read()
-
-    def update_ip(self, ip_address):
-        """
-        Updates current ip-address of server.
-        """
-        open(os.path.join('client', 'server.txt'), 'w', encoding='utf-8-sig').write(ip_address)
-        self.server = ServerProxy('http://' + ip_address + ':8000')
+        self.server = ServerProxy('http://' + self.get_item('server'))
 
     def ping(self):
         """
         Checks if server is available.
         """
         self.server.ping()
+
+    def register(self):
+        """
+        Tries to register the student.
+        """
+        password_hash = hashlib.sha1(self.password.encode('utf-8')).hexdigest()
+        return self.server.register(self.group, self.user, password_hash)
 
     def login(self):
         """

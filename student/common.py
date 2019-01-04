@@ -51,6 +51,7 @@ def get_question_style(question_data, question=None, current_question=None):
 GREEN = '#6DC180'
 RED = '#FF6643'
 YELLOW = '#FFDB2D'
+GREY = '#546A74'
 EXAM30 = os.path.join('images', 'exam-30x30.png')
 LEFT = os.path.join('images', 'left.png')
 TICK = os.path.join('images', 'tick.png')

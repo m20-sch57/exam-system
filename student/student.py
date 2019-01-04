@@ -13,6 +13,7 @@ from PyQt5 import Qt
 from settings_page import SettingsPage
 from login_page import LoginPage
 from register_page import RegisterPage
+from register_success_page import RegisterSuccessPage
 from home_page import HomePage
 from start_exam_page import StartExamPage
 from exam_page import ExamPage
@@ -30,7 +31,7 @@ def safe(function):
         try:
             return function(self, *args, **kwargs)
         except socket.error:
-            self.display_settings_page(self.display_login_page)
+            self.display_settings_page()
             self.widget.set_failed_state()
     return result
 
@@ -68,58 +69,76 @@ class Application(Qt.QApplication):
         self.display_login_page()
         self.exit(self.exec_())
 
+    def check_ip(self, ip_address):
+        """
+        Checks ip-address of server.
+        """
+        try:
+            self.widget.set_waiting_state()
+            self.user.set_item('server', ip_address)
+            self.user.update_server()
+            self.user.ping()
+            self.widget.set_succeeded_state()
+        except socket.error:
+            self.widget.set_failed_state()
+
     @safe
-    def save_ip(self, ip_address):
+    def save_settings(self, settings):
         """
-        Saves ip-address of server.
+        Saves all settings.
         """
-        self.widget.set_waiting_state()
-        self.user.update_ip(ip_address)
-        self.user.ping()
-        self.widget.set_succeeded_state()
+        for item in settings.keys():
+            self.user.set_item(item, str(settings[item]))
+        self.display_login_page()
+
+    def display_settings_page(self):
+        """
+        Displays server error page.
+        """
+        self.display_widget(SettingsPage(
+            self.user.get_settings(), self.check_ip, self.display_login_page, self.save_settings))
 
     def display_login_page(self):
         """
         Displays login page for student.
         """
         self.display_widget(LoginPage(
-            self.user, self.login, self.display_register_page,
-            lambda: self.display_settings_page(self.display_login_page)))
+            self.user, self.login, self.display_register_page, self.display_settings_page))
 
     def display_register_page(self):
         """
         Displays register page for student.
         """
         self.display_widget(RegisterPage(
-            self.user, self.register, self.display_login_page,
-            lambda: self.display_settings_page(self.display_register_page)))
+            self.register, self.display_login_page, self.display_settings_page))
 
-    def display_settings_page(self, back_function):
+    def display_register_success_page(self):
         """
-        Displays server error page.
+        Displays success registration page.
         """
-        self.display_widget(SettingsPage(
-            self.user.read_ip(), self.save_ip, back_function))
+        self.display_widget(RegisterSuccessPage(
+            self.display_register_page, self.display_login_page))
 
     @safe
-    def register(self):
+    def register(self, group, user, password):
         """
         Tries to register the student.
         """
         self.widget.set_waiting_state()
+        self.user.update_user_info(group, user, password)
         success = self.user.register()
         if not success:
             self.widget.set_failed_state()
         else:
-            self.user.clear_user_info()
-            self.widget.set_succeeded_state()
+            self.display_register_success_page()
 
     @safe
-    def login(self):
+    def login(self, group, user, password):
         """
         Tries to login the student.
         """
         self.widget.set_waiting_state()
+        self.user.update_user_info(group, user, password)
         success = self.user.login()
         if not success:
             self.widget.set_failed_state()
@@ -131,7 +150,6 @@ class Application(Qt.QApplication):
         """
         Logs out the student.
         """
-        self.user.clear_user_info()
         self.display_login_page()
 
     @safe
