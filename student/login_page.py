@@ -22,13 +22,13 @@ class LoginPage(Qt.QWidget):
         group_title = Qt.QLabel('Группа:')
         group_title.setFont(Qt.QFont('Arial', 20))
 
-        group_input = Qt.QLineEdit()
+        group_input = Qt.QLineEdit(user.group)
         group_input.setMinimumWidth(400)
 
         user_title = Qt.QLabel('Логин:')
         user_title.setFont(Qt.QFont('Arial', 20))
 
-        user_input = Qt.QLineEdit()
+        user_input = Qt.QLineEdit(user.user)
         user_input.setMinimumWidth(400)
 
         password_title = Qt.QLabel('Пароль:')
@@ -37,6 +37,8 @@ class LoginPage(Qt.QWidget):
         password_input = Qt.QLineEdit()
         password_input.setMinimumWidth(400)
         password_input.setEchoMode(Qt.QLineEdit.Password)
+        if user.get_item('autofill') == 'True':
+            password_input.setText(user.password)
 
         enter_button = Qt.QPushButton('Войти в систему')
         enter_button.clicked.connect(lambda: login_function(
@@ -67,10 +69,7 @@ class LoginPage(Qt.QWidget):
         input_layout.addWidget(user_input)
         input_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         input_layout.addWidget(password_input)
-        if user.get_item('autofill') == 'True':
-            group_input.setText(user.group)
-            user_input.setText(user.user)
-            password_input.setText(user.password)
+        
 
         main_layout = Qt.QHBoxLayout()
         main_layout.addStretch(1)

@@ -42,7 +42,7 @@ class SettingsPage(Qt.QWidget):
         autosave_title = Qt.QLabel('Автозаполнение форм')
         autosave_title.setFont(Qt.QFont('Arial', 25))
 
-        autosave_password_checkbox = Qt.QCheckBox('Сохранять логин и пароль')
+        autosave_password_checkbox = Qt.QCheckBox('Сохранять пароль')
         autosave_password_checkbox.setFont(Qt.QFont('Arial', 20))
         if settings['autofill'] == 'True':
             autosave_password_checkbox.setChecked(True)
