@@ -30,9 +30,11 @@ class SettingsPage(Qt.QWidget):
         server_ip_title.setFont(Qt.QFont('Arial', 20))
 
         server_ip_input = Qt.QLineEdit(settings['server'])
+        server_ip_input.setFont(Qt.QFont('Arial', 20))
         server_ip_input.setMinimumWidth(350)
 
         server_check_button = Qt.QPushButton('Проверить соединение')
+        server_check_button.setFont(Qt.QFont('Arial', 20))
         server_check_button.clicked.connect(lambda: check_ip_function(server_ip_input.text()))
 
         self.server_status_label = Qt.QLabel()
@@ -48,6 +50,7 @@ class SettingsPage(Qt.QWidget):
             autosave_password_checkbox.setChecked(True)
 
         save_button = Qt.QPushButton('Сохранить')
+        save_button.setFont(Qt.QFont('Arial', 20))
         save_button.clicked.connect(lambda: save_function(
             {'server': server_ip_input.text(),
              'autofill': autosave_password_checkbox.isChecked()

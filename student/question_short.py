@@ -23,24 +23,21 @@ class QuestionShort(QuestionBase):
         answer_title.setFont(Qt.QFont('Arial', 30))
 
         answer_input = Qt.QLineEdit()
-        answer_input.setMinimumWidth(400)
+        answer_input.setFont(Qt.QFont('Arial', 20))
 
         check_button = Qt.QPushButton('Проверить')
+        check_button.setFont(Qt.QFont('Arial', 20))
         check_button.clicked.connect(
             lambda: check_function(parent.exam, parent.question, answer_input.text()))
 
-        answer_layout = Qt.QHBoxLayout()
-        answer_layout.addWidget(answer_title)
-        answer_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
-        answer_layout.addWidget(answer_input)
-        answer_layout.addStretch(1)
-        answer_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
-        answer_layout.addWidget(check_button)
+        self.lower_layout.addWidget(answer_title)
+        self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
+        self.lower_layout.addWidget(answer_input)
+        self.lower_layout.addSpacerItem(Qt.QSpacerItem(50, 0))
+        self.lower_layout.addWidget(check_button)
 
         self.layout.addWidget(statement_label)
         self.layout.addStretch(1)
-        self.layout.addSpacerItem(Qt.QSpacerItem(0, 10))
-        self.layout.addLayout(answer_layout)
 
 
 class QuestionShortChecked(QuestionBase):
@@ -59,8 +56,8 @@ class QuestionShortChecked(QuestionBase):
         answer_title.setFont(Qt.QFont('Arial', 30))
 
         answer_input = Qt.QLineEdit(self.question_data['answer'])
+        answer_input.setFont(Qt.QFont('Arial', 20))
         answer_input.setDisabled(True)
-        answer_input.setMinimumWidth(400)
         answer_input.setStyleSheet(
             'border-width: 2px;'
             'border-color: ' + question_style['main_color'] + ';'
@@ -72,24 +69,21 @@ class QuestionShortChecked(QuestionBase):
         status_img.setFixedSize(Qt.QSize(50, 50))
 
         next_button = Qt.QPushButton('Далее')
+        next_button.setFont(Qt.QFont('Arial', 20))
         next_button.clicked.connect(
             lambda: view_question_function(parent.exam, parent.question + 1))
 
-        answer_layout = Qt.QHBoxLayout()
-        answer_layout.addWidget(answer_title)
-        answer_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
-        answer_layout.addWidget(answer_input)
-        answer_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
-        answer_layout.addWidget(status_img)
-        answer_layout.addStretch(1)
-        answer_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
+        self.lower_layout.addWidget(answer_title)
+        self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
+        self.lower_layout.addWidget(answer_input)
+        self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
+        self.lower_layout.addWidget(status_img)
+        self.lower_layout.addSpacerItem(Qt.QSpacerItem(50, 0))
         if parent.question < len(parent.exam_data):
-            answer_layout.addWidget(next_button)
+            self.lower_layout.addWidget(next_button)
 
         self.layout.addWidget(statement_label)
         self.layout.addStretch(1)
-        self.layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        self.layout.addLayout(answer_layout)
 
 
 class QuestionShortDetails(QuestionBase):
@@ -113,7 +107,6 @@ class QuestionShortDetails(QuestionBase):
 
         score_title = Qt.QLabel('Получено баллов:')
         score_title.setFont(Qt.QFont('Arial', 25))
-        score_title.setFixedWidth(300)
 
         score_label = Qt.QLabel(current_score + ' (' + self.question_data['maxscore'] + ')')
         score_label.setFont(Qt.QFont('Arial', 20))
@@ -121,41 +114,38 @@ class QuestionShortDetails(QuestionBase):
 
         your_answer_title = Qt.QLabel('Ваш ответ:')
         your_answer_title.setFont(Qt.QFont('Arial', 25))
-        your_answer_title.setFixedWidth(300)
 
         your_answer_label = Qt.QLabel(current_answer)
         your_answer_label.setFont(Qt.QFont('Arial', 20))
-        your_answer_label.setWordWrap(True)
 
         correct_answer_title = Qt.QLabel('Правильный ответ:')
         correct_answer_title.setFont(Qt.QFont('Arial', 25))
-        correct_answer_title.setFixedWidth(300)
 
         correct_answer_label = Qt.QLabel(correct_answer)
         correct_answer_label.setFont(Qt.QFont('Arial', 20))
-        correct_answer_label.setWordWrap(True)
 
-        score_layout = Qt.QHBoxLayout()
-        score_layout.addWidget(score_title)
-        score_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
-        score_layout.addWidget(score_label)
-        score_layout.addStretch(1)
+        title_layout = Qt.QVBoxLayout()
+        title_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
+        title_layout.addWidget(score_title)
+        title_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
+        title_layout.addWidget(your_answer_title)
+        title_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
+        title_layout.addWidget(correct_answer_title)
 
-        your_answer_layout = Qt.QHBoxLayout()
-        your_answer_layout.addWidget(your_answer_title)
-        your_answer_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
-        your_answer_layout.addWidget(your_answer_label)
+        value_layout = Qt.QVBoxLayout()
+        value_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
+        value_layout.addWidget(score_label)
+        value_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
+        value_layout.addWidget(your_answer_label)
+        value_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
+        value_layout.addWidget(correct_answer_label)
 
-        correct_answer_layout = Qt.QHBoxLayout()
-        correct_answer_layout.addWidget(correct_answer_title)
-        correct_answer_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
-        correct_answer_layout.addWidget(correct_answer_label)
+        main_layout = Qt.QHBoxLayout()
+        main_layout.addLayout(title_layout)
+        main_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
+        main_layout.addLayout(value_layout)
+        main_layout.addStretch(1)
 
         self.layout.addWidget(statement_label)
         self.layout.addStretch(1)
-        self.layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        self.layout.addLayout(score_layout)
-        self.layout.addSpacerItem(Qt.QSpacerItem(0, 10))
-        self.layout.addLayout(your_answer_layout)
-        self.layout.addSpacerItem(Qt.QSpacerItem(0, 10))
-        self.layout.addLayout(correct_answer_layout)
+        self.layout.addLayout(main_layout)

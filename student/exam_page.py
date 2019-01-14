@@ -27,8 +27,7 @@ class ExamPage(Qt.QWidget):
         scroll_area = Qt.QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setFrameShape(Qt.QFrame.NoFrame)
-        scroll_area.setMinimumHeight(85)
-        scroll_area.setSizePolicy(Qt.QSizePolicy.Minimum, Qt.QSizePolicy.Minimum)
+        scroll_area.setSizePolicy(Qt.QSizePolicy.Expanding, Qt.QSizePolicy.Minimum)
 
         status_widget = Qt.QWidget()
         question_widget = Qt.QWidget()
@@ -89,6 +88,7 @@ class ExamPage(Qt.QWidget):
                 'border-color: ' + current_style['border_color'] + ';'
                 'border-radius: 5px;'
                 'padding: 5px;'
+                'font-size: 30px;'
             )
 
         status_widget = get_exam_status_function(self)

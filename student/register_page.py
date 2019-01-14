@@ -23,18 +23,21 @@ class RegisterPage(Qt.QWidget):
         group_title.setFont(Qt.QFont('Arial', 20))
 
         group_input = Qt.QLineEdit()
+        group_input.setFont(Qt.QFont('Arial', 20))
         group_input.setMinimumWidth(400)
 
         user_title = Qt.QLabel('Ваш логин:')
         user_title.setFont(Qt.QFont('Arial', 20))
 
         user_input = Qt.QLineEdit()
+        user_input.setFont(Qt.QFont('Arial', 20))
         user_input.setMinimumWidth(400)
 
         password_title = Qt.QLabel('Придумайте пароль:')
         password_title.setFont(Qt.QFont('Arial', 20))
 
         self.password_input = Qt.QLineEdit()
+        self.password_input.setFont(Qt.QFont('Arial', 20))
         self.password_input.setMinimumWidth(400)
         self.password_input.setEchoMode(Qt.QLineEdit.Password)
         self.password_input.textChanged.connect(self.update_button_state)
@@ -43,11 +46,13 @@ class RegisterPage(Qt.QWidget):
         repeat_title.setFont(Qt.QFont('Arial', 20))
 
         self.repeat_input = Qt.QLineEdit()
+        self.repeat_input.setFont(Qt.QFont('Arial', 20))
         self.repeat_input.setMinimumWidth(400)
         self.repeat_input.setEchoMode(Qt.QLineEdit.Password)
         self.repeat_input.textChanged.connect(self.update_button_state)
 
         self.register_button = Qt.QPushButton('Зарегистрироваться')
+        self.register_button.setFont(Qt.QFont('Arial', 20))
         self.register_button.clicked.connect(lambda: register_function(
             group_input.text(), user_input.text(), self.password_input.text()))
 
@@ -60,6 +65,7 @@ class RegisterPage(Qt.QWidget):
         settings_button.clicked.connect(lambda _: settings_function())
 
         enter_button = FlatButton('Вход')
+        enter_button.setFont(Qt.QFont('Arial', 20))
         enter_button.clicked.connect(lambda _: login_function())
         enter_button.setStyleSheet('color: ' + common.GREY)
 

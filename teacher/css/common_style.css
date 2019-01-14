@@ -8,8 +8,6 @@ QPushButton {
     padding-right: 15px;
     padding-top: 10px;
     padding-bottom: 10px;
-    font-family: 'Arial';
-    font-size: 27px;
 }
 QPushButton:hover {
     background-color: #99D1FF;
@@ -37,8 +35,6 @@ QPlainTextEdit, QLineEdit {
     border-width: 1px;
     border-radius: 10px;
     padding: 5px;
-    font-family: 'Arial';
-    font-size: 27px;
 }
 QPlainTextEdit:focus, QLineEdit:focus {
     border-color: #99D1FF;

@@ -29,10 +29,11 @@ class RegisterSuccessPage(Qt.QWidget):
         status_img.setFixedSize(Qt.QSize(50, 50))
 
         status_label = Qt.QLabel('Вы успешно зарегистрированы!')
-        status_label.setFont(Qt.QFont('Arial', 30))
+        status_label.setFont(Qt.QFont('Arial', 25))
         status_label.setStyleSheet('color: ' + common.GREEN)
 
         enter_button = Qt.QPushButton('Продолжить')
+        enter_button.setFont(Qt.QFont('Arial', 20))
         enter_button.clicked.connect(lambda _: enter_function())
 
         upper_layout = Qt.QHBoxLayout()
