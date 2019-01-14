@@ -27,7 +27,8 @@ class ExamPage(Qt.QWidget):
         scroll_area = Qt.QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setFrameShape(Qt.QFrame.NoFrame)
-        scroll_area.setSizePolicy(Qt.QSizePolicy.Expanding, Qt.QSizePolicy.Minimum)
+        scroll_area.setMinimumHeight(110)
+        scroll_area.setSizePolicy(Qt.QSizePolicy.Minimum, Qt.QSizePolicy.Minimum)
 
         status_widget = Qt.QWidget()
         question_widget = Qt.QWidget()

@@ -115,4 +115,5 @@ class QuestionLongDetails(QuestionBase):
         self.layout.addWidget(statement_label)
         self.layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         self.layout.addWidget(answer_label)
+        self.layout.addStretch(1)
         self.layout.addLayout(main_layout)
