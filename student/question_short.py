@@ -24,6 +24,7 @@ class QuestionShort(QuestionBase):
 
         answer_input = Qt.QLineEdit()
         answer_input.setFont(Qt.QFont('Arial', 20))
+        answer_input.setMinimumWidth(500)
 
         check_button = Qt.QPushButton('Проверить')
         check_button.setFont(Qt.QFont('Arial', 20))
@@ -33,7 +34,7 @@ class QuestionShort(QuestionBase):
         self.lower_layout.addWidget(answer_title)
         self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         self.lower_layout.addWidget(answer_input)
-        self.lower_layout.addSpacerItem(Qt.QSpacerItem(50, 0))
+        self.lower_layout.addStretch(1)
         self.lower_layout.addWidget(check_button)
 
         self.layout.addWidget(statement_label)
@@ -57,6 +58,7 @@ class QuestionShortChecked(QuestionBase):
 
         answer_input = Qt.QLineEdit(self.question_data['answer'])
         answer_input.setFont(Qt.QFont('Arial', 20))
+        answer_input.setMinimumWidth(500)
         answer_input.setDisabled(True)
         answer_input.setStyleSheet(
             'border-width: 2px;'
@@ -78,7 +80,7 @@ class QuestionShortChecked(QuestionBase):
         self.lower_layout.addWidget(answer_input)
         self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         self.lower_layout.addWidget(status_img)
-        self.lower_layout.addSpacerItem(Qt.QSpacerItem(50, 0))
+        self.lower_layout.addStretch(1)
         if parent.question < len(parent.exam_data):
             self.lower_layout.addWidget(next_button)
 
