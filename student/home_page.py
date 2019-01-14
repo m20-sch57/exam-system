@@ -19,7 +19,7 @@ class HomePage(Qt.QWidget):
         group_title.setFont(Qt.QFont('Arial', 30))
 
         exit_button = FlatButton('Выйти')
-        exit_button.clicked.connect(lambda arg: exit_function())
+        exit_button.clicked.connect(lambda _: exit_function())
 
         scroll_area = Qt.QScrollArea()
         scroll_area.setFrameShape(Qt.QFrame.NoFrame)

@@ -49,20 +49,33 @@ def ping():
     return True
 
 
-def register(group, user, password):
+def register_student(group, user, password):
     """
     Tries to register the student.
     """
     if not group in os.listdir('data'):
         return False
-    if user in os.listdir(os.path.join('data', group, 'students')):
+    if user in os.listdir(os.path.join('data', group, 'students')) or not user:
         return False
     user_item = Item(os.path.join('data', group, 'students', user, 'info'))
     user_item.set_item('password', password)
     return True
 
 
-def login(group, user, password):
+def register_teacher(group, user, password):
+    """
+    Tries to register the teacher.
+    """
+    if not group in os.listdir('data'):
+        return False
+    if user in os.listdir(os.path.join('data', group, 'teachers')) or not user:
+        return False
+    user_item = Item(os.path.join('data', group, 'teachers', user, 'info'))
+    user_item.set_item('password', password)
+    return True
+
+
+def login_student(group, user, password):
     """
     Tries to login the student.
     """
@@ -71,6 +84,20 @@ def login(group, user, password):
     if not user in os.listdir(os.path.join('data', group, 'students')):
         return False
     user_item = Item(os.path.join('data', group, 'students', user, 'info'))
+    if user_item.get_item('password') != password:
+        return False
+    return True
+
+
+def login_teacher(group, user, password):
+    """
+    Tries to login the teacher.
+    """
+    if not group in os.listdir('data'):
+        return False
+    if not user in os.listdir(os.path.join('data', group, 'teachers')):
+        return False
+    user_item = Item(os.path.join('data', group, 'teachers', user, 'info'))
     if user_item.get_item('password') != password:
         return False
     return True
@@ -202,8 +229,10 @@ def check(group, user, exam, question):
 ENCODING = 'utf-8-sig'
 SERVER = SimpleXMLRPCServer(('', 8000))
 SERVER.register_function(ping)
-SERVER.register_function(register)
-SERVER.register_function(login)
+SERVER.register_function(register_student)
+SERVER.register_function(register_teacher)
+SERVER.register_function(login_student)
+SERVER.register_function(login_teacher)
 SERVER.register_function(list_of_exams)
 SERVER.register_function(get_question)
 SERVER.register_function(get_exam)

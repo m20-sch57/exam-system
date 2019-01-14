@@ -1,5 +1,5 @@
 """
-Page that is displayed after student has successfully registered.
+Page that is displayed after teacher has successfully registered.
 """
 
 

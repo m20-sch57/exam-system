@@ -23,7 +23,7 @@ class StartExamPage(Qt.QWidget):
         back_button = FlatButton(Qt.QIcon(common.LEFT), '')
         back_button.setIconSize(Qt.QSize(40, 40))
         back_button.setFixedSize(back_button.sizeHint())
-        back_button.clicked.connect(lambda arg: back_function())
+        back_button.clicked.connect(lambda _: back_function())
 
         exam_title = Qt.QLabel(exam)
         exam_title.setFont(Qt.QFont('Arial', 30))

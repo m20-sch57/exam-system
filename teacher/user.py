@@ -17,7 +17,7 @@ class User:
         self.path = os.path.join('client')
         self.update_server()
         self.group = 'm20'
-        self.user = 'Фёдор Куянов'
+        self.user = 'Сергей Леонидович'
         self.password = '12345'
 
     def get_item(self, item):
@@ -63,17 +63,17 @@ class User:
 
     def register(self):
         """
-        Tries to register the student.
+        Tries to register the teacher.
         """
         password_hash = hashlib.sha1(self.password.encode('utf-8')).hexdigest()
-        return self.server.register_student(self.group, self.user, password_hash)
+        return self.server.register_teacher(self.group, self.user, password_hash)
 
     def login(self):
         """
-        Tries to login the student.
+        Tries to login the teacher.
         """
         password_hash = hashlib.sha1(self.password.encode('utf-8')).hexdigest()
-        return self.server.login_student(self.group, self.user, password_hash)
+        return self.server.login_teacher(self.group, self.user, password_hash)
 
     def list_of_exams(self):
         """
@@ -92,30 +92,6 @@ class User:
         Returns exam's info.
         """
         return self.server.get_exam_info(self.group, self.user, exam)
-
-    def start_exam(self, exam):
-        """
-        Starts the exam.
-        """
-        return self.server.start_exam(self.group, self.user, exam)
-
-    def finish_exam(self, exam):
-        """
-        Finishes the exam.
-        """
-        return self.server.finish_exam(self.group, self.user, exam)
-
-    def save_answer(self, exam, question, answer):
-        """
-        Saves student's answer.
-        """
-        return self.server.save_answer(self.group, self.user, exam, question, answer)
-
-    def check(self, exam, question):
-        """
-        Checks student's answer.
-        """
-        return self.server.check(self.group, self.user, exam, question)
 
 
 socket.setdefaulttimeout(3)

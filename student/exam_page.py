@@ -22,7 +22,7 @@ class ExamPage(Qt.QWidget):
         back_button = FlatButton(Qt.QIcon(common.LEFT), '')
         back_button.setIconSize(Qt.QSize(40, 40))
         back_button.setFixedSize(back_button.sizeHint())
-        back_button.clicked.connect(lambda arg: back_function())
+        back_button.clicked.connect(lambda _: back_function())
 
         scroll_area = Qt.QScrollArea()
         scroll_area.setWidgetResizable(True)

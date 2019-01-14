@@ -1,5 +1,5 @@
 """
-Register page for student.
+Register page for teacher.
 """
 
 
@@ -10,7 +10,7 @@ import common
 
 class RegisterPage(Qt.QWidget):
     """
-    Registration page for student.
+    Registration page for teacher.
     """
     def __init__(self, register_function, login_function, settings_function):
         super().__init__()

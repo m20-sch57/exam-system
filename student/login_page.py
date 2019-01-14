@@ -50,10 +50,10 @@ class LoginPage(Qt.QWidget):
 
         settings_button = FlatButton(Qt.QIcon(common.SETTINGS), '')
         settings_button.setIconSize(Qt.QSize(40, 40))
-        settings_button.clicked.connect(lambda arg: settings_function())
+        settings_button.clicked.connect(lambda _: settings_function())
 
         register_button = FlatButton('Регистрация')
-        register_button.clicked.connect(lambda arg: register_function())
+        register_button.clicked.connect(lambda _: register_function())
         register_button.setStyleSheet('color: ' + common.GREY)
 
         title_layout = Qt.QVBoxLayout()
