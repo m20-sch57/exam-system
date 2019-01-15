@@ -87,9 +87,10 @@ class QuestionLongDetails(QuestionBase):
         statement_label.setFont(Qt.QFont('Arial', 20))
         statement_label.setWordWrap(True)
 
-        answer_label = Qt.QLabel(current_answer)
-        answer_label.setFont(Qt.QFont('Arial', 20))
-        answer_label.setWordWrap(True)
+        answer_input = Qt.QPlainTextEdit()
+        answer_input.setFont(Qt.QFont('Arial', 20))
+        answer_input.setPlainText(current_answer)
+        answer_input.setReadOnly(True)
 
         score_title = Qt.QLabel('Получено баллов:')
         score_title.setFont(Qt.QFont('Arial', 25))
@@ -114,6 +115,5 @@ class QuestionLongDetails(QuestionBase):
 
         self.layout.addWidget(statement_label)
         self.layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        self.layout.addWidget(answer_label)
-        self.layout.addStretch(1)
+        self.layout.addWidget(answer_input)
         self.layout.addLayout(main_layout)
