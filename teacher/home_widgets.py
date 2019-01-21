@@ -1,5 +1,5 @@
 """
-Student's home page with list of exams.
+Widget for home page with list of exams.
 """
 
 
@@ -8,19 +8,12 @@ from mywidgets import FlatButton
 import common
 
 
-class HomePage(Qt.QWidget):
+class ExamsWidget(Qt.QWidget):
     """
-    Student's home page with list of exams.
+    Widget for home page with list of exams.
     """
-    def __init__(self, user, list_of_exams, exam_function, exit_function):
+    def __init__(self, user, list_of_exams, exam_function):
         super().__init__()
-
-        group_title = Qt.QLabel('Группа ' + user.group)
-        group_title.setFont(Qt.QFont('Arial', 30))
-
-        exit_button = FlatButton('Выйти')
-        exit_button.setFont(Qt.QFont('Arial', 20))
-        exit_button.clicked.connect(lambda _: exit_function())
 
         scroll_area = Qt.QScrollArea()
         scroll_area.setFrameShape(Qt.QFrame.NoFrame)
@@ -29,12 +22,15 @@ class HomePage(Qt.QWidget):
         scroll_layout.setSizeConstraint(Qt.QLayout.SetMinimumSize)
 
         for exam in list_of_exams:
+            exam_checkbox = Qt.QCheckBox()
+
             exam_button = FlatButton(Qt.QIcon(common.EXAM30), exam)
             exam_button.setFont(Qt.QFont('Arial', 20))
             exam_button.setIconSize(Qt.QSize(30, 30))
             exam_button.clicked.connect(common.return_lambda(exam_function, exam))
 
             exam_layout = Qt.QHBoxLayout()
+            exam_layout.addWidget(exam_checkbox)
             exam_layout.addWidget(exam_button)
             exam_layout.addStretch(1)
 
@@ -47,14 +43,19 @@ class HomePage(Qt.QWidget):
         scroll_widget.setLayout(scroll_layout)
         scroll_area.setWidget(scroll_widget)
 
-        upper_layout = Qt.QHBoxLayout()
-        upper_layout.addStretch(1)
-        upper_layout.addWidget(group_title)
-        upper_layout.addStretch(1)
-        upper_layout.addWidget(exit_button)
+        add_button = FlatButton('Добавить')
+        add_button.setFont(Qt.QFont('Arial', 20))
+
+        remove_button = FlatButton('Удалить')
+        remove_button.setFont(Qt.QFont('Arial', 20))
+
+        lower_layout = Qt.QHBoxLayout()
+        lower_layout.addWidget(add_button)
+        lower_layout.addStretch(1)
+        lower_layout.addWidget(remove_button)
 
         layout = Qt.QVBoxLayout()
-        layout.addLayout(upper_layout)
-        layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         layout.addWidget(scroll_area)
+        layout.addSpacerItem(Qt.QSpacerItem(0, 20))
+        layout.addLayout(lower_layout)
         self.setLayout(layout)

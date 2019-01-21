@@ -31,7 +31,6 @@ class ExamPage(Qt.QWidget):
         scroll_area.setSizePolicy(Qt.QSizePolicy.Minimum, Qt.QSizePolicy.Minimum)
 
         status_widget = Qt.QWidget()
-        question_widget = Qt.QWidget()
 
         self.questions_layout = Qt.QHBoxLayout()
         self.questions_layout.setSpacing(0)
@@ -55,7 +54,7 @@ class ExamPage(Qt.QWidget):
         layout.addLayout(upper_layout)
         layout.addSpacerItem(Qt.QSpacerItem(0, 10))
         layout.addWidget(status_widget)
-        layout.addWidget(question_widget)
+        layout.addWidget(Qt.QWidget())
         self.setLayout(layout)
 
     def display(self, current_question, exam_data, exam_info, view_question_function,

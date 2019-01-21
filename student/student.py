@@ -46,7 +46,7 @@ class Application(Qt.QApplication):
         self.window = Qt.QWidget()
         self.window.setStyleSheet(open(os.path.join('css', 'common_style.css')).read())
         self.window.setWindowTitle('Школьник')
-        self.window.setGeometry(200, 100, 1000, 700)
+        self.window.setGeometry(200, 100, 1000, 800)
         self.widget = Qt.QWidget(self.window)
         self.layout = Qt.QHBoxLayout(self.window)
         self.layout.addWidget(self.widget)

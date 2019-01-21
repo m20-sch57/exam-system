@@ -14,6 +14,8 @@ from settings_page import SettingsPage
 from login_page import LoginPage
 from register_page import RegisterPage
 from register_success_page import RegisterSuccessPage
+from home_page import HomePage
+from home_widgets import ExamsWidget
 
 
 def safe(function):
@@ -40,7 +42,7 @@ class Application(Qt.QApplication):
         self.window = Qt.QWidget()
         self.window.setStyleSheet(open(os.path.join('css', 'common_style.css')).read())
         self.window.setWindowTitle('Учитель')
-        self.window.setGeometry(200, 100, 1000, 700)
+        self.window.setGeometry(200, 100, 1000, 800)
         self.widget = Qt.QWidget(self.window)
         self.layout = Qt.QHBoxLayout(self.window)
         self.layout.addWidget(self.widget)
@@ -145,6 +147,21 @@ class Application(Qt.QApplication):
         Logs out the teacher.
         """
         self.display_login_page()
+
+    def display_home_page(self):
+        """
+        Displays home page with list of exams.
+        """
+        widget_map = {
+            'Экзамены': lambda: ExamsWidget(
+                self.user, self.user.list_of_exams(), self.logout),
+            'Сообщения': lambda: ExamsWidget(
+                self.user, self.user.list_of_exams(), self.logout),
+            'Группа': lambda: ExamsWidget(
+                self.user, self.user.list_of_exams(), self.logout)
+        }
+        self.display_widget(HomePage(widget_map))
+        self.widget.display('Экзамены')
 
 
 if __name__ == "__main__":
