@@ -79,19 +79,19 @@ class User:
         """
         Returns list of all available exams.
         """
-        return self.server.list_of_exams(self.group)
+        return self.server.list_of_published_exams(self.group)
 
     def get_exam(self, exam):
         """
         Returns all question data in the exam.
         """
-        return self.server.get_exam(self.group, self.user, exam)
+        return self.server.get_exam_data_user(self.group, self.user, exam)
 
     def get_exam_info(self, exam):
         """
         Returns exam's info.
         """
-        return self.server.get_exam_info(self.group, self.user, exam)
+        return self.server.get_exam_info_user(self.group, self.user, exam)
 
     def start_exam(self, exam):
         """

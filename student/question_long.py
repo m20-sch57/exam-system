@@ -81,7 +81,7 @@ class QuestionLongDetails(QuestionBase):
             current_score = '0'
         if current_score == '-1':
             current_score = 'Неизв.'
-        question_style = common.get_question_style(self.question_data)
+        question_style = common.main_question_style(self.question_data)
 
         statement_label = Qt.QLabel(self.question_data['statement'])
         statement_label.setFont(Qt.QFont('Arial', 20))

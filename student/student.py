@@ -46,7 +46,7 @@ class Application(Qt.QApplication):
         self.window = Qt.QWidget()
         self.window.setStyleSheet(open(os.path.join('css', 'common_style.css')).read())
         self.window.setWindowTitle('Школьник')
-        self.window.setGeometry(200, 100, 1000, 800)
+        self.window.setGeometry(200, 100, 1000, 700)
         self.widget = Qt.QWidget(self.window)
         self.layout = Qt.QHBoxLayout(self.window)
         self.layout.addWidget(self.widget)
@@ -93,7 +93,7 @@ class Application(Qt.QApplication):
 
     def display_settings_page(self):
         """
-        Displays server error page.
+        Displays settings page.
         """
         self.display_widget(SettingsPage(
             self.user.get_settings(), self.check_ip, self.display_login_page, self.save_settings))
@@ -193,7 +193,12 @@ class Application(Qt.QApplication):
         if exam_info['state'] == 'Not started':
             self.display_start_exam_page(exam)
         else:
-            self.display_widget(ExamPage(exam, self.display_home_page))
+            self.display_widget(ExamPage(
+                exam,
+                self.display_home_page,
+                self.view_question,
+                self.get_exam_status_widget,
+                self.get_question_widget))
             self.view_question(exam, 1)
 
     @safe
@@ -203,11 +208,8 @@ class Application(Qt.QApplication):
         """
         exam_data = self.user.get_exam(exam)
         exam_info = self.user.get_exam_info(exam)
-        self.widget.display(question, exam_data, exam_info, self.view_question,
-                            self.get_exam_status_widget,
-                            self.get_question_widget)
+        self.widget.display(question, exam_data, exam_info)
 
-    @safe
     def get_exam_status_widget(self, parent):
         """
         Returns exam status widget.
@@ -217,7 +219,6 @@ class Application(Qt.QApplication):
         else:
             return ExamFinished(parent)
 
-    @safe
     def get_question_widget(self, parent):
         """
         Returns the question widget depending on it's type.

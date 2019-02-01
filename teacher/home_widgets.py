@@ -12,7 +12,7 @@ class ExamsWidget(Qt.QWidget):
     """
     Widget for home page with list of exams.
     """
-    def __init__(self, user, list_of_exams, exam_function):
+    def __init__(self, list_of_exams, exam_function, create_function):
         super().__init__()
 
         scroll_area = Qt.QScrollArea()
@@ -22,15 +22,12 @@ class ExamsWidget(Qt.QWidget):
         scroll_layout.setSizeConstraint(Qt.QLayout.SetMinimumSize)
 
         for exam in list_of_exams:
-            exam_checkbox = Qt.QCheckBox()
-
             exam_button = FlatButton(Qt.QIcon(common.EXAM30), exam)
-            exam_button.setFont(Qt.QFont('Arial', 20))
             exam_button.setIconSize(Qt.QSize(30, 30))
+            exam_button.setFont(Qt.QFont('Arial', 20))
             exam_button.clicked.connect(common.return_lambda(exam_function, exam))
 
             exam_layout = Qt.QHBoxLayout()
-            exam_layout.addWidget(exam_checkbox)
             exam_layout.addWidget(exam_button)
             exam_layout.addStretch(1)
 
@@ -43,19 +40,41 @@ class ExamsWidget(Qt.QWidget):
         scroll_widget.setLayout(scroll_layout)
         scroll_area.setWidget(scroll_widget)
 
-        add_button = FlatButton('Добавить')
-        add_button.setFont(Qt.QFont('Arial', 20))
-
-        remove_button = FlatButton('Удалить')
-        remove_button.setFont(Qt.QFont('Arial', 20))
+        create_button = FlatButton(Qt.QIcon(common.CREATE), 'Создать экзамен')
+        create_button.setIconSize(Qt.QSize(40, 40))
+        create_button.setFont(Qt.QFont('Arial', 20))
+        create_button.clicked.connect(lambda _: create_function())
 
         lower_layout = Qt.QHBoxLayout()
-        lower_layout.addWidget(add_button)
+        lower_layout.addWidget(create_button)
         lower_layout.addStretch(1)
-        lower_layout.addWidget(remove_button)
 
         layout = Qt.QVBoxLayout()
         layout.addWidget(scroll_area)
         layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         layout.addLayout(lower_layout)
+        self.setLayout(layout)
+
+
+class MessagesWidget(Qt.QWidget):
+    """
+    Widget for home page with list of messages.
+    """
+    def __init__(self):
+        super().__init__()
+
+        layout = Qt.QVBoxLayout()
+        layout.addStretch(1)
+        self.setLayout(layout)
+
+
+class GroupWidget(Qt.QWidget):
+    """
+    Widget for home page with group info.
+    """
+    def __init__(self):
+        super().__init__()
+
+        layout = Qt.QVBoxLayout()
+        layout.addStretch(1)
         self.setLayout(layout)

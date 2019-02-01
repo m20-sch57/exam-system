@@ -85,13 +85,13 @@ class User:
         """
         Returns all question data in the exam.
         """
-        return self.server.get_exam(self.group, self.user, exam)
+        return self.server.get_exam_data(self.group, exam)
 
     def get_exam_info(self, exam):
         """
         Returns exam's info.
         """
-        return self.server.get_exam_info(self.group, self.user, exam)
+        return self.server.get_exam_info(self.group, exam)
 
 
 socket.setdefaulttimeout(3)

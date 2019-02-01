@@ -12,14 +12,24 @@ class HomePage(Qt.QWidget):
     """
     Teacher's home page.
     """
-    def __init__(self, widget_map):
+    def __init__(self, widget_map, exit_function):
         super().__init__()
         self.widget_map = widget_map
 
-        self.upper_layout = Qt.QHBoxLayout()
+        exit_button = FlatButton(Qt.QIcon(common.USER), '')
+        exit_button.setIconSize(Qt.QSize(40, 40))
+        exit_button.setFixedSize(exit_button.sizeHint())
+        exit_button.clicked.connect(lambda _: exit_function())
+
+        self.widget_layout = Qt.QHBoxLayout()
+        self.widget_layout.setSpacing(0)
+
+        upper_layout = Qt.QHBoxLayout()
+        upper_layout.addLayout(self.widget_layout)
+        upper_layout.addWidget(exit_button)
 
         layout = Qt.QVBoxLayout()
-        layout.addLayout(self.upper_layout)
+        layout.addLayout(upper_layout)
         layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         layout.addWidget(Qt.QWidget())
         self.setLayout(layout)
@@ -28,10 +38,10 @@ class HomePage(Qt.QWidget):
         """
         Displays the widget.
         """
-        while self.upper_layout.count() > 0:
-            old_widget = self.upper_layout.itemAt(0).widget()
+        while self.widget_layout.count() > 0:
+            old_widget = self.widget_layout.itemAt(0).widget()
             old_widget.deleteLater()
-            self.upper_layout.removeWidget(old_widget)
+            self.widget_layout.removeWidget(old_widget)
 
         for widget_name in self.widget_map.keys():
             widget_button = FlatButton(widget_name)
@@ -43,7 +53,7 @@ class HomePage(Qt.QWidget):
                     'color: blue;'
                     'border-bottom: 2px solid blue;'
                 )
-            self.upper_layout.addWidget(widget_button)
+            self.widget_layout.addWidget(widget_button)
 
         main_widget = self.widget_map[current_widget_name]()
         old_widget = self.layout().itemAt(2).widget()

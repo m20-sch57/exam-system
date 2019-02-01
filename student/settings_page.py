@@ -21,7 +21,6 @@ class SettingsPage(Qt.QWidget):
 
         settings_title = Qt.QLabel('Настройки')
         settings_title.setFont(Qt.QFont('Arial', 30))
-        settings_title.setAlignment(Qt.Qt.AlignCenter)
 
         server_title = Qt.QLabel('Соединение с сервером')
         server_title.setFont(Qt.QFont('Arial', 25))

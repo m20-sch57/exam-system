@@ -15,7 +15,6 @@ class StartExamPage(Qt.QWidget):
     def __init__(self, exam, exam_info, back_function, start_function):
         super().__init__()
         info_str = (
-            'Информация об экзамене:\n\n'
             'Продолжительность - ' + str(exam_info['duration']) + ' минут\n' +
             'Количество заданий - ' + str(exam_info['quantity'])
         )
@@ -30,6 +29,9 @@ class StartExamPage(Qt.QWidget):
         exam_title.setAlignment(Qt.Qt.AlignCenter)
         exam_title.setWordWrap(True)
 
+        info_title = Qt.QLabel('Информация')
+        info_title.setFont(Qt.QFont('Arial', 25))
+
         info_label = Qt.QLabel(info_str)
         info_label.setFont(Qt.QFont('Arial', 20))
         info_label.setWordWrap(True)
@@ -42,15 +44,20 @@ class StartExamPage(Qt.QWidget):
         upper_layout.addWidget(back_button)
         upper_layout.addWidget(exam_title)
 
+        info_layout = Qt.QHBoxLayout()
+        info_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
+        info_layout.addWidget(info_label)
+
         button_layout = Qt.QHBoxLayout()
-        button_layout.addSpacerItem(Qt.QSpacerItem(30, 0))
         button_layout.addWidget(start_button)
         button_layout.addStretch(1)
 
         layout = Qt.QVBoxLayout()
         layout.addLayout(upper_layout)
+        layout.addSpacerItem(Qt.QSpacerItem(0, 40))
+        layout.addWidget(info_title)
         layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        layout.addWidget(info_label)
+        layout.addLayout(info_layout)
         layout.addSpacerItem(Qt.QSpacerItem(0, 30))
         layout.addLayout(button_layout)
         layout.addStretch(1)

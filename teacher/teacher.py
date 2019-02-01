@@ -14,8 +14,10 @@ from settings_page import SettingsPage
 from login_page import LoginPage
 from register_page import RegisterPage
 from register_success_page import RegisterSuccessPage
+from confirm_page import ConfirmPage
 from home_page import HomePage
-from home_widgets import ExamsWidget
+from home_widgets import ExamsWidget, MessagesWidget, GroupWidget
+from exam_page import ExamPage
 
 
 def safe(function):
@@ -42,7 +44,7 @@ class Application(Qt.QApplication):
         self.window = Qt.QWidget()
         self.window.setStyleSheet(open(os.path.join('css', 'common_style.css')).read())
         self.window.setWindowTitle('Учитель')
-        self.window.setGeometry(200, 100, 1000, 800)
+        self.window.setGeometry(200, 100, 1000, 700)
         self.widget = Qt.QWidget(self.window)
         self.layout = Qt.QHBoxLayout(self.window)
         self.layout.addWidget(self.widget)
@@ -89,7 +91,7 @@ class Application(Qt.QApplication):
 
     def display_settings_page(self):
         """
-        Displays server error page.
+        Displays settings page.
         """
         self.display_widget(SettingsPage(
             self.user.get_settings(), self.check_ip, self.display_login_page, self.save_settings))
@@ -154,14 +156,63 @@ class Application(Qt.QApplication):
         """
         widget_map = {
             'Экзамены': lambda: ExamsWidget(
-                self.user, self.user.list_of_exams(), self.logout),
-            'Сообщения': lambda: ExamsWidget(
-                self.user, self.user.list_of_exams(), self.logout),
-            'Группа': lambda: ExamsWidget(
-                self.user, self.user.list_of_exams(), self.logout)
+                self.user.list_of_exams(), self.display_exam,
+                lambda: self.display_confirm_page(self.display_home_page, self.logout)),
+            'Сообщения': MessagesWidget,
+            'Группа': GroupWidget
         }
-        self.display_widget(HomePage(widget_map))
+        self.display_widget(HomePage(widget_map, self.logout))
         self.widget.display('Экзамены')
+
+    def display_confirm_page(self, back_function, main_function):
+        """
+        Displays confirmation page.
+        """
+        self.display_widget(ConfirmPage(back_function, main_function))
+
+    def display_exam(self, exam):
+        """
+        Displays the exam.
+        """
+        self.display_widget(ExamPage(
+            exam,
+            self.display_home_page,
+            self.view_exam_question,
+            self.view_exam_settings,
+            self.logout,
+            self.get_settings_widget,
+            self.get_question_widget))
+        self.view_exam_settings(exam)
+
+    @safe
+    def view_exam_settings(self, exam):
+        """
+        Displays exam settings.
+        """
+        exam_data = self.user.get_exam(exam)
+        exam_info = self.user.get_exam_info(exam)
+        self.widget.display_settings(exam_data, exam_info)
+
+    @safe
+    def view_exam_question(self, exam, question):
+        """
+        Displays selected question.
+        """
+        exam_data = self.user.get_exam(exam)
+        exam_info = self.user.get_exam_info(exam)
+        self.widget.display_question(question, exam_data, exam_info)
+
+    def get_question_widget(self, parent):
+        """
+        Returns the question widget depending on it's type.
+        """
+        return MessagesWidget()
+
+    def get_settings_widget(self, parent):
+        """
+        Returns the settings widget for the exam.
+        """
+        return MessagesWidget()
 
 
 if __name__ == "__main__":

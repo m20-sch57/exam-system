@@ -18,8 +18,8 @@ class HomePage(Qt.QWidget):
         group_title = Qt.QLabel('Группа ' + user.group)
         group_title.setFont(Qt.QFont('Arial', 30))
 
-        exit_button = FlatButton('Выйти')
-        exit_button.setFont(Qt.QFont('Arial', 20))
+        exit_button = FlatButton(Qt.QIcon(common.USER), '')
+        exit_button.setIconSize(Qt.QSize(40, 40))
         exit_button.clicked.connect(lambda _: exit_function())
 
         scroll_area = Qt.QScrollArea()
@@ -30,8 +30,8 @@ class HomePage(Qt.QWidget):
 
         for exam in list_of_exams:
             exam_button = FlatButton(Qt.QIcon(common.EXAM30), exam)
-            exam_button.setFont(Qt.QFont('Arial', 20))
             exam_button.setIconSize(Qt.QSize(30, 30))
+            exam_button.setFont(Qt.QFont('Arial', 20))
             exam_button.clicked.connect(common.return_lambda(exam_function, exam))
 
             exam_layout = Qt.QHBoxLayout()

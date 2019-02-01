@@ -48,7 +48,7 @@ class QuestionShortChecked(QuestionBase):
     """
     def __init__(self, parent, view_question_function):
         super().__init__(parent)
-        question_style = common.get_question_style(self.question_data)
+        question_style = common.main_question_style(self.question_data)
 
         statement_label = Qt.QLabel(self.question_data['statement'])
         statement_label.setFont(Qt.QFont('Arial', 20))
@@ -79,9 +79,9 @@ class QuestionShortChecked(QuestionBase):
         self.lower_layout.addWidget(answer_title)
         self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         self.lower_layout.addWidget(answer_input)
-        self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
+        self.lower_layout.addSpacerItem(Qt.QSpacerItem(10, 0))
         self.lower_layout.addWidget(status_img)
-        self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
+        self.lower_layout.addSpacerItem(Qt.QSpacerItem(10, 0))
         self.lower_layout.addStretch(1)
         if parent.question < len(parent.exam_data):
             self.lower_layout.addWidget(next_button)
@@ -103,7 +103,7 @@ class QuestionShortDetails(QuestionBase):
         current_score = self.question_data['score']
         if current_score is False:
             current_score = '0'
-        question_style = common.get_question_style(self.question_data)
+        question_style = common.main_question_style(self.question_data)
 
         statement_label = Qt.QLabel(self.question_data['statement'])
         statement_label.setFont(Qt.QFont('Arial', 20))
