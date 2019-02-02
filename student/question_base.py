@@ -19,6 +19,7 @@ class QuestionBase(Qt.QWidget):
         scroll_area.setFrameShape(Qt.QFrame.NoFrame)
 
         self.layout = Qt.QVBoxLayout()
+        self.layout.setContentsMargins(0, 0, 10, 10)
         self.lower_layout = Qt.QHBoxLayout()
 
         scroll_widget = Qt.QWidget()

@@ -50,6 +50,7 @@ class ExamsWidget(Qt.QWidget):
         lower_layout.addStretch(1)
 
         layout = Qt.QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(scroll_area)
         layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         layout.addLayout(lower_layout)

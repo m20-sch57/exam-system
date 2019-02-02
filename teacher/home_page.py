@@ -28,8 +28,12 @@ class HomePage(Qt.QWidget):
         upper_layout.addLayout(self.widget_layout)
         upper_layout.addWidget(exit_button)
 
+        upper_panel = Qt.QFrame()
+        upper_panel.setLayout(upper_layout)
+        upper_panel.setStyleSheet('background: #f5f5f5')
+
         layout = Qt.QVBoxLayout()
-        layout.addLayout(upper_layout)
+        layout.addWidget(upper_panel)
         layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         layout.addWidget(Qt.QWidget())
         self.setLayout(layout)
@@ -51,7 +55,7 @@ class HomePage(Qt.QWidget):
             if widget_name == current_widget_name:
                 widget_button.setStyleSheet(
                     'color: blue;'
-                    'border-bottom: 2px solid blue;'
+                    'border-bottom: 3px solid blue;'
                 )
             self.widget_layout.addWidget(widget_button)
 
