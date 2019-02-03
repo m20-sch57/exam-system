@@ -30,7 +30,7 @@ class HomePage(Qt.QWidget):
 
         upper_panel = Qt.QFrame()
         upper_panel.setLayout(upper_layout)
-        upper_panel.setStyleSheet('background: #f5f5f5')
+        upper_panel.setStyleSheet('background: #F5F5F5')
 
         layout = Qt.QVBoxLayout()
         layout.addWidget(upper_panel)

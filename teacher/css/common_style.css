@@ -37,7 +37,7 @@ QPlainTextEdit:focus, QLineEdit:focus {
     border-color: #99D1FF;
 }
 .QFrame {
-    border: 2px solid grey;
+    border: 1px solid grey;
     border-radius: 10px;
 }
 QCheckBox::indicator {

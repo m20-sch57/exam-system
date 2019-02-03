@@ -18,6 +18,7 @@ from confirm_page import ConfirmPage
 from home_page import HomePage
 from home_widgets import ExamsWidget, MessagesWidget, GroupWidget
 from exam_page import ExamPage
+from exam_settings import ExamSettings
 
 
 def safe(function):
@@ -212,7 +213,7 @@ class Application(Qt.QApplication):
         """
         Returns the settings widget for the exam.
         """
-        return MessagesWidget()
+        return ExamSettings(parent)
 
 
 if __name__ == "__main__":

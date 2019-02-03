@@ -40,7 +40,7 @@ class ExamsWidget(Qt.QWidget):
         scroll_widget.setLayout(scroll_layout)
         scroll_area.setWidget(scroll_widget)
 
-        create_button = FlatButton(Qt.QIcon(common.CREATE), 'Создать экзамен')
+        create_button = Qt.QPushButton(Qt.QIcon(common.CREATE), 'Создать экзамен')
         create_button.setIconSize(Qt.QSize(40, 40))
         create_button.setFont(Qt.QFont('Arial', 20))
         create_button.clicked.connect(lambda _: create_function())

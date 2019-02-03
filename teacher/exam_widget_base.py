@@ -1,18 +1,20 @@
 """
-Contains base class for question widgets.
+Contains base class for exam widgets.
 """
 
 
 from PyQt5 import Qt
 
 
-class QuestionBase(Qt.QWidget):
+class ExamWidgetBase(Qt.QWidget):
     """
-    Question basic class.
+    Exam widget base class.
     """
     def __init__(self, parent):
         super().__init__()
-        self.question_data = parent.exam_data[parent.question - 1]
+        self.exam = parent.exam
+        self.exam_data = parent.exam_data
+        self.exam_info = parent.exam_info
 
         scroll_area = Qt.QScrollArea()
         scroll_area.setWidgetResizable(True)
