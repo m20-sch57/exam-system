@@ -18,7 +18,7 @@ from confirm_page import ConfirmPage
 from home_page import HomePage
 from home_widgets import ExamsWidget, MessagesWidget, GroupWidget
 from exam_page import ExamPage
-from exam_settings import ExamSettings
+from exam_widgets import ExamSettings, QuestionShortEdit, QuestionUndefined
 
 
 def safe(function):
@@ -180,7 +180,7 @@ class Application(Qt.QApplication):
             self.display_home_page,
             self.view_exam_question,
             self.view_exam_settings,
-            self.logout,
+            self.create_question,
             self.get_settings_widget,
             self.get_question_widget))
         self.view_exam_settings(exam)
@@ -207,13 +207,41 @@ class Application(Qt.QApplication):
         """
         Returns the question widget depending on it's type.
         """
-        return MessagesWidget()
+        question_data = parent.exam_data[parent.question - 1]
+        if question_data['type'] == 'Short':
+            return QuestionShortEdit(parent)
+        else:
+            return QuestionUndefined(parent, self.reset_question)
 
     def get_settings_widget(self, parent):
         """
         Returns the settings widget for the exam.
         """
-        return ExamSettings(parent)
+        return ExamSettings(parent, self.save_exam_settings)
+
+    @safe
+    def save_exam_settings(self, exam, settings):
+        """
+        Saves exam's settings.
+        """
+        self.user.save_exam_settings(exam, settings)
+        self.widget.widget.set_succeeded_state()
+
+    @safe
+    def create_question(self, exam):
+        """
+        Creates question with this type.
+        """
+        question = self.user.create_question(exam)
+        self.view_exam_question(exam, question)
+
+    @safe
+    def reset_question(self, exam, question, question_type):
+        """
+        Assigns type of question to question_type.
+        """
+        self.user.reset_question(exam, question, question_type)
+        self.view_exam_question(exam, question)
 
 
 if __name__ == "__main__":

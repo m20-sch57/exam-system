@@ -93,5 +93,29 @@ class User:
         """
         return self.server.get_exam_info(self.group, exam)
 
+    def save_exam_settings(self, exam, settings):
+        """
+        Saves exam's settings.
+        """
+        return self.server.set_exam_info(self.group, exam, settings)
+
+    def save_question(self, exam, question, data):
+        """
+        Saves question data.
+        """
+        return self.server.set_question_data(self.group, exam, question, data)
+
+    def create_question(self, exam):
+        """
+        Creates question with this type.
+        """
+        return self.server.create_question(self.group, exam)
+
+    def reset_question(self, exam, question, question_type):
+        """
+        Assigns type of question to question_type.
+        """
+        return self.server.reset_question(self.group, exam, question, question_type)
+
 
 socket.setdefaulttimeout(3)

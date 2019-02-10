@@ -25,9 +25,8 @@ class QuestionLong(QuestionBase):
         self.status_label = Qt.QLabel()
         self.status_label.setFont(Qt.QFont('Arial', 20))
 
-        answer_input = Qt.QPlainTextEdit()
+        answer_input = Qt.QPlainTextEdit(answer)
         answer_input.setFont(Qt.QFont('Arial', 20))
-        answer_input.setPlainText(answer)
         answer_input.textChanged.connect(
             lambda: self.update_saved_status(answer, answer_input.toPlainText()))
         if self.question_data['answer'] is not False:
@@ -87,9 +86,8 @@ class QuestionLongDetails(QuestionBase):
         statement_label.setFont(Qt.QFont('Arial', 20))
         statement_label.setWordWrap(True)
 
-        answer_input = Qt.QPlainTextEdit()
+        answer_input = Qt.QPlainTextEdit(current_answer)
         answer_input.setFont(Qt.QFont('Arial', 20))
-        answer_input.setPlainText(current_answer)
         answer_input.setReadOnly(True)
 
         score_title = Qt.QLabel('Получено баллов:')

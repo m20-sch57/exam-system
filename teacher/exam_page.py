@@ -50,6 +50,9 @@ class ExamPage(Qt.QWidget):
         create_button.setCursor(Qt.Qt.PointingHandCursor)
         create_button.setFixedSize(Qt.QSize(50, 50))
         create_button.setIconSize(Qt.QSize(40, 40))
+        create_button.clicked.connect(lambda: self.create_function(self.exam))
+
+        self.widget = Qt.QWidget()
 
         scroll_layout = Qt.QHBoxLayout()
         scroll_layout.setSpacing(0)
@@ -72,7 +75,7 @@ class ExamPage(Qt.QWidget):
         layout = Qt.QVBoxLayout()
         layout.addLayout(upper_layout)
         layout.addSpacerItem(Qt.QSpacerItem(0, 10))
-        layout.addWidget(Qt.QWidget())
+        layout.addWidget(self.widget)
         self.setLayout(layout)
 
     def display_question(self, question, exam_data, exam_info):
@@ -84,11 +87,11 @@ class ExamPage(Qt.QWidget):
         self.exam_info = exam_info
         self.refresh()
 
-        question_widget = self.get_question_function(self)
         old_widget = self.layout().itemAt(2).widget()
         old_widget.deleteLater()
         self.layout().removeWidget(old_widget)
-        self.layout().addWidget(question_widget)
+        self.widget = self.get_question_function(self)
+        self.layout().addWidget(self.widget)
 
     def display_settings(self, exam_data, exam_info):
         """
@@ -99,11 +102,11 @@ class ExamPage(Qt.QWidget):
         self.exam_info = exam_info
         self.refresh()
 
-        settings_widget = self.get_settings_function(self)
         old_widget = self.layout().itemAt(2).widget()
         old_widget.deleteLater()
         self.layout().removeWidget(old_widget)
-        self.layout().addWidget(settings_widget)
+        self.widget = self.get_settings_function(self)
+        self.layout().addWidget(self.widget)
 
     def refresh(self):
         """

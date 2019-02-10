@@ -103,26 +103,23 @@ def login_teacher(group, user, password):
     return True
 
 
+def set_question_data(group, exam, question, data):
+    """
+    Updates all question.
+    """
+    question_item = Item(os.path.join('data', group, 'exams', exam, str(question)))
+    for item, value in data.items():
+        question_item.set_item(item, value)
+    return True
+
+
 def get_question_data(group, exam, question):
     """
     Returns question data.
     """
     question_item = Item(os.path.join('data', group, 'exams', exam, str(question)))
-    if question_item.get_item('type') == 'Short':
-        return {
-            'type': question_item.get_item('type'),
-            'statement': question_item.get_item('statement'),
-            'correct': question_item.get_item('correct'),
-            'maxscore': question_item.get_item('maxscore')
-        }
-    elif question_item.get_item('type') == 'Long':
-        return {
-            'type': question_item.get_item('type'),
-            'statement': question_item.get_item('statement'),
-            'maxscore': question_item.get_item('maxscore')
-        }
-    else:
-        return {}
+    question_type = question_item.get_item('type')
+    return {item: question_item.get_item(item) for item in TYPE_ITEMS[question_type]}
 
 
 def get_question_data_user(group, user, exam, question):
@@ -135,6 +132,34 @@ def get_question_data_user(group, user, exam, question):
         'answer': student_item.get_item('answer'),
         'score': student_item.get_item('score')
     }
+
+
+def create_question(group, exam):
+    """
+    Creates question with this type.
+    """
+    question = get_exam_info(group, exam)['quantity'] + 1
+    set_question_data(group, exam, question, {'type': ''})
+    return question
+
+
+def reset_question(group, exam, question, question_type):
+    """
+    Assigns type of question to question_type and adds other items.
+    """
+    set_question_data(group, exam, question, {item: '' for item in TYPE_ITEMS[question_type]})
+    set_question_data(group, exam, question, {'type': question_type, 'maxscore': 1})
+    return True
+
+
+def set_exam_info(group, exam, data):
+    """
+    Updates exam's info.
+    """
+    exam_item = Item(os.path.join('data', group, 'exams', exam, 'settings'))
+    for item, value in data.items():
+        exam_item.set_item(item, value)
+    return True
 
 
 def get_exam_info(group, exam):
@@ -273,6 +298,12 @@ def check(group, user, exam, question):
 
 
 ENCODING = 'utf-8-sig'
+TYPE_ITEMS = {
+    'Short': {'type', 'statement', 'correct', 'maxscore'},
+    'Long': {'type', 'statement', 'maxscore'},
+    '': {'type'}
+}
+
 SERVER = SimpleXMLRPCServer(('', 8000))
 
 SERVER.register_function(ping)
@@ -280,12 +311,18 @@ SERVER.register_function(register_student)
 SERVER.register_function(register_teacher)
 SERVER.register_function(login_student)
 SERVER.register_function(login_teacher)
+
+SERVER.register_function(set_question_data)
 SERVER.register_function(get_question_data)
 SERVER.register_function(get_question_data_user)
+SERVER.register_function(create_question)
+SERVER.register_function(reset_question)
+SERVER.register_function(set_exam_info)
 SERVER.register_function(get_exam_info)
 SERVER.register_function(get_exam_info_user)
 SERVER.register_function(get_exam_data)
 SERVER.register_function(get_exam_data_user)
+
 SERVER.register_function(list_of_exams)
 SERVER.register_function(list_of_published_exams)
 SERVER.register_function(start_exam)

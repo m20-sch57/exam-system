@@ -51,8 +51,9 @@ class SettingsPage(Qt.QWidget):
         save_button = Qt.QPushButton('Сохранить')
         save_button.setFont(Qt.QFont('Arial', 20))
         save_button.clicked.connect(lambda: save_function(
-            {'server': server_ip_input.text(),
-             'autofill': autosave_password_checkbox.isChecked()
+            {
+                'server': server_ip_input.text(),
+                'autofill': autosave_password_checkbox.isChecked()
             }
         ))
 

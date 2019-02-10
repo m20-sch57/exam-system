@@ -36,6 +36,7 @@ class ExamPage(Qt.QWidget):
 
         self.questions_layout = Qt.QHBoxLayout()
         self.questions_layout.setSpacing(0)
+        self.widget = Qt.QWidget()
 
         scroll_layout = Qt.QHBoxLayout()
         scroll_layout.setSizeConstraint(Qt.QLayout.SetMinimumSize)
@@ -56,7 +57,7 @@ class ExamPage(Qt.QWidget):
         layout.addLayout(upper_layout)
         layout.addSpacerItem(Qt.QSpacerItem(0, 10))
         layout.addWidget(Qt.QWidget())
-        layout.addWidget(Qt.QWidget())
+        layout.addWidget(self.widget)
         self.setLayout(layout)
 
     def display(self, question, exam_data, exam_info):
@@ -68,16 +69,16 @@ class ExamPage(Qt.QWidget):
         self.exam_info = exam_info
         self.refresh()
 
-        status_widget = self.get_exam_status_function(self)
-        question_widget = self.get_question_function(self)
         old_widget = self.layout().itemAt(3).widget()
         old_widget.deleteLater()
         self.layout().removeWidget(old_widget)
         old_widget = self.layout().itemAt(2).widget()
         old_widget.deleteLater()
         self.layout().removeWidget(old_widget)
+        status_widget = self.get_exam_status_function(self)
+        self.widget = self.get_question_function(self)
         self.layout().addWidget(status_widget)
-        self.layout().addWidget(question_widget)
+        self.layout().addWidget(self.widget)
 
     def refresh(self):
         """
