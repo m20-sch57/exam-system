@@ -18,7 +18,9 @@ from confirm_page import ConfirmPage
 from home_page import HomePage
 from home_widgets import ExamsWidget, MessagesWidget, GroupWidget
 from exam_page import ExamPage
-from exam_widgets import ExamSettings, QuestionShortEdit, QuestionUndefined
+from exam_widgets import ExamSettings
+from exam_widgets import QuestionError, QuestionUndefined
+from exam_widgets import QuestionShortEdit, QuestionLongEdit
 
 
 def safe(function):
@@ -207,9 +209,13 @@ class Application(Qt.QApplication):
         """
         Returns the question widget depending on it's type.
         """
+        if len(parent.exam_data) < parent.question:
+            return QuestionError()
         question_data = parent.exam_data[parent.question - 1]
         if question_data['type'] == 'Short':
-            return QuestionShortEdit(parent)
+            return QuestionShortEdit(parent, self.save_question)
+        elif question_data['type'] == 'Long':
+            return QuestionLongEdit(parent, self.save_question)
         else:
             return QuestionUndefined(parent, self.reset_question)
 
@@ -242,6 +248,14 @@ class Application(Qt.QApplication):
         """
         self.user.reset_question(exam, question, question_type)
         self.view_exam_question(exam, question)
+
+    @safe
+    def save_question(self, exam, question, question_data):
+        """
+        Saves question data.
+        """
+        self.user.save_question(exam, question, question_data)
+        self.widget.widget.set_succeeded_state()
 
 
 if __name__ == "__main__":

@@ -54,8 +54,8 @@ class HomePage(Qt.QWidget):
                 common.return_lambda(self.display, widget_name))
             if widget_name == current_widget_name:
                 widget_button.setStyleSheet(
-                    'color: blue;'
-                    'border-bottom: 3px solid blue;'
+                    'color: #2CA9FD;'
+                    'border-bottom: 3px solid #2CA9FD;;'
                 )
             self.widget_layout.addWidget(widget_button)
 
