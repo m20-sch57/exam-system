@@ -4,7 +4,6 @@ Contains common functions and variables.
 
 
 import os
-from PyQt5 import Qt
 
 
 def return_lambda(function, *args, **kwargs):
@@ -49,3 +48,4 @@ CROSS = os.path.join('images', 'cross.png')
 SETTINGS = os.path.join('images', 'settings.png')
 CREATE = os.path.join('images', 'create.png')
 DELETE = os.path.join('images', 'delete.png')
+SAVE = os.path.join('images', 'save.png')

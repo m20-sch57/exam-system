@@ -18,6 +18,7 @@ from home_page import HomePage
 from start_exam_page import StartExamPage
 from exam_page import ExamPage
 from exam_status import ExamRunning, ExamFinished
+from question_error import QuestionError
 from question_short import QuestionShort, QuestionShortChecked, QuestionShortDetails
 from question_long import QuestionLong, QuestionLongDetails
 
@@ -223,6 +224,8 @@ class Application(Qt.QApplication):
         """
         Returns the question widget depending on it's type.
         """
+        if len(parent.exam_data) < parent.question:
+            return QuestionError()
         question_data = parent.exam_data[parent.question - 1]
         if question_data['type'] == 'Short':
             if parent.exam_info['state'] == 'Finished':

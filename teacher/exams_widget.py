@@ -40,42 +40,24 @@ class ExamsWidget(Qt.QWidget):
         scroll_widget.setLayout(scroll_layout)
         scroll_area.setWidget(scroll_widget)
 
-        create_button = FlatButton(Qt.QIcon(common.CREATE), 'Создать экзамен')
+        create_button = Qt.QPushButton(Qt.QIcon(common.CREATE), 'Создать экзамен')
         create_button.setIconSize(Qt.QSize(40, 40))
         create_button.setFont(Qt.QFont('Arial', 20))
         create_button.clicked.connect(lambda _: create_function())
 
+        info_label = Qt.QLabel('Всего экзаменов - ' + str(len(list_of_exams)))
+        info_label.setFont(Qt.QFont('Arial', 20))
+
         lower_layout = Qt.QHBoxLayout()
         lower_layout.addWidget(create_button)
         lower_layout.addStretch(1)
+        lower_layout.addSpacerItem(Qt.QSpacerItem(10, 0))
+        lower_layout.addWidget(info_label)
+        lower_layout.addSpacerItem(Qt.QSpacerItem(10, 0))
 
         layout = Qt.QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(scroll_area)
         layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         layout.addLayout(lower_layout)
-        self.setLayout(layout)
-
-
-class MessagesWidget(Qt.QWidget):
-    """
-    Widget for home page with list of messages.
-    """
-    def __init__(self):
-        super().__init__()
-
-        layout = Qt.QVBoxLayout()
-        layout.addStretch(1)
-        self.setLayout(layout)
-
-
-class GroupWidget(Qt.QWidget):
-    """
-    Widget for home page with group info.
-    """
-    def __init__(self):
-        super().__init__()
-
-        layout = Qt.QVBoxLayout()
-        layout.addStretch(1)
         self.setLayout(layout)

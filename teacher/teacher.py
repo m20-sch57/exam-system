@@ -16,11 +16,15 @@ from register_page import RegisterPage
 from register_success_page import RegisterSuccessPage
 from confirm_page import ConfirmPage
 from home_page import HomePage
-from home_widgets import ExamsWidget, MessagesWidget, GroupWidget
+from exams_widget import ExamsWidget
+from messages_widget import MessagesWidget
+from group_widget import GroupWidget
 from exam_page import ExamPage
-from exam_widgets import ExamSettings
-from exam_widgets import QuestionError, QuestionUndefined
-from exam_widgets import QuestionShortEdit, QuestionLongEdit
+from exam_settings import ExamSettings
+from question_error import QuestionError
+from question_undefined import QuestionUndefined
+from question_short import QuestionShortEdit
+from question_long import QuestionLongEdit
 
 
 def safe(function):
