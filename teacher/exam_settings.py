@@ -102,8 +102,8 @@ class ExamSettings(ExamWidgetBase):
         saved_duration = self.exam_info['duration']
         saved_state = int(self.exam_info['published'])
         if saved_name == name and saved_duration == duration and saved_state == state:
-            self.status_label.setText('Изменения сохранены')
+            self.status_label.setText('Сохранено')
             self.status_label.setStyleSheet('color: ' + common.GREEN)
         else:
-            self.status_label.setText('Сохраните изменения')
+            self.status_label.setText('Сохраните')
             self.status_label.setStyleSheet('color: ' + common.RED)

@@ -100,7 +100,7 @@ class QuestionShortEdit(ExamWidgetBase):
         saved_maxscore = self.question_data['maxscore']
         if not maxscore.isdigit():
             self.maxscore_input.setStyleSheet('border-color: ' + common.RED)
-            self.status_label.setText('Должно быть числом')
+            self.status_label.setText('Не число')
             self.status_label.setStyleSheet('color: ' + common.RED)
             self.save_button.setDisabled(True)
             return
@@ -108,8 +108,8 @@ class QuestionShortEdit(ExamWidgetBase):
             self.maxscore_input.setStyleSheet('border-color: ' + common.GREEN)
             self.save_button.setEnabled(True)
         if saved_statement == statement and saved_correct == correct and saved_maxscore == maxscore:
-            self.status_label.setText('Изменения сохранены')
+            self.status_label.setText('Сохранено')
             self.status_label.setStyleSheet('color: ' + common.GREEN)
         else:
-            self.status_label.setText('Сохраните изменения')
+            self.status_label.setText('Сохраните')
             self.status_label.setStyleSheet('color: ' + common.RED)
