@@ -105,17 +105,17 @@ class User:
         """
         return self.server.finish_exam(self.group, self.user, exam)
 
-    def save_answer(self, exam, question, answer):
+    def check_short(self, exam, question, answer):
         """
-        Saves student's answer.
+        Checks the student's answer to the short question.
         """
-        return self.server.save_answer(self.group, self.user, exam, question, answer)
+        return self.server.check_short(self.group, self.user, exam, question, answer)
 
-    def check(self, exam, question):
+    def check_long(self, exam, question, answer):
         """
-        Checks student's answer.
+        Checks the student's answer to the long question.
         """
-        return self.server.check(self.group, self.user, exam, question)
+        return self.server.check_long(self.group, self.user, exam, question, answer)
 
 
 socket.setdefaulttimeout(3)

@@ -270,30 +270,28 @@ def finish_exam(group, user, exam):
     return True
 
 
-def save_answer(group, user, exam, question, answer):
+def check_short(group, user, exam, question, answer):
     """
-    Saves student's answer.
+    Checks student's answer of the short question.
     """
     student_item = Item(os.path.join('data', group, 'students', user, 'exams', exam, str(question)))
+    question_data = get_question_data_user(group, user, exam, question)
+    correct = question_data['correct'].split('\n')
     student_item.set_item('answer', answer)
+    if format_str(answer) in [format_str(s) for s in correct]:
+        student_item.set_item('score', question_data['maxscore'])
+    else:
+        student_item.set_item('score', 0)
     return True
 
 
-def check(group, user, exam, question):
+def check_long(group, user, exam, question, answer):
     """
-    Checks student's answer to the short question.
+    Checks student's answer of the long question.
     """
-    question_data = get_question_data_user(group, user, exam, question)
     student_item = Item(os.path.join('data', group, 'students', user, 'exams', exam, str(question)))
-    if question_data['type'] == 'Short':
-        answer = student_item.get_item('answer')
-        correct = question_data['correct'].split('\n')
-        if format_str(answer) in [format_str(s) for s in correct]:
-            student_item.set_item('score', question_data['maxscore'])
-        else:
-            student_item.set_item('score', 0)
-    elif question_data['type'] == 'Long':
-        student_item.set_item('score', -1)
+    student_item.set_item('answer', answer)
+    student_item.set_item('score', -1)
     return True
 
 
@@ -327,7 +325,7 @@ SERVER.register_function(list_of_exams)
 SERVER.register_function(list_of_published_exams)
 SERVER.register_function(start_exam)
 SERVER.register_function(finish_exam)
-SERVER.register_function(save_answer)
-SERVER.register_function(check)
+SERVER.register_function(check_short)
+SERVER.register_function(check_long)
 
 SERVER.serve_forever()

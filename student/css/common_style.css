@@ -15,6 +15,9 @@
     background-color: #3DD3ED;
     border-color: #3DD3ED;
 }
+.QPushButton:disabled {
+    color: grey;
+}
 FlatButton {
     border-width: 0px;
     border-radius: 0px;

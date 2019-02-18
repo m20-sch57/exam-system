@@ -235,7 +235,8 @@ class Application(Qt.QApplication):
         Saves exam's settings.
         """
         self.user.save_exam_settings(exam, settings)
-        self.widget.widget.set_succeeded_state()
+        self.view_exam_settings(exam)
+        self.widget.widget.update_saved_status()
 
     @safe
     def create_question(self, exam):
@@ -259,7 +260,8 @@ class Application(Qt.QApplication):
         Saves question data.
         """
         self.user.save_question(exam, question, question_data)
-        self.widget.widget.set_succeeded_state()
+        self.view_exam_question(exam, question)
+        self.widget.widget.update_saved_status()
 
 
 if __name__ == "__main__":

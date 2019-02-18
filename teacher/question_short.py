@@ -14,38 +14,41 @@ class QuestionShortEdit(ExamWidgetBase):
     """
     def __init__(self, parent, save_function):
         super().__init__(parent)
-        question_data = self.exam_data[self.question - 1]
+        self.question_data = self.exam_data[self.question - 1]
 
         statement_title = Qt.QLabel('Текст вопроса ' + str(self.question) + ':')
         statement_title.setFont(Qt.QFont('Arial', 25))
 
-        statement_input = Qt.QPlainTextEdit(question_data['statement'])
-        statement_input.setFont(Qt.QFont('Arial', 20))
-        statement_input.setMinimumHeight(220)
+        self.statement_input = Qt.QPlainTextEdit(self.question_data['statement'])
+        self.statement_input.setFont(Qt.QFont('Arial', 20))
+        self.statement_input.setMinimumHeight(220)
+        self.statement_input.textChanged.connect(self.update_saved_status)
 
         answer_title = Qt.QLabel('Правильный ответ:')
         answer_title.setFont(Qt.QFont('Arial', 25))
 
-        answer_input = Qt.QLineEdit(question_data['correct'].replace('\n', '; '))
-        answer_input.setFont(Qt.QFont('Arial', 20))
-        answer_input.setCursorPosition(0)
+        self.answer_input = Qt.QLineEdit(self.question_data['correct'].replace('\n', '; '))
+        self.answer_input.setFont(Qt.QFont('Arial', 20))
+        self.answer_input.setCursorPosition(0)
+        self.answer_input.textChanged.connect(self.update_saved_status)
 
         maxscore_title = Qt.QLabel('Максимальный балл:')
         maxscore_title.setFont(Qt.QFont('Arial', 25))
 
-        maxscore_input = Qt.QLineEdit(str(question_data['maxscore']))
-        maxscore_input.setFont(Qt.QFont('Arial', 20))
+        self.maxscore_input = Qt.QLineEdit(str(self.question_data['maxscore']))
+        self.maxscore_input.setFont(Qt.QFont('Arial', 20))
+        self.maxscore_input.textChanged.connect(self.update_saved_status)
 
-        save_button = Qt.QPushButton(Qt.QIcon(common.SAVE), 'Сохранить')
-        save_button.setIconSize(Qt.QSize(40, 40))
-        save_button.setFont(Qt.QFont('Arial', 20))
-        save_button.clicked.connect(lambda: save_function(
+        self.save_button = Qt.QPushButton(Qt.QIcon(common.SAVE), 'Сохранить')
+        self.save_button.setIconSize(Qt.QSize(40, 40))
+        self.save_button.setFont(Qt.QFont('Arial', 20))
+        self.save_button.clicked.connect(lambda: save_function(
             self.exam, self.question,
             {
-                'type': question_data['type'],
-                'statement': statement_input.toPlainText(),
-                'correct': answer_input.text().replace('; ', '\n'),
-                'maxscore': maxscore_input.text()
+                'type': self.question_data['type'],
+                'statement': self.statement_input.toPlainText(),
+                'correct': self.answer_input.text().replace('; ', '\n'),
+                'maxscore': self.maxscore_input.text()
             }
         ))
 
@@ -63,9 +66,9 @@ class QuestionShortEdit(ExamWidgetBase):
         title_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
 
         input_layout = Qt.QVBoxLayout()
-        input_layout.addWidget(answer_input)
+        input_layout.addWidget(self.answer_input)
         input_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        input_layout.addWidget(maxscore_input)
+        input_layout.addWidget(self.maxscore_input)
         input_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
 
         main_layout = Qt.QHBoxLayout()
@@ -73,7 +76,7 @@ class QuestionShortEdit(ExamWidgetBase):
         main_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         main_layout.addLayout(input_layout)
 
-        self.lower_layout.addWidget(save_button)
+        self.lower_layout.addWidget(self.save_button)
         self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         self.lower_layout.addWidget(self.status_label)
         self.lower_layout.addStretch(1)
@@ -81,13 +84,32 @@ class QuestionShortEdit(ExamWidgetBase):
 
         self.layout.addWidget(statement_title)
         self.layout.addSpacerItem(Qt.QSpacerItem(0, 10))
-        self.layout.addWidget(statement_input)
+        self.layout.addWidget(self.statement_input)
         self.layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         self.layout.addLayout(main_layout)
 
-    def set_succeeded_state(self):
+    def update_saved_status(self):
         """
-        Sets succeeded state after saving.
+        Call after modifying.
         """
-        self.status_label.setText('Сохранено')
-        self.status_label.setStyleSheet('color: ' + common.GREEN)
+        statement = self.statement_input.toPlainText()
+        correct = self.answer_input.text()
+        maxscore = self.maxscore_input.text()
+        saved_statement = self.question_data['statement']
+        saved_correct = self.question_data['correct']
+        saved_maxscore = self.question_data['maxscore']
+        if not maxscore.isdigit():
+            self.maxscore_input.setStyleSheet('border-color: ' + common.RED)
+            self.status_label.setText('Должно быть числом')
+            self.status_label.setStyleSheet('color: ' + common.RED)
+            self.save_button.setDisabled(True)
+            return
+        else:
+            self.maxscore_input.setStyleSheet('border-color: ' + common.GREEN)
+            self.save_button.setEnabled(True)
+        if saved_statement == statement and saved_correct == correct and saved_maxscore == maxscore:
+            self.status_label.setText('Изменения сохранены')
+            self.status_label.setStyleSheet('color: ' + common.GREEN)
+        else:
+            self.status_label.setText('Сохраните изменения')
+            self.status_label.setStyleSheet('color: ' + common.RED)

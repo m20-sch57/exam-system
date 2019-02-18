@@ -14,9 +14,6 @@ class QuestionLong(QuestionBase):
     """
     def __init__(self, parent, check_function, view_question_function):
         super().__init__(parent)
-        answer = self.question_data['answer']
-        if answer is False:
-            answer = ''
 
         statement_label = Qt.QLabel(self.question_data['statement'])
         statement_label.setFont(Qt.QFont('Arial', 20))
@@ -25,17 +22,16 @@ class QuestionLong(QuestionBase):
         self.status_label = Qt.QLabel()
         self.status_label.setFont(Qt.QFont('Arial', 20))
 
-        answer_input = Qt.QPlainTextEdit(answer)
-        answer_input.setFont(Qt.QFont('Arial', 20))
-        answer_input.textChanged.connect(
-            lambda: self.update_saved_status(answer, answer_input.toPlainText()))
+        self.answer_input = Qt.QPlainTextEdit()
+        self.answer_input.setFont(Qt.QFont('Arial', 20))
         if self.question_data['answer'] is not False:
-            self.update_saved_status(answer, answer_input.toPlainText())
+            self.answer_input.setPlainText(self.question_data['answer'])
+        self.answer_input.textChanged.connect(self.update_saved_status)
 
         save_button = Qt.QPushButton('Сохранить')
         save_button.setFont(Qt.QFont('Arial', 20))
         save_button.clicked.connect(
-            lambda: check_function(parent.exam, parent.question, answer_input.toPlainText()))
+            lambda: check_function(parent.exam, parent.question, self.answer_input.toPlainText()))
 
         next_button = Qt.QPushButton('Далее')
         next_button.setFont(Qt.QFont('Arial', 20))
@@ -52,13 +48,15 @@ class QuestionLong(QuestionBase):
 
         self.layout.addWidget(statement_label)
         self.layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        self.layout.addWidget(answer_input)
+        self.layout.addWidget(self.answer_input)
 
-    def update_saved_status(self, saved_answer, current_answer):
+    def update_saved_status(self):
         """
-        Call if current student's answer has changed.
+        Call after modifying.
         """
-        if saved_answer == current_answer:
+        answer = self.question_data['answer']
+        saved_answer = self.answer_input.toPlainText()
+        if saved_answer == answer:
             self.status_label.setText('Изменения сохранены')
             self.status_label.setStyleSheet('color: ' + common.GREEN)
         else:

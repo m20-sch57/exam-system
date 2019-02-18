@@ -233,21 +233,29 @@ class Application(Qt.QApplication):
             elif question_data['score'] is not False:
                 return QuestionShortChecked(parent, self.view_question)
             else:
-                return QuestionShort(parent, self.check_answer)
+                return QuestionShort(parent, self.check_short)
         elif question_data['type'] == 'Long':
             if parent.exam_info['state'] == 'Finished':
                 return QuestionLongDetails(parent)
             else:
-                return QuestionLong(parent, self.check_answer, self.view_question)
+                return QuestionLong(parent, self.check_long, self.view_question)
 
     @safe
-    def check_answer(self, exam, question, answer):
+    def check_short(self, exam, question, answer):
         """
-        Checks the student's answer and refreshes the page.
+        Checks the student's answer to the short question and refreshes the page.
         """
-        self.user.save_answer(exam, question, answer)
-        self.user.check(exam, question)
+        self.user.check_short(exam, question, answer)
         self.view_question(exam, question)
+
+    @safe
+    def check_long(self, exam, question, answer):
+        """
+        Checks the student's answer to the long question and refreshes the page.
+        """
+        self.user.check_long(exam, question, answer)
+        self.view_question(exam, question)
+        self.widget.widget.update_saved_status()
 
 
 if __name__ == "__main__":

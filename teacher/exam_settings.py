@@ -21,23 +21,26 @@ class ExamSettings(ExamWidgetBase):
         name_title = Qt.QLabel('Название экзамена:')
         name_title.setFont(Qt.QFont('Arial', 20))
 
-        name_input = Qt.QLineEdit(self.exam)
-        name_input.setFont(Qt.QFont('Arial', 20))
-        name_input.setCursorPosition(0)
+        self.name_input = Qt.QLineEdit(self.exam)
+        self.name_input.setFont(Qt.QFont('Arial', 20))
+        self.name_input.setCursorPosition(0)
+        self.name_input.textChanged.connect(self.update_saved_status)
 
         duration_title = Qt.QLabel('Продолжительность (в минутах):')
         duration_title.setFont(Qt.QFont('Arial', 20))
 
-        duration_input = Qt.QLineEdit(self.exam_info['duration'])
-        duration_input.setFont(Qt.QFont('Arial', 20))
+        self.duration_input = Qt.QLineEdit(self.exam_info['duration'])
+        self.duration_input.setFont(Qt.QFont('Arial', 20))
+        self.duration_input.textChanged.connect(self.update_saved_status)
 
         state_title = Qt.QLabel('Для участия:')
         state_title.setFont(Qt.QFont('Arial', 20))
 
-        state_box = Qt.QComboBox()
-        state_box.setFont(Qt.QFont('Arial', 20))
-        state_box.addItems(['Недоступен', 'Открыт'])
-        state_box.setCurrentIndex(int(self.exam_info['published']))
+        self.state_box = Qt.QComboBox()
+        self.state_box.setFont(Qt.QFont('Arial', 20))
+        self.state_box.addItems(['Недоступен', 'Открыт'])
+        self.state_box.setCurrentIndex(int(self.exam_info['published']))
+        self.state_box.currentIndexChanged.connect(self.update_saved_status)
 
         save_button = Qt.QPushButton(Qt.QIcon(common.SAVE), 'Сохранить')
         save_button.setIconSize(Qt.QSize(40, 40))
@@ -45,8 +48,8 @@ class ExamSettings(ExamWidgetBase):
         save_button.clicked.connect(lambda: save_function(
             self.exam,
             {
-                'duration': duration_input.text(),
-                'published': state_box.currentIndex()
+                'duration': self.duration_input.text(),
+                'published': self.state_box.currentIndex()
             }
         ))
 
@@ -65,11 +68,11 @@ class ExamSettings(ExamWidgetBase):
         title_layout.addWidget(state_title)
 
         input_layout = Qt.QVBoxLayout()
-        input_layout.addWidget(name_input)
+        input_layout.addWidget(self.name_input)
         input_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        input_layout.addWidget(duration_input)
+        input_layout.addWidget(self.duration_input)
         input_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        input_layout.addWidget(state_box)
+        input_layout.addWidget(self.state_box)
 
         main_layout = Qt.QHBoxLayout()
         main_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
@@ -88,9 +91,19 @@ class ExamSettings(ExamWidgetBase):
         self.layout.addLayout(main_layout)
         self.layout.addStretch(1)
 
-    def set_succeeded_state(self):
+    def update_saved_status(self):
         """
-        Sets succeeded state after saving.
+        Call after modifying.
         """
-        self.status_label.setText('Сохранено')
-        self.status_label.setStyleSheet('color: ' + common.GREEN)
+        name = self.name_input.text()
+        duration = self.duration_input.text()
+        state = self.state_box.currentIndex()
+        saved_name = self.exam
+        saved_duration = self.exam_info['duration']
+        saved_state = int(self.exam_info['published'])
+        if saved_name == name and saved_duration == duration and saved_state == state:
+            self.status_label.setText('Изменения сохранены')
+            self.status_label.setStyleSheet('color: ' + common.GREEN)
+        else:
+            self.status_label.setText('Сохраните изменения')
+            self.status_label.setStyleSheet('color: ' + common.RED)
