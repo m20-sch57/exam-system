@@ -54,6 +54,7 @@ class QuestionShortEdit(ExamWidgetBase):
 
         self.status_label = Qt.QLabel()
         self.status_label.setFont(Qt.QFont('Arial', 20))
+        self.update_saved_status()
 
         delete_button = Qt.QPushButton(Qt.QIcon(common.DELETE), 'Удалить')
         delete_button.setIconSize(Qt.QSize(40, 40))
@@ -98,18 +99,24 @@ class QuestionShortEdit(ExamWidgetBase):
         saved_statement = self.question_data['statement']
         saved_correct = self.question_data['correct']
         saved_maxscore = self.question_data['maxscore']
+        if saved_statement != statement or saved_correct != correct or saved_maxscore != maxscore:
+            self.status_label.setText('Сохраните')
+            self.status_label.setStyleSheet('color: ' + common.YELLOW)
+        else:
+            self.status_label.setText('Сохранено')
+            self.status_label.setStyleSheet('color: ' + common.GREEN)
+        if saved_correct != correct:
+            self.answer_input.setStyleSheet('border-color: ' + common.YELLOW)
+        else:
+            self.answer_input.setStyleSheet('border-color: ' + common.GREEN)
+        if saved_maxscore != maxscore:
+            self.maxscore_input.setStyleSheet('border-color: ' + common.YELLOW)
+        else:
+            self.maxscore_input.setStyleSheet('border-color: ' + common.GREEN)
         if not maxscore.isdigit():
             self.maxscore_input.setStyleSheet('border-color: ' + common.RED)
             self.status_label.setText('Не число')
             self.status_label.setStyleSheet('color: ' + common.RED)
             self.save_button.setDisabled(True)
-            return
         else:
-            self.maxscore_input.setStyleSheet('border-color: ' + common.GREEN)
             self.save_button.setEnabled(True)
-        if saved_statement == statement and saved_correct == correct and saved_maxscore == maxscore:
-            self.status_label.setText('Сохранено')
-            self.status_label.setStyleSheet('color: ' + common.GREEN)
-        else:
-            self.status_label.setText('Сохраните')
-            self.status_label.setStyleSheet('color: ' + common.RED)

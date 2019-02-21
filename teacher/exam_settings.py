@@ -42,10 +42,10 @@ class ExamSettings(ExamWidgetBase):
         self.state_box.setCurrentIndex(int(self.exam_info['published']))
         self.state_box.currentIndexChanged.connect(self.update_saved_status)
 
-        save_button = Qt.QPushButton(Qt.QIcon(common.SAVE), 'Сохранить')
-        save_button.setIconSize(Qt.QSize(40, 40))
-        save_button.setFont(Qt.QFont('Arial', 20))
-        save_button.clicked.connect(lambda: save_function(
+        self.save_button = Qt.QPushButton(Qt.QIcon(common.SAVE), 'Сохранить')
+        self.save_button.setIconSize(Qt.QSize(40, 40))
+        self.save_button.setFont(Qt.QFont('Arial', 20))
+        self.save_button.clicked.connect(lambda: save_function(
             self.exam,
             {
                 'duration': self.duration_input.text(),
@@ -55,6 +55,7 @@ class ExamSettings(ExamWidgetBase):
 
         self.status_label = Qt.QLabel()
         self.status_label.setFont(Qt.QFont('Arial', 20))
+        self.update_saved_status()
 
         delete_button = Qt.QPushButton(Qt.QIcon(common.DELETE), 'Удалить')
         delete_button.setIconSize(Qt.QSize(40, 40))
@@ -80,7 +81,7 @@ class ExamSettings(ExamWidgetBase):
         main_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         main_layout.addLayout(input_layout)
 
-        self.lower_layout.addWidget(save_button)
+        self.lower_layout.addWidget(self.save_button)
         self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         self.lower_layout.addWidget(self.status_label)
         self.lower_layout.addStretch(1)
@@ -101,9 +102,28 @@ class ExamSettings(ExamWidgetBase):
         saved_name = self.exam
         saved_duration = self.exam_info['duration']
         saved_state = int(self.exam_info['published'])
-        if saved_name == name and saved_duration == duration and saved_state == state:
+        if saved_name != name or saved_duration != duration or saved_state != state:
+            self.status_label.setText('Сохраните')
+            self.status_label.setStyleSheet('color: ' + common.YELLOW)
+        else:
             self.status_label.setText('Сохранено')
             self.status_label.setStyleSheet('color: ' + common.GREEN)
+        if saved_name != name:
+            self.name_input.setStyleSheet('border-color: ' + common.YELLOW)
         else:
-            self.status_label.setText('Сохраните')
+            self.name_input.setStyleSheet('border-color: ' + common.GREEN)
+        if saved_duration != duration:
+            self.duration_input.setStyleSheet('border-color: ' + common.YELLOW)
+        else:
+            self.duration_input.setStyleSheet('border-color: ' + common.GREEN)
+        if saved_state != state:
+            self.state_box.setStyleSheet('border-color: ' + common.YELLOW)
+        else:
+            self.state_box.setStyleSheet('border-color: ' + common.GREEN)
+        if not duration.isdigit():
+            self.duration_input.setStyleSheet('border-color: ' + common.RED)
+            self.status_label.setText('Не число')
             self.status_label.setStyleSheet('color: ' + common.RED)
+            self.save_button.setDisabled(True)
+        else:
+            self.save_button.setEnabled(True)

@@ -38,7 +38,7 @@ def upper_question_style(question, current_question):
 
 GREEN = '#6DC180'
 RED = '#FF6643'
-YELLOW = '#FFDB2D'
+YELLOW = '#FFA500'
 GREY = '#546A74'
 USER = os.path.join('images', 'user.png')
 EXAM30 = os.path.join('images', 'exam-30x30.png')

@@ -56,12 +56,12 @@ class QuestionLong(QuestionBase):
         """
         answer = self.question_data['answer']
         saved_answer = self.answer_input.toPlainText()
-        if saved_answer == answer:
+        if saved_answer != answer:
+            self.status_label.setText('Сохраните')
+            self.status_label.setStyleSheet('color: ' + common.YELLOW)
+        else:
             self.status_label.setText('Сохранено')
             self.status_label.setStyleSheet('color: ' + common.GREEN)
-        else:
-            self.status_label.setText('Сохраните')
-            self.status_label.setStyleSheet('color: ' + common.RED)
 
 
 class QuestionLongDetails(QuestionBase):
