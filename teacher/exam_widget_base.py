@@ -10,12 +10,8 @@ class ExamWidgetBase(Qt.QWidget):
     """
     Exam widget base class.
     """
-    def __init__(self, parent):
+    def __init__(self):
         super().__init__()
-        self.exam = parent.exam
-        self.exam_data = parent.exam_data
-        self.exam_info = parent.exam_info
-        self.question = parent.question
 
         scroll_area = Qt.QScrollArea()
         scroll_area.setWidgetResizable(True)

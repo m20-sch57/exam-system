@@ -12,24 +12,17 @@ class LoginPage(Qt.QWidget):
     """
     Login page for student.
     """
-    def __init__(self, user, login_function, register_function, settings_function):
+    def __init__(self, app):
         super().__init__()
 
         enter_title = Qt.QLabel('Вход в систему')
         enter_title.setFont(Qt.QFont('Arial', 30))
         enter_title.setAlignment(Qt.Qt.AlignCenter)
 
-        group_title = Qt.QLabel('Группа:')
-        group_title.setFont(Qt.QFont('Arial', 20))
-
-        group_input = Qt.QLineEdit(user.group)
-        group_input.setFont(Qt.QFont('Arial', 20))
-        group_input.setMinimumWidth(400)
-
         user_title = Qt.QLabel('Логин:')
         user_title.setFont(Qt.QFont('Arial', 20))
 
-        user_input = Qt.QLineEdit(user.user)
+        user_input = Qt.QLineEdit(app.client.user_name)
         user_input.setFont(Qt.QFont('Arial', 20))
         user_input.setMinimumWidth(400)
 
@@ -40,13 +33,12 @@ class LoginPage(Qt.QWidget):
         password_input.setFont(Qt.QFont('Arial', 20))
         password_input.setMinimumWidth(400)
         password_input.setEchoMode(Qt.QLineEdit.Password)
-        if user.get_item('autofill') == 'True':
-            password_input.setText(user.password)
+        if app.client.get_item('autofill') == 'True':
+            password_input.setText(app.client.password)
 
         enter_button = Qt.QPushButton('Войти в систему')
         enter_button.setFont(Qt.QFont('Arial', 20))
-        enter_button.clicked.connect(lambda: login_function(
-            group_input.text(), user_input.text(), password_input.text()))
+        enter_button.clicked.connect(lambda: app.login(user_input.text(), password_input.text()))
 
         self.status_label = Qt.QLabel()
         self.status_label.setFont(Qt.QFont('Arial', 20))
@@ -54,23 +46,19 @@ class LoginPage(Qt.QWidget):
 
         settings_button = FlatButton(Qt.QIcon(common.SETTINGS), '')
         settings_button.setIconSize(Qt.QSize(40, 40))
-        settings_button.clicked.connect(lambda _: settings_function())
+        settings_button.clicked.connect(app.display_settings_page)
 
         register_button = FlatButton('Регистрация')
         register_button.setFont(Qt.QFont('Arial', 20))
-        register_button.clicked.connect(lambda _: register_function())
+        register_button.clicked.connect(app.display_register_page)
         register_button.setStyleSheet('color: ' + common.GREY)
 
         title_layout = Qt.QVBoxLayout()
-        title_layout.addWidget(group_title)
-        title_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         title_layout.addWidget(user_title)
         title_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         title_layout.addWidget(password_title)
 
         input_layout = Qt.QVBoxLayout()
-        input_layout.addWidget(group_input)
-        input_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         input_layout.addWidget(user_input)
         input_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         input_layout.addWidget(password_input)

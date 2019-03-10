@@ -12,24 +12,17 @@ class ExamPage(Qt.QWidget):
     """
     Exam page for teacher.
     """
-    def __init__(self, exam, back_function, view_question_function,
-                 settings_function, create_function,
-                 get_settings_function, get_question_function):
+    def __init__(self, app, exam_id):
         super().__init__()
-        self.exam = exam
-        self.question = None
-        self.exam_data = None
-        self.exam_info = None
-        self.view_question_function = view_question_function
-        self.settings_function = settings_function
-        self.create_function = create_function
-        self.get_settings_function = get_settings_function
-        self.get_question_function = get_question_function
+        self.app = app
+        self.exam_id = exam_id
+        self.question_id = None
+        self.questions_ids = []
 
         back_button = FlatButton(Qt.QIcon(common.LEFT), '')
         back_button.setIconSize(Qt.QSize(40, 40))
         back_button.setFixedSize(back_button.sizeHint())
-        back_button.clicked.connect(lambda _: back_function())
+        back_button.clicked.connect(app.display_home_page)
 
         scroll_area = Qt.QScrollArea()
         scroll_area.setWidgetResizable(True)
@@ -41,16 +34,32 @@ class ExamPage(Qt.QWidget):
         self.settings_button.setCursor(Qt.Qt.PointingHandCursor)
         self.settings_button.setFixedSize(Qt.QSize(50, 50))
         self.settings_button.setIconSize(Qt.QSize(30, 30))
-        self.settings_button.clicked.connect(lambda _: self.settings_function(self.exam))
+        self.settings_button.clicked.connect(lambda _: self.app.view_exam_settings())
 
         self.questions_layout = Qt.QHBoxLayout()
         self.questions_layout.setSpacing(0)
+
+        short_question_action = Qt.QWidgetAction(self)
+        short_question_action.setFont(Qt.QFont('Arial', 15))
+        short_question_action.setText('Вопрос SHORT')
+        short_question_action.triggered.connect(
+            lambda: self.app.create_question(self.exam_id, 'Short'))
+
+        long_question_action = Qt.QWidgetAction(self)
+        long_question_action.setFont(Qt.QFont('Arial', 15))
+        long_question_action.setText('Вопрос LONG')
+        long_question_action.triggered.connect(
+            lambda: self.app.create_question(self.exam_id, 'Long'))
+
+        create_menu = Qt.QMenu()
+        create_menu.addAction(short_question_action)
+        create_menu.addAction(long_question_action)
 
         create_button = FlatButton(Qt.QIcon(common.CREATE), '')
         create_button.setCursor(Qt.Qt.PointingHandCursor)
         create_button.setFixedSize(Qt.QSize(50, 50))
         create_button.setIconSize(Qt.QSize(40, 40))
-        create_button.clicked.connect(lambda: self.create_function(self.exam))
+        create_button.setMenu(create_menu)
 
         self.widget = Qt.QWidget()
 
@@ -78,50 +87,46 @@ class ExamPage(Qt.QWidget):
         layout.addWidget(self.widget)
         self.setLayout(layout)
 
-    def display_question(self, question, exam_data, exam_info):
+    def display_question(self, question_data):
         """
         Displays current question.
         """
-        self.question = question
-        self.exam_data = exam_data
-        self.exam_info = exam_info
+        self.question_id = question_data['rowid'] if question_data else -1
         self.refresh()
-
         old_widget = self.layout().itemAt(2).widget()
         old_widget.deleteLater()
         self.layout().removeWidget(old_widget)
-        self.widget = self.get_question_function(self)
+        self.widget = self.app.get_question_widget(question_data)
         self.layout().addWidget(self.widget)
 
-    def display_settings(self, exam_data, exam_info):
+    def display_settings(self, exam_data):
         """
         Displays exam settings.
         """
-        self.question = None
-        self.exam_data = exam_data
-        self.exam_info = exam_info
+        self.question_id = None
         self.refresh()
-
         old_widget = self.layout().itemAt(2).widget()
         old_widget.deleteLater()
         self.layout().removeWidget(old_widget)
-        self.widget = self.get_settings_function(self)
+        self.widget = self.app.get_settings_widget(exam_data)
         self.layout().addWidget(self.widget)
 
     def refresh(self):
         """
-        Refreshes upper panel.
+        Updates exam information and refreshes upper panel.
         """
-        self.settings_button.setStyleSheet(common.upper_question_style(None, self.question))
+        self.settings_button.setStyleSheet(common.upper_question_style(None, self.question_id))
         while self.questions_layout.count() > 0:
             old_widget = self.questions_layout.itemAt(0).widget()
             old_widget.deleteLater()
             self.questions_layout.removeWidget(old_widget)
-        for question in range(1, len(self.exam_data) + 1):
-            question_button = Qt.QPushButton(str(question))
+        for question in range(len(self.questions_ids)):
+            question_id = self.questions_ids[question]['rowid']
+            question_button = Qt.QPushButton(str(question + 1))
             question_button.setCursor(Qt.Qt.PointingHandCursor)
             question_button.setFixedSize(Qt.QSize(50, 50))
             question_button.clicked.connect(
-                common.return_lambda(self.view_question_function, self.exam, question))
-            question_button.setStyleSheet(common.upper_question_style(question, self.question))
+                common.return_lambda(self.app.view_exam_question, question_id))
+            question_button.setStyleSheet(
+                common.upper_question_style(question_id, self.question_id))
             self.questions_layout.addWidget(question_button)

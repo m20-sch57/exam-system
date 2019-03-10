@@ -12,15 +12,16 @@ class HomePage(Qt.QWidget):
     """
     Student's home page with list of exams.
     """
-    def __init__(self, user, list_of_exams, exam_function, exit_function):
+    def __init__(self, app):
         super().__init__()
+        list_of_exams = app.list_of_exams()
 
-        group_title = Qt.QLabel('Группа ' + user.group)
-        group_title.setFont(Qt.QFont('Arial', 30))
+        exams_title = Qt.QLabel('Доступные экзамены')
+        exams_title.setFont(Qt.QFont('Arial', 30))
 
         exit_button = FlatButton(Qt.QIcon(common.USER), '')
         exit_button.setIconSize(Qt.QSize(40, 40))
-        exit_button.clicked.connect(lambda _: exit_function())
+        exit_button.clicked.connect(lambda _: app.logout())
 
         scroll_area = Qt.QScrollArea()
         scroll_area.setFrameShape(Qt.QFrame.NoFrame)
@@ -29,10 +30,13 @@ class HomePage(Qt.QWidget):
         scroll_layout.setSizeConstraint(Qt.QLayout.SetMinimumSize)
 
         for exam in list_of_exams:
-            exam_button = FlatButton(Qt.QIcon(common.EXAM30), exam)
+            exam_id = exam['rowid']
+            exam_name = exam['name']
+
+            exam_button = FlatButton(Qt.QIcon(common.EXAM30), exam_name)
             exam_button.setIconSize(Qt.QSize(30, 30))
             exam_button.setFont(Qt.QFont('Arial', 20))
-            exam_button.clicked.connect(common.return_lambda(exam_function, exam))
+            exam_button.clicked.connect(common.return_lambda(app.display_exam, exam_id))
 
             exam_layout = Qt.QHBoxLayout()
             exam_layout.addWidget(exam_button)
@@ -49,7 +53,7 @@ class HomePage(Qt.QWidget):
 
         upper_layout = Qt.QHBoxLayout()
         upper_layout.addStretch(1)
-        upper_layout.addWidget(group_title)
+        upper_layout.addWidget(exams_title)
         upper_layout.addStretch(1)
         upper_layout.addWidget(exit_button)
 

@@ -13,14 +13,14 @@ def return_lambda(function, *args, **kwargs):
     return lambda: function(*args, **kwargs)
 
 
-def upper_question_style(question, current_question):
+def upper_question_style(question_id, current_question_id):
     """
     Returns style of current question depending on the result.
     """
     background_color = 'white'
     foreground_color = 'black'
     border_color = 'grey'
-    if question == current_question:
+    if question_id == current_question_id:
         foreground_color = 'blue'
         background_color = '#CCE8FF'
         border_color = '#99D1FF'
@@ -45,6 +45,7 @@ EXAM30 = os.path.join('images', 'exam-30x30.png')
 LEFT = os.path.join('images', 'left.png')
 TICK = os.path.join('images', 'tick.png')
 CROSS = os.path.join('images', 'cross.png')
+WARNING = os.path.join('images', 'warning.png')
 SETTINGS = os.path.join('images', 'settings.png')
 CREATE = os.path.join('images', 'create.png')
 DELETE = os.path.join('images', 'delete.png')

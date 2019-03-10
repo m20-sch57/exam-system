@@ -12,19 +12,19 @@ class StartExamPage(Qt.QWidget):
     """
     Page before starting the exam.
     """
-    def __init__(self, exam, exam_info, back_function, start_function):
+    def __init__(self, app, exam_data, cnt_questions):
         super().__init__()
         info_str = (
-            'Продолжительность - ' + str(exam_info['duration']) + ' минут\n' +
-            'Количество заданий - ' + str(exam_info['quantity'])
+            'Продолжительность - ' + str(exam_data['duration']) + ' минут\n' +
+            'Количество заданий - ' + str(cnt_questions)
         )
 
         back_button = FlatButton(Qt.QIcon(common.LEFT), '')
         back_button.setIconSize(Qt.QSize(40, 40))
         back_button.setFixedSize(back_button.sizeHint())
-        back_button.clicked.connect(lambda _: back_function())
+        back_button.clicked.connect(app.display_home_page)
 
-        exam_title = Qt.QLabel(exam)
+        exam_title = Qt.QLabel(exam_data['name'])
         exam_title.setFont(Qt.QFont('Arial', 30))
         exam_title.setAlignment(Qt.Qt.AlignCenter)
         exam_title.setWordWrap(True)
@@ -38,7 +38,7 @@ class StartExamPage(Qt.QWidget):
 
         start_button = Qt.QPushButton('Начать экзамен')
         start_button.setFont(Qt.QFont('Arial', 20))
-        start_button.clicked.connect(lambda: start_function(exam))
+        start_button.clicked.connect(lambda: app.start_exam(exam_data['rowid']))
 
         upper_layout = Qt.QHBoxLayout()
         upper_layout.addWidget(back_button)

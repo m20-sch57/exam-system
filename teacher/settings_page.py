@@ -12,12 +12,13 @@ class SettingsPage(Qt.QWidget):
     """
     Settings page.
     """
-    def __init__(self, settings, check_ip_function, back_function, save_function):
+    def __init__(self, app):
         super().__init__()
+        settings = app.client.get_settings()
 
         back_button = FlatButton(Qt.QIcon(common.LEFT), '')
         back_button.setIconSize(Qt.QSize(40, 40))
-        back_button.clicked.connect(lambda _: back_function())
+        back_button.clicked.connect(app.display_login_page)
 
         settings_title = Qt.QLabel('Настройки')
         settings_title.setFont(Qt.QFont('Arial', 30))
@@ -34,7 +35,7 @@ class SettingsPage(Qt.QWidget):
 
         server_check_button = Qt.QPushButton('Проверить соединение')
         server_check_button.setFont(Qt.QFont('Arial', 20))
-        server_check_button.clicked.connect(lambda: check_ip_function(server_ip_input.text()))
+        server_check_button.clicked.connect(lambda: app.check_ip(server_ip_input.text()))
 
         self.server_status_label = Qt.QLabel()
         self.server_status_label.setFont(Qt.QFont('Arial', 20))
@@ -50,9 +51,10 @@ class SettingsPage(Qt.QWidget):
 
         save_button = Qt.QPushButton('Сохранить')
         save_button.setFont(Qt.QFont('Arial', 20))
-        save_button.clicked.connect(lambda: save_function(
-            {'server': server_ip_input.text(),
-             'autofill': autosave_password_checkbox.isChecked()
+        save_button.clicked.connect(lambda: app.save_settings(
+            {
+                'server': server_ip_input.text(),
+                'autofill': autosave_password_checkbox.isChecked()
             }
         ))
 

@@ -51,7 +51,7 @@ def main_question_style(question_data):
     """
     if question_data['score'] == '-1':
         main_color = YELLOW
-        main_picture = None
+        main_picture = Qt.QPixmap(WARNING)
     elif question_data['score'] == question_data['maxscore']:
         main_color = GREEN
         main_picture = Qt.QPixmap(TICK)
@@ -73,4 +73,5 @@ EXAM30 = os.path.join('images', 'exam-30x30.png')
 LEFT = os.path.join('images', 'left.png')
 TICK = os.path.join('images', 'tick.png')
 CROSS = os.path.join('images', 'cross.png')
+WARNING = os.path.join('images', 'warning.png')
 SETTINGS = os.path.join('images', 'settings.png')

@@ -12,7 +12,7 @@ class RegisterPage(Qt.QWidget):
     """
     Registration page for teacher.
     """
-    def __init__(self, register_function, login_function, settings_function):
+    def __init__(self, app):
         super().__init__()
 
         register_title = Qt.QLabel('Регистрация')
@@ -53,7 +53,7 @@ class RegisterPage(Qt.QWidget):
 
         self.register_button = Qt.QPushButton('Зарегистрироваться')
         self.register_button.setFont(Qt.QFont('Arial', 20))
-        self.register_button.clicked.connect(lambda: register_function(
+        self.register_button.clicked.connect(lambda: app.register(
             group_input.text(), user_input.text(), self.password_input.text()))
 
         self.status_label = Qt.QLabel()
@@ -62,11 +62,11 @@ class RegisterPage(Qt.QWidget):
 
         settings_button = FlatButton(Qt.QIcon(common.SETTINGS), '')
         settings_button.setIconSize(Qt.QSize(40, 40))
-        settings_button.clicked.connect(lambda _: settings_function())
+        settings_button.clicked.connect(app.display_settings_page)
 
         enter_button = FlatButton('Вход')
         enter_button.setFont(Qt.QFont('Arial', 20))
-        enter_button.clicked.connect(lambda _: login_function())
+        enter_button.clicked.connect(app.display_login_page)
         enter_button.setStyleSheet('color: ' + common.GREY)
 
         title_layout = Qt.QVBoxLayout()

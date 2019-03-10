@@ -12,14 +12,14 @@ class HomePage(Qt.QWidget):
     """
     Teacher's home page.
     """
-    def __init__(self, widget_map, exit_function):
+    def __init__(self, app, widget_map):
         super().__init__()
         self.widget_map = widget_map
 
         exit_button = FlatButton(Qt.QIcon(common.USER), '')
         exit_button.setIconSize(Qt.QSize(40, 40))
         exit_button.setFixedSize(exit_button.sizeHint())
-        exit_button.clicked.connect(lambda _: exit_function())
+        exit_button.clicked.connect(lambda _: app.logout())
 
         self.widget_layout = Qt.QHBoxLayout()
         self.widget_layout.setSpacing(0)
@@ -54,7 +54,7 @@ class HomePage(Qt.QWidget):
             if widget_name == current_widget_name:
                 widget_button.setStyleSheet(
                     'color: #2CA9FD;'
-                    'border-bottom: 3px solid #2CA9FD;;'
+                    'border-bottom: 3px solid #2CA9FD;'
                 )
             self.widget_layout.addWidget(widget_button)
 

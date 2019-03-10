@@ -12,8 +12,9 @@ class ExamsWidget(Qt.QWidget):
     """
     Widget for home page with list of exams.
     """
-    def __init__(self, list_of_exams, exam_function, create_function):
+    def __init__(self, app):
         super().__init__()
+        list_of_exams = app.list_of_exams()
 
         scroll_area = Qt.QScrollArea()
         scroll_area.setFrameShape(Qt.QFrame.NoFrame)
@@ -22,10 +23,13 @@ class ExamsWidget(Qt.QWidget):
         scroll_layout.setSizeConstraint(Qt.QLayout.SetMinimumSize)
 
         for exam in list_of_exams:
-            exam_button = FlatButton(Qt.QIcon(common.EXAM30), exam)
+            exam_id = exam['rowid']
+            exam_name = exam['name']
+
+            exam_button = FlatButton(Qt.QIcon(common.EXAM30), exam_name)
             exam_button.setIconSize(Qt.QSize(30, 30))
             exam_button.setFont(Qt.QFont('Arial', 20))
-            exam_button.clicked.connect(common.return_lambda(exam_function, exam))
+            exam_button.clicked.connect(common.return_lambda(app.display_exam, exam_id))
 
             exam_layout = Qt.QHBoxLayout()
             exam_layout.addWidget(exam_button)
@@ -40,10 +44,10 @@ class ExamsWidget(Qt.QWidget):
         scroll_widget.setLayout(scroll_layout)
         scroll_area.setWidget(scroll_widget)
 
-        create_button = Qt.QPushButton(Qt.QIcon(common.CREATE), 'Создать экзамен')
+        create_button = FlatButton(Qt.QIcon(common.CREATE), 'Создать экзамен')
         create_button.setIconSize(Qt.QSize(40, 40))
         create_button.setFont(Qt.QFont('Arial', 20))
-        create_button.clicked.connect(lambda _: create_function())
+        create_button.clicked.connect(lambda: app.create_exam(''))
 
         info_label = Qt.QLabel('Всего экзаменов - ' + str(len(list_of_exams)))
         info_label.setFont(Qt.QFont('Arial', 20))

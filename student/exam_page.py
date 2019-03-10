@@ -1,5 +1,5 @@
 """
-Page that is displayed when student is passing the exam.
+Exam page for student.
 """
 
 
@@ -10,23 +10,20 @@ import common
 
 class ExamPage(Qt.QWidget):
     """
-    Page that is displayed when student is passing the exam.
+    Exam page for student.
     """
-    def __init__(self, exam, back_function, view_question_function,
-                 get_exam_status_function, get_question_function):
+    def __init__(self, app, exam_id):
         super().__init__()
-        self.exam = exam
-        self.question = None
-        self.exam_data = None
-        self.exam_info = None
-        self.view_question_function = view_question_function
-        self.get_exam_status_function = get_exam_status_function
-        self.get_question_function = get_question_function
+        self.app = app
+        self.exam_id = exam_id
+        self.question_id = None
+        self.questions_ids = []
+        self.questions_results = []
 
         back_button = FlatButton(Qt.QIcon(common.LEFT), '')
         back_button.setIconSize(Qt.QSize(40, 40))
         back_button.setFixedSize(back_button.sizeHint())
-        back_button.clicked.connect(lambda _: back_function())
+        back_button.clicked.connect(app.display_home_page)
 
         scroll_area = Qt.QScrollArea()
         scroll_area.setWidgetResizable(True)
@@ -60,23 +57,20 @@ class ExamPage(Qt.QWidget):
         layout.addWidget(self.widget)
         self.setLayout(layout)
 
-    def display(self, question, exam_data, exam_info):
+    def display_question(self, exam_data, question_data):
         """
         Displays current question.
         """
-        self.question = question
-        self.exam_data = exam_data
-        self.exam_info = exam_info
+        self.question_id = question_data['rowid'] if question_data else -1
         self.refresh()
-
         old_widget = self.layout().itemAt(3).widget()
         old_widget.deleteLater()
         self.layout().removeWidget(old_widget)
         old_widget = self.layout().itemAt(2).widget()
         old_widget.deleteLater()
         self.layout().removeWidget(old_widget)
-        status_widget = self.get_exam_status_function(self)
-        self.widget = self.get_question_function(self)
+        status_widget = self.app.get_exam_status_widget(self, exam_data)
+        self.widget = self.app.get_question_widget(exam_data, question_data)
         self.layout().addWidget(status_widget)
         self.layout().addWidget(self.widget)
 
@@ -88,13 +82,14 @@ class ExamPage(Qt.QWidget):
             old_widget = self.questions_layout.itemAt(0).widget()
             old_widget.deleteLater()
             self.questions_layout.removeWidget(old_widget)
-        for question in range(1, len(self.exam_data) + 1):
-            question_data = self.exam_data[question - 1]
-            question_button = Qt.QPushButton(str(question))
+        for question in range(len(self.questions_ids)):
+            question_id = self.questions_ids[question]['rowid']
+            question_result = self.questions_results[question]
+            question_button = Qt.QPushButton(str(question + 1))
             question_button.setCursor(Qt.Qt.PointingHandCursor)
             question_button.setFixedSize(Qt.QSize(50, 50))
             question_button.clicked.connect(
-                common.return_lambda(self.view_question_function, self.exam, question))
+                common.return_lambda(self.app.view_exam_question, question_id))
             question_button.setStyleSheet(
-                common.upper_question_style(question_data, question, self.question))
+                common.upper_question_style(question_result, question, self.question))
             self.questions_layout.addWidget(question_button)

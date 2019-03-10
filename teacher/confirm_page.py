@@ -12,7 +12,7 @@ class ConfirmPage(Qt.QWidget):
     """
     Page that asks to confirm the action.
     """
-    def __init__(self, back_function, main_function):
+    def __init__(self, text, back_function, main_function):
         super().__init__()
 
         back_button = FlatButton(Qt.QIcon(common.LEFT), '')
@@ -22,9 +22,10 @@ class ConfirmPage(Qt.QWidget):
         confirm_title = Qt.QLabel('Подтвердите действие')
         confirm_title.setFont(Qt.QFont('Arial', 30))
 
-        confirm_label = Qt.QLabel('Вы уверены, что хотите сделать это?')
+        confirm_label = Qt.QLabel(text)
         confirm_label.setFont(Qt.QFont('Arial', 25))
         confirm_label.setAlignment(Qt.Qt.AlignCenter)
+        confirm_label.setWordWrap(True)
         confirm_label.setStyleSheet('color: red')
 
         yes_button = Qt.QPushButton(Qt.QIcon(common.TICK), 'Да, продолжить')

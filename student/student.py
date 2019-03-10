@@ -6,19 +6,19 @@ Examiner project, student module.
 import sys
 import os
 import socket
+import hashlib
 import functools
 
-from user import User
 from PyQt5 import Qt
+from client import Client
 from settings_page import SettingsPage
 from login_page import LoginPage
 from register_page import RegisterPage
-from register_success_page import RegisterSuccessPage
 from home_page import HomePage
 from start_exam_page import StartExamPage
+from error_widget import ErrorWidget
 from exam_page import ExamPage
 from exam_status import ExamRunning, ExamFinished
-from question_error import QuestionError
 from question_short import QuestionShort, QuestionShortChecked, QuestionShortDetails
 from question_long import QuestionLong, QuestionLongDetails
 
@@ -43,7 +43,7 @@ class Application(Qt.QApplication):
     """
     def __init__(self):
         super().__init__(sys.argv)
-        self.user = User()
+        self.client = Client()
         self.window = Qt.QWidget()
         self.window.setStyleSheet(open(os.path.join('css', 'common_style.css')).read())
         self.window.setWindowTitle('Школьник')
@@ -76,9 +76,9 @@ class Application(Qt.QApplication):
         """
         try:
             self.widget.set_waiting_state()
-            self.user.set_item('server', ip_address)
-            self.user.update_server()
-            self.user.ping()
+            self.client.set_item('server', ip_address)
+            self.client.update_server()
+            self.client.server.ping()
             self.widget.set_succeeded_state()
         except socket.error:
             self.widget.set_failed_state()
@@ -89,59 +89,53 @@ class Application(Qt.QApplication):
         Saves all settings.
         """
         for item in settings.keys():
-            self.user.set_item(item, str(settings[item]))
+            self.client.set_item(item, str(settings[item]))
         self.display_login_page()
 
     def display_settings_page(self):
         """
         Displays settings page.
         """
-        self.display_widget(SettingsPage(
-            self.user.get_settings(), self.check_ip, self.display_login_page, self.save_settings))
+        self.display_widget(SettingsPage(self))
 
     def display_login_page(self):
         """
         Displays login page for student.
         """
-        self.display_widget(LoginPage(
-            self.user, self.login, self.display_register_page, self.display_settings_page))
+        self.display_widget(LoginPage(self))
 
     def display_register_page(self):
         """
         Displays register page for student.
         """
-        self.display_widget(RegisterPage(
-            self.register, self.display_login_page, self.display_settings_page))
-
-    def display_register_success_page(self):
-        """
-        Displays success registration page.
-        """
-        self.display_widget(RegisterSuccessPage(
-            self.display_register_page, self.display_login_page))
+        self.display_widget(RegisterPage(self))
 
     @safe
-    def register(self, group, user, password):
+    def register(self, group_name, user_name, password):
         """
         Tries to register the student.
         """
         self.widget.set_waiting_state()
-        self.user.update_user_info(group, user, password)
-        success = self.user.register()
+        self.client.user_name = user_name
+        self.client.password = password
+        password_hash = hashlib.sha1(password.encode('utf-8')).hexdigest()
+        success = self.client.server.register(user_name, password_hash, 0, group_name)
         if not success:
             self.widget.set_failed_state()
         else:
-            self.display_register_success_page()
+            self.display_login_page()
 
     @safe
-    def login(self, group, user, password):
+    def login(self, user_name, password):
         """
         Tries to login the student.
         """
         self.widget.set_waiting_state()
-        self.user.update_user_info(group, user, password)
-        success = self.user.login()
-        if not success:
+        self.client.user_name = user_name
+        self.client.password = password
+        password_hash = hashlib.sha1(password.encode('utf-8')).hexdigest()
+        self.client.user = self.client.server.login(user_name, password_hash, 0)
+        if not self.client.user:
             self.widget.set_failed_state()
         else:
             self.display_home_page()
@@ -151,94 +145,98 @@ class Application(Qt.QApplication):
         """
         Logs out the student.
         """
+        self.client.user = False
         self.display_login_page()
 
-    @safe
     def display_home_page(self):
         """
         Displays home page with list of exams.
         """
-        list_of_exams = self.user.list_of_exams()
-        self.display_widget(HomePage(self.user, list_of_exams, self.display_exam, self.logout))
+        self.display_widget(HomePage(self))
 
-    @safe
-    def display_start_exam_page(self, exam):
+    def display_start_exam_page(self, exam_data, cnt_questions):
         """
         Displays page before starting the exam.
         """
-        exam_info = self.user.get_exam_info(exam)
-        self.display_widget(StartExamPage(exam, exam_info, self.display_home_page, self.start_exam))
+        self.display_widget(StartExamPage(self, exam_data, cnt_questions))
 
     @safe
-    def start_exam(self, exam):
+    def list_of_exams(self):
+        """
+        Returns list of exams.
+        """
+        return self.client.server.list_of_published_exams(self.client.user['group_id'])
+
+    @safe
+    def start_exam(self, exam_id):
         """
         Starts the exam.
         """
-        self.user.start_exam(exam)
-        self.display_exam(exam)
+        self.client.server.start_exam(exam_id)
+        self.display_exam(exam_id)
 
     @safe
-    def finish_exam(self, exam):
+    def finish_exam(self, exam_id):
         """
         Finishes the exam.
         """
-        self.user.finish_exam(exam)
-        self.display_exam(exam)
+        self.client.server.finish_exam(exam_id)
+        self.display_exam(exam_id)
 
     @safe
-    def display_exam(self, exam):
+    def display_exam(self, exam_id):
         """
         Displays the exam depending on it's current state.
         """
-        exam_info = self.user.get_exam_info(exam)
-        if exam_info['state'] == 'Not started':
-            self.display_start_exam_page(exam)
+        exam_data = self.client.server.get_exam_data_student(exam_id, self.client.user)
+        questions_ids = self.client.server.get_questions_ids(exam_id)
+        if not exam_data or not questions_ids:
+            self.display_widget(ErrorWidget())
+            return
+        if exam_data['state'] == 'Not started':
+            self.display_start_exam_page(exam_data, len(questions_ids))
         else:
-            self.display_widget(ExamPage(
-                exam,
-                self.display_home_page,
-                self.view_question,
-                self.get_exam_status_widget,
-                self.get_question_widget))
-            self.view_question(exam, 1)
+            self.display_widget(ExamPage(self, exam_id))
+            self.view_exam_question(questions_ids[0])
 
     @safe
-    def view_question(self, exam, question):
+    def view_exam_question(self, question_id):
         """
         Displays selected question.
         """
-        exam_data = self.user.get_exam(exam)
-        exam_info = self.user.get_exam_info(exam)
-        self.widget.display(question, exam_data, exam_info)
+        exam_id = self.widget.exam_id
+        exam_data = self.client.server.get_exam_data_student(exam_id, self.client.user)
+        questions_ids = self.client.server.get_questions_ids(exam_id)
+        questions_results = self.client.server.get_questions_results(exam_id, self.client.user)
+        question_data = self.client.server.get_question_data_student(question_id, self.client.user)
+        self.widget.questions_ids = questions_ids
+        self.widget.questions_results = questions_results
+        self.widget.display_question(exam_data, question_data)
 
-    def get_exam_status_widget(self, parent):
+    def get_exam_status_widget(self, exam_data):
         """
         Returns exam status widget.
         """
-        if parent.exam_info['state'] == 'Running':
-            return ExamRunning(parent, self.finish_exam)
-        else:
-            return ExamFinished(parent)
+        if exam_data['state'] == 'Running':
+            return ExamRunning(self, exam_data)
+        return ExamFinished(self)
 
-    def get_question_widget(self, parent):
+    def get_question_widget(self, exam_data, question_data):
         """
         Returns the question widget depending on it's type.
         """
-        if len(parent.exam_data) < parent.question:
-            return QuestionError()
-        question_data = parent.exam_data[parent.question - 1]
+        if not question_data:
+            return ErrorWidget()
         if question_data['type'] == 'Short':
-            if parent.exam_info['state'] == 'Finished':
-                return QuestionShortDetails(parent)
-            elif question_data['score'] is not False:
-                return QuestionShortChecked(parent, self.view_question)
-            else:
-                return QuestionShort(parent, self.check_short)
-        elif question_data['type'] == 'Long':
-            if parent.exam_info['state'] == 'Finished':
-                return QuestionLongDetails(parent)
-            else:
-                return QuestionLong(parent, self.check_long, self.view_question)
+            if exam_data['state'] == 'Finished':
+                return QuestionShortDetails(self, question_data)
+            if question_data['score'] is not False:
+                return QuestionShortChecked(self, question_data)
+            return QuestionShort(self, question_data)
+        if question_data['type'] == 'Long':
+            if exam_data['state'] == 'Finished':
+                return QuestionLongDetails(self, question_data)
+            return QuestionLong(self, question_data)
 
     @safe
     def check_short(self, exam, question, answer):
