@@ -5,6 +5,7 @@ Examiner project, server module.
 
 import sqlite3
 from xmlrpc.server import SimpleXMLRPCServer
+from time import time
 
 
 def ping():
@@ -115,6 +116,14 @@ def delete_exam(exam_id):
         "DELETE FROM questions WHERE exam_id=?",
         (exam_id,)
     )
+    CURSOR.execute(
+        "DELETE FROM examrequests WHERE exam_id=?",
+        (exam_id,)
+    )
+    CURSOR.execute(
+        "DELETE FROM submissions WHERE exam_id=?",
+        (exam_id,)
+    )
     CONNECTION.commit()
     return True
 
@@ -148,7 +157,28 @@ def get_exam_data_student(exam_id, user_id):
     """
     Returns exam data for student.
     """
-    pass
+    exam_data = get_exam_data(exam_id)
+    if not exam_data:
+        return {}
+    CURSOR.execute(
+        "SELECT * FROM examrequests WHERE exam_id=? AND student_id=?",
+        (exam_id, user_id)
+    )
+    requests = CURSOR.fetchall()
+    start = dict(requests[0])['time'] if requests else -1
+    end = start + exam_data['duration'] * 60 if requests else -1
+    if not requests:
+        state = 'Not started'
+    elif time() >= end:
+        state = 'Finished'
+    else:
+        state = 'Running'
+    return {
+        **exam_data,
+        'state': state,
+        'start': start,
+        'end': end
+    }
 
 
 def get_questions_ids(exam_id):
@@ -188,6 +218,10 @@ def delete_question(question_id):
     """
     CURSOR.execute(
         "DELETE FROM questions WHERE rowid=?",
+        (question_id,)
+    )
+    CURSOR.execute(
+        "DELETE FROM submissions WHERE question_id=?",
         (question_id,)
     )
     CONNECTION.commit()

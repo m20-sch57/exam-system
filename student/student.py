@@ -188,7 +188,7 @@ class Application(Qt.QApplication):
         """
         Displays the exam depending on it's current state.
         """
-        exam_data = self.client.server.get_exam_data_student(exam_id, self.client.user)
+        exam_data = self.client.server.get_exam_data_student(exam_id, self.client.user['rowid'])
         questions_ids = self.client.server.get_questions_ids(exam_id)
         if not exam_data or not questions_ids:
             self.display_widget(ErrorWidget())

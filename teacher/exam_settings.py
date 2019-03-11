@@ -63,7 +63,7 @@ class ExamSettings(ExamWidgetBase):
         self.status_label.setFont(Qt.QFont('Arial', 20))
         self.update_saved_status()
 
-        delete_button = Qt.QPushButton(Qt.QIcon(common.DELETE), 'Удалить экзамен')
+        delete_button = Qt.QPushButton(Qt.QIcon(common.DELETE), 'Удалить')
         delete_button.setIconSize(Qt.QSize(40, 40))
         delete_button.setFont(Qt.QFont('Arial', 20))
         delete_button.clicked.connect(lambda: app.display_confirm_page(
