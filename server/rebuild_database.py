@@ -33,20 +33,19 @@ CURSOR.execute(
 CURSOR.execute(
     """
     CREATE TABLE questions
-    (type text, statement text, correct text, maxscore integer, exam_id integer)
+    (type text, statement text, correct text, maxsubs integer, maxscore integer, exam_id integer)
     """
 )
 CURSOR.execute(
     """
     CREATE TABLE examrequests
-    (student_id integer, exam_id integer, time integer)
+    (student_id integer, exam_id integer, start integer, end integer)
     """
 )
 CURSOR.execute(
     """
     CREATE TABLE submissions
-    (student_id integer, exam_id integer, question_id integer,
-    answer text, judging integer, score real)
+    (student_id integer, exam_id integer, question_id integer, answer text, score real)
     """
 )
 

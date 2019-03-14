@@ -3,43 +3,9 @@ Examiner project, server module.
 """
 
 
-import os
-import time
+import sqlite3
 from xmlrpc.server import SimpleXMLRPCServer
-
-
-class Item:
-    """
-    Item with items that should be saved on disk.
-    """
-    def __init__(self, path):
-        self.path = path
-
-    def set_item(self, item, value):
-        """
-        Sets value of the item.
-        """
-        if not os.path.exists(self.path):
-            os.makedirs(self.path)
-        open(os.path.join(self.path, item), 'w', encoding=ENCODING).write(str(value))
-
-    def get_item(self, item):
-        """
-        Gets value of the item.
-        """
-        if not os.path.isfile(os.path.join(self.path, item)):
-            return False
-        return open(os.path.join(self.path, item), encoding=ENCODING).read()
-
-
-def format_str(string):
-    """
-    Formats string: lowers letters and removes all other symbols except numbers.
-    """
-    string = string.lower()
-    string = string.replace('ё', 'е')
-    string = ''.join([c for c in string if c.isalnum()])
-    return string
+from time import time
 
 
 def ping():
@@ -49,283 +15,382 @@ def ping():
     return True
 
 
-def register_student(group, user, password):
+def get_last(data):
     """
-    Tries to register the student.
+    Returns dict(data[-1]) if data else False
     """
-    if not group in os.listdir('data'):
+    return dict(data[-1]) if data else False
+
+
+def register(user_name, password, is_admin, group_name):
+    """
+    Tries to register the user.
+    """
+    CURSOR.execute(
+        "SELECT rowid, * FROM groups WHERE name=?",
+        (group_name,)
+    )
+    group = get_last(CURSOR.fetchall())
+    CURSOR.execute(
+        "SELECT rowid, * FROM users WHERE name=?",
+        (user_name,)
+    )
+    user = get_last(CURSOR.fetchall())
+    if group is False:
         return False
-    if user in os.listdir(os.path.join('data', group, 'students')) or not user:
+    if user is not False:
         return False
-    user_item = Item(os.path.join('data', group, 'students', user, 'info'))
-    user_item.set_item('password', password)
+    CURSOR.execute(
+        "INSERT INTO users VALUES (?, ?, ?, ?)",
+        (user_name, password, is_admin, group['rowid'])
+    )
+    CONNECTION.commit()
     return True
 
 
-def register_teacher(group, user, password):
+def login(user_name, password, is_admin):
     """
-    Tries to register the teacher.
+    Tries to login the user.
     """
-    if not group in os.listdir('data'):
+    CURSOR.execute(
+        "SELECT rowid, * FROM users WHERE name=?",
+        (user_name,)
+    )
+    user = get_last(CURSOR.fetchall())
+    if user is False:
         return False
-    if user in os.listdir(os.path.join('data', group, 'teachers')) or not user:
+    if user['password'] != password or user['is_admin'] != is_admin:
         return False
-    user_item = Item(os.path.join('data', group, 'teachers', user, 'info'))
-    user_item.set_item('password', password)
+    return user
+
+
+def list_of_published_exams(group_id):
+    """
+    Returns list of all published exams in the group.
+    """
+    CURSOR.execute(
+        "SELECT rowid, name FROM exams WHERE published=1 AND group_id=?",
+        (group_id,)
+    )
+    exams = CURSOR.fetchall()
+    return [dict(exam) for exam in exams]
+
+
+def list_of_all_exams(group_id):
+    """
+    Returns list of all exams in the group.
+    """
+    CURSOR.execute(
+        "SELECT rowid, name FROM exams WHERE group_id=?",
+        (group_id,)
+    )
+    exams = CURSOR.fetchall()
+    return [dict(exam) for exam in exams]
+
+
+def create_exam(group_id):
+    """
+    Creates the exam.
+    """
+    CURSOR.execute(
+        "INSERT INTO exams VALUES ('', 45, 0, ?)",
+        (group_id,)
+    )
+    CONNECTION.commit()
+    return CURSOR.lastrowid
+
+
+def delete_exam(exam_id):
+    """
+    Deletes the exam.
+    """
+    CURSOR.execute(
+        "DELETE FROM exams WHERE rowid=?",
+        (exam_id,)
+    )
+    CURSOR.execute(
+        "DELETE FROM questions WHERE exam_id=?",
+        (exam_id,)
+    )
+    CURSOR.execute(
+        "DELETE FROM examrequests WHERE exam_id=?",
+        (exam_id,)
+    )
+    CURSOR.execute(
+        "DELETE FROM submissions WHERE exam_id=?",
+        (exam_id,)
+    )
+    CONNECTION.commit()
     return True
 
 
-def login_student(group, user, password):
+def start_exam(exam_id, user_id):
     """
-    Tries to login the student.
+    Starts the exam.
     """
-    if not group in os.listdir('data'):
+    exam_data = get_exam_data(exam_id)
+    if not exam_data:
         return False
-    if not user in os.listdir(os.path.join('data', group, 'students')):
-        return False
-    user_item = Item(os.path.join('data', group, 'students', user, 'info'))
-    if user_item.get_item('password') != password:
-        return False
+    CURSOR.execute(
+        "INSERT INTO examrequests VALUES (?, ?, ?, ?)",
+        (user_id, exam_id, int(time()), int(time()) + exam_data['duration'] * 60)
+    )
+    CONNECTION.commit()
     return True
 
 
-def login_teacher(group, user, password):
+def finish_exam(exam_id, user_id):
     """
-    Tries to login the teacher.
+    Finishes the exam.
     """
-    if not group in os.listdir('data'):
+    CURSOR.execute(
+        "UPDATE examrequests SET end=? WHERE student_id=? AND exam_id=?",
+        (time(), user_id, exam_id)
+    )
+    CONNECTION.commit()
+    return True
+
+
+def get_exam_data(exam_id):
+    """
+    Returns exam data.
+    """
+    CURSOR.execute(
+        "SELECT rowid, * FROM exams WHERE rowid=?",
+        (exam_id,)
+    )
+    return get_last(CURSOR.fetchall())
+
+
+def set_exam_data(exam_data):
+    """
+    Saves exam data.
+    """
+    CURSOR.execute(
+        "UPDATE exams SET name=?, duration=?, published=? WHERE rowid=?",
+        (exam_data['name'], exam_data['duration'],
+         exam_data['published'], exam_data['rowid'])
+    )
+    CONNECTION.commit()
+    return True
+
+
+def get_questions_ids(exam_id):
+    """
+    Returns questions' ids in the exam.
+    """
+    CURSOR.execute(
+        "SELECT rowid FROM questions WHERE exam_id=?",
+        (exam_id,)
+    )
+    questions = CURSOR.fetchall()
+    return [dict(question)['rowid'] for question in questions]
+
+
+def get_question_result(question_id, user_id):
+    """
+    Returns user's result of the question.
+    """
+    CURSOR.execute(
+        "SELECT * FROM submissions WHERE student_id=? AND question_id=?",
+        (user_id, question_id)
+    )
+    return get_last(CURSOR.fetchall())
+
+
+def get_questions_results(exam_id, user_id):
+    """
+    Returns user's results of the exam.
+    """
+    return [get_question_result(question_id, user_id) for question_id in get_questions_ids(exam_id)]
+
+
+def get_exam_data_student(exam_id, user_id):
+    """
+    Returns exam data for student.
+    """
+    exam_data = get_exam_data(exam_id)
+    if not exam_data:
         return False
-    if not user in os.listdir(os.path.join('data', group, 'teachers')):
-        return False
-    user_item = Item(os.path.join('data', group, 'teachers', user, 'info'))
-    if user_item.get_item('password') != password:
-        return False
-    return True
-
-
-def set_question_data(group, exam, question, data):
-    """
-    Updates all question.
-    """
-    question_item = Item(os.path.join('data', group, 'exams', exam, str(question)))
-    for item, value in data.items():
-        question_item.set_item(item, value)
-    return True
-
-
-def get_question_data(group, exam, question):
-    """
-    Returns question data.
-    """
-    question_item = Item(os.path.join('data', group, 'exams', exam, str(question)))
-    question_type = question_item.get_item('type')
-    return {item: question_item.get_item(item) for item in TYPE_ITEMS[question_type]}
-
-
-def get_question_data_user(group, user, exam, question):
-    """
-    Returns all question: question data and student's info about the question.
-    """
-    student_item = Item(os.path.join('data', group, 'students', user, 'exams', exam, str(question)))
-    return {
-        **get_question_data(group, exam, question),
-        'answer': student_item.get_item('answer'),
-        'score': student_item.get_item('score')
-    }
-
-
-def create_question(group, exam):
-    """
-    Creates question with this type.
-    """
-    question = get_exam_info(group, exam)['quantity'] + 1
-    set_question_data(group, exam, question, {'type': ''})
-    return question
-
-
-def reset_question(group, exam, question, question_type):
-    """
-    Assigns type of question to question_type and adds other items.
-    """
-    set_question_data(group, exam, question, {item: '' for item in TYPE_ITEMS[question_type]})
-    set_question_data(group, exam, question, {'type': question_type, 'maxscore': 1})
-    return True
-
-
-def set_exam_info(group, exam, data):
-    """
-    Updates exam's info.
-    """
-    exam_item = Item(os.path.join('data', group, 'exams', exam, 'settings'))
-    for item, value in data.items():
-        exam_item.set_item(item, value)
-    return True
-
-
-def get_exam_info(group, exam):
-    """
-    Returns exam's info.
-    """
-    exam_item = Item(os.path.join('data', group, 'exams', exam, 'settings'))
-    quantity = len(os.listdir(os.path.join('data', group, 'exams', exam))) - 1
-    return {
-        'published': exam_item.get_item('published'),
-        'duration': exam_item.get_item('duration'),
-        'quantity': quantity
-    }
-
-
-def get_exam_info_user(group, user, exam):
-    """
-    Returns exam's info.
-    """
-    user_item = Item(os.path.join('data', group, 'students', user, 'exams', exam, 'settings'))
-    exam_data = get_exam_data_user(group, user, exam)
-
-    if user_item.get_item('start') is False:
+    CURSOR.execute(
+        "SELECT * FROM examrequests WHERE student_id=? AND exam_id=?",
+        (user_id, exam_id)
+    )
+    request = get_last(CURSOR.fetchall())
+    start = request['start'] if request else -1
+    end = request['end'] if request else -1
+    if not request:
         state = 'Not started'
-    elif int(time.time()) < int(user_item.get_item('end')):
-        state = 'Running'
-    else:
+    elif time() >= end:
         state = 'Finished'
-
+    else:
+        state = 'Running'
     total_score = 0
     total_maxscore = 0
-    for question in range(1, len(exam_data) + 1):
-        question_data = exam_data[question - 1]
-        if question_data['score'] is not False:
-            total_score += max(int(question_data['score']), 0)
-        if question_data['maxscore'] is not False:
-            total_maxscore += int(question_data['maxscore'])
-
+    for question_id in get_questions_ids(exam_id):
+        result = get_question_result(question_id, user_id)
+        maxscore = get_question_data(question_id)['maxscore']
+        score = result['score'] if result else 0
+        total_maxscore += maxscore
+        if score != -1:
+            total_score += score * maxscore
     return {
-        **get_exam_info(group, exam),
-        'start': user_item.get_item('start'),
-        'end': user_item.get_item('end'),
+        **exam_data,
         'state': state,
+        'start': start,
+        'end': end,
         'total_score': total_score,
         'total_maxscore': total_maxscore
     }
 
 
-def get_exam_data(group, exam):
+def create_question(exam_id, question_type):
     """
-    Returns exam data.
+    Creates question of the exam.
     """
-    quantity = get_exam_info(group, exam)['quantity']
-    return [
-        get_question_data(group, exam, question) for question in range(1, quantity + 1)
-    ]
+    maxsubs = 1 if question_type == 'Short' else 1000
+    CURSOR.execute(
+        "INSERT INTO questions VALUES (?, '', '', ?, 1, ?)",
+        (question_type, maxsubs, exam_id)
+    )
+    CONNECTION.commit()
+    return CURSOR.lastrowid
 
 
-def get_exam_data_user(group, user, exam):
+def delete_question(question_id):
     """
-    Returns all exam.
+    Deletes question.
     """
-    quantity = get_exam_info(group, exam)['quantity']
-    return [
-        get_question_data_user(group, user, exam, question) for question in range(1, quantity + 1)
-    ]
-
-
-def list_of_exams(group):
-    """
-    Returns list of all available exams in the group.
-    """
-    return os.listdir(os.path.join('data', group, 'exams'))
-
-
-def list_of_published_exams(group):
-    """
-    Returns list of published (available for student) exams in the group.
-    """
-    return [
-        exam for exam in list_of_exams(group) if get_exam_info(group, exam)['published'] == '1'
-    ]
-
-
-def start_exam(group, user, exam):
-    """
-    Starts the exam.
-    """
-    user_item = Item(os.path.join('data', group, 'students', user, 'exams', exam, 'settings'))
-    current_time = int(time.time())
-    duration_time = int(get_exam_info(group, exam)['duration']) * 60
-    user_item.set_item('start', current_time)
-    user_item.set_item('end', current_time + duration_time)
+    CURSOR.execute(
+        "DELETE FROM questions WHERE rowid=?",
+        (question_id,)
+    )
+    CURSOR.execute(
+        "DELETE FROM submissions WHERE question_id=?",
+        (question_id,)
+    )
+    CONNECTION.commit()
     return True
 
 
-def finish_exam(group, user, exam):
+def get_question_data(question_id):
     """
-    Finishes the exam.
+    Returns question data.
     """
-    user_item = Item(os.path.join('data', group, 'students', user, 'exams', exam, 'settings'))
-    current_time = int(time.time())
-    user_item.set_item('end', current_time)
-    # exam_data = get_exam_data_user(group, user, exam)
-    # for question in range(1, len(exam_data) + 1):
-    #     if exam_data[question - 1]['score'] == '-1':
-    #         print("adding notification of question " + str(question))
+    CURSOR.execute(
+        "SELECT rowid, * FROM questions WHERE rowid=?",
+        (question_id,)
+    )
+    return get_last(CURSOR.fetchall())
+
+
+def set_question_data(question_data):
+    """
+    Saves question data.
+    """
+    CURSOR.execute(
+        "UPDATE questions SET type=?, statement=?, correct=?, maxsubs=?, maxscore=? WHERE rowid=?",
+        (question_data['type'], question_data['statement'], question_data['correct'],
+         question_data['maxsubs'], question_data['maxscore'],
+         question_data['rowid'])
+    )
+    CONNECTION.commit()
     return True
 
 
-def check_short(group, user, exam, question, answer):
+def add_submission(exam_id, question_id, submission_text, user_id):
     """
-    Checks student's answer of the short question.
+    Adds submission with submission_text.
     """
-    student_item = Item(os.path.join('data', group, 'students', user, 'exams', exam, str(question)))
-    question_data = get_question_data_user(group, user, exam, question)
-    correct = question_data['correct'].split('\n')
-    student_item.set_item('answer', answer)
-    if format_str(answer) in [format_str(s) for s in correct]:
-        student_item.set_item('score', question_data['maxscore'])
+    question_data = get_question_data(question_id)
+    if not question_data:
+        return False
+    CURSOR.execute(
+        "SELECT * FROM submissions WHERE student_id=? AND question_id=?",
+        (user_id, question_id)
+    )
+    if len(CURSOR.fetchall()) >= question_data['maxsubs']:
+        return False
+    CURSOR.execute(
+        "INSERT INTO submissions VALUES (?, ?, ?, ?, -1)",
+        (user_id, exam_id, question_id, submission_text)
+    )
+    CONNECTION.commit()
+    judge_submission(CURSOR.lastrowid)
+    return True
+
+
+def judge_submission(submission_id):
+    """
+    Judges the submission.
+    """
+    CURSOR.execute(
+        "SELECT * FROM submissions WHERE rowid=?",
+        (submission_id,)
+    )
+    submission = get_last(CURSOR.fetchall())
+    question_data = get_question_data(submission['question_id'])
+    if not submission or not question_data:
+        return False
+    if question_data['type'] == 'Short':
+        score = judge_short(submission, question_data)
+    elif question_data['type'] == 'Long':
+        score = judge_long(submission, question_data)
     else:
-        student_item.set_item('score', 0)
+        score = -1
+    CURSOR.execute(
+        "UPDATE submissions SET score=? WHERE rowid=?",
+        (score, submission_id)
+    )
+    CONNECTION.commit()
     return True
 
 
-def check_long(group, user, exam, question, answer):
+def judge_short(submission, question_data):
     """
-    Checks student's answer of the long question.
+    Judges short question.
     """
-    student_item = Item(os.path.join('data', group, 'students', user, 'exams', exam, str(question)))
-    student_item.set_item('answer', answer)
-    student_item.set_item('score', -1)
-    return True
+    score = -1
+    correct_list = question_data['correct'].split('; ')
+    if submission['answer'] in correct_list:
+        score = 1
+    else:
+        score = 0
+    return score
 
 
-ENCODING = 'utf-8-sig'
-TYPE_ITEMS = {
-    'Short': {'type', 'statement', 'correct', 'maxscore'},
-    'Long': {'type', 'statement', 'maxscore'},
-    '': {'type'}
-}
+def judge_long(submission_text, question_data):
+    """
+    Judges long question.
+    """
+    return -1
+
+
+CONNECTION = sqlite3.connect('database.db')
+CONNECTION.row_factory = sqlite3.Row
+CURSOR = CONNECTION.cursor()
 
 SERVER = SimpleXMLRPCServer(('', 8000))
 
 SERVER.register_function(ping)
-SERVER.register_function(register_student)
-SERVER.register_function(register_teacher)
-SERVER.register_function(login_student)
-SERVER.register_function(login_teacher)
-
-SERVER.register_function(set_question_data)
-SERVER.register_function(get_question_data)
-SERVER.register_function(get_question_data_user)
-SERVER.register_function(create_question)
-SERVER.register_function(reset_question)
-SERVER.register_function(set_exam_info)
-SERVER.register_function(get_exam_info)
-SERVER.register_function(get_exam_info_user)
-SERVER.register_function(get_exam_data)
-SERVER.register_function(get_exam_data_user)
-
-SERVER.register_function(list_of_exams)
+SERVER.register_function(register)
+SERVER.register_function(login)
 SERVER.register_function(list_of_published_exams)
+SERVER.register_function(list_of_all_exams)
+SERVER.register_function(create_exam)
+SERVER.register_function(delete_exam)
 SERVER.register_function(start_exam)
 SERVER.register_function(finish_exam)
-SERVER.register_function(check_short)
-SERVER.register_function(check_long)
+SERVER.register_function(get_exam_data)
+SERVER.register_function(set_exam_data)
+SERVER.register_function(get_questions_ids)
+SERVER.register_function(get_question_result)
+SERVER.register_function(get_questions_results)
+SERVER.register_function(get_exam_data_student)
+SERVER.register_function(create_question)
+SERVER.register_function(delete_question)
+SERVER.register_function(get_question_data)
+SERVER.register_function(set_question_data)
+SERVER.register_function(add_submission)
 
 SERVER.serve_forever()

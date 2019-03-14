@@ -178,11 +178,11 @@ class Application(Qt.QApplication):
         self.view_exam_settings()
 
     @safe
-    def create_exam(self, exam_name):
+    def create_exam(self):
         """
         Creates the exam.
         """
-        exam_id = self.client.server.create_exam(exam_name, self.client.user['group_id'])
+        exam_id = self.client.server.create_exam(self.client.user['group_id'])
         self.display_exam(exam_id)
 
     @safe
@@ -205,8 +205,8 @@ class Application(Qt.QApplication):
         Displays exam settings.
         """
         exam_id = self.widget.exam_id
-        questions_ids = self.client.server.get_questions_ids(exam_id)
         exam_data = self.client.server.get_exam_data(exam_id)
+        questions_ids = self.client.server.get_questions_ids(exam_id)
         self.widget.questions_ids = questions_ids
         self.widget.display_settings(exam_data)
 
@@ -216,8 +216,8 @@ class Application(Qt.QApplication):
         Displays selected question.
         """
         exam_id = self.widget.exam_id
-        questions_ids = self.client.server.get_questions_ids(exam_id)
         question_data = self.client.server.get_question_data(question_id)
+        questions_ids = self.client.server.get_questions_ids(exam_id)
         self.widget.questions_ids = questions_ids
         self.widget.display_question(question_data)
 

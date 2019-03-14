@@ -121,7 +121,7 @@ class ExamPage(Qt.QWidget):
             old_widget.deleteLater()
             self.questions_layout.removeWidget(old_widget)
         for question in range(len(self.questions_ids)):
-            question_id = self.questions_ids[question]['rowid']
+            question_id = self.questions_ids[question]
             question_button = Qt.QPushButton(str(question + 1))
             question_button.setCursor(Qt.Qt.PointingHandCursor)
             question_button.setFixedSize(Qt.QSize(50, 50))

@@ -57,7 +57,7 @@ class ExamPage(Qt.QWidget):
         layout.addWidget(self.widget)
         self.setLayout(layout)
 
-    def display_question(self, exam_data, question_data):
+    def display_question(self, exam_data, question_data, question_result):
         """
         Displays current question.
         """
@@ -69,8 +69,8 @@ class ExamPage(Qt.QWidget):
         old_widget = self.layout().itemAt(2).widget()
         old_widget.deleteLater()
         self.layout().removeWidget(old_widget)
-        status_widget = self.app.get_exam_status_widget(self, exam_data)
-        self.widget = self.app.get_question_widget(exam_data, question_data)
+        status_widget = self.app.get_exam_status_widget(exam_data)
+        self.widget = self.app.get_question_widget(exam_data, question_data, question_result)
         self.layout().addWidget(status_widget)
         self.layout().addWidget(self.widget)
 
@@ -83,7 +83,7 @@ class ExamPage(Qt.QWidget):
             old_widget.deleteLater()
             self.questions_layout.removeWidget(old_widget)
         for question in range(len(self.questions_ids)):
-            question_id = self.questions_ids[question]['rowid']
+            question_id = self.questions_ids[question]
             question_result = self.questions_results[question]
             question_button = Qt.QPushButton(str(question + 1))
             question_button.setCursor(Qt.Qt.PointingHandCursor)
@@ -91,5 +91,5 @@ class ExamPage(Qt.QWidget):
             question_button.clicked.connect(
                 common.return_lambda(self.app.view_exam_question, question_id))
             question_button.setStyleSheet(
-                common.upper_question_style(question_result, question, self.question))
+                common.upper_question_style(question_result, question_id, self.question_id))
             self.questions_layout.addWidget(question_button)

@@ -48,6 +48,7 @@ class QuestionShortEdit(ExamWidgetBase):
                 'type': self.question_data['type'],
                 'statement': self.statement_input.toPlainText(),
                 'correct': self.answer_input.text(),
+                'maxsubs': 1,
                 'maxscore': int(self.maxscore_input.text())
             }
         ))
@@ -86,6 +87,7 @@ class QuestionShortEdit(ExamWidgetBase):
         self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         self.lower_layout.addWidget(self.status_img)
         self.lower_layout.addWidget(self.status_label)
+        self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         self.lower_layout.addStretch(1)
         self.lower_layout.addWidget(delete_button)
 

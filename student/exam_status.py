@@ -3,7 +3,7 @@ Contains all widgets for exam status.
 """
 
 
-import time
+from time import time
 from PyQt5 import Qt
 from mywidgets import Timer
 
@@ -19,15 +19,26 @@ class ExamRunning(Qt.QWidget):
         finish_button.setFont(Qt.QFont('Arial', 20))
         finish_button.clicked.connect(lambda: app.finish_exam(exam_data['rowid']))
 
+        info_str = (
+            'Баллы: ' + str(int(exam_data['total_score'])) +
+            ' (из ' + str(int(exam_data['total_maxscore'])) + ')'
+        )
+
+        info_label = Qt.QLabel(info_str)
+        info_label.setFont(Qt.QFont('Arial', 20))
+
         timer_label = Qt.QLabel()
         timer_label.setFont(Qt.QFont('Arial', 25))
+
         timer = Timer()
         timer.tie(timer_label)
-        timer.start(exam_data['end'] - int(time.time()),
-                    lambda: app.finish_exam(exam_data['rowid']))
+        timer.start(exam_data['end'] - int(time()), lambda: app.finish_exam(exam_data['rowid']))
 
         status_layout = Qt.QHBoxLayout()
         status_layout.addWidget(finish_button)
+        status_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
+        status_layout.addWidget(info_label)
+        status_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         status_layout.addStretch(1)
         status_layout.addWidget(timer_label)
         self.setLayout(status_layout)
@@ -41,8 +52,8 @@ class ExamFinished(Qt.QWidget):
         super().__init__()
         info_str = (
             'Экзамен завершён. Суммарный балл - ' +
-            str(exam_data['total_score']) + ' (из ' +
-            str(exam_data['total_maxscore']) + ')'
+            str(int(exam_data['total_score'])) + ' (из ' +
+            str(int(exam_data['total_maxscore'])) + ')'
         )
 
         info_label = Qt.QLabel(info_str)

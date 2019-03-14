@@ -172,7 +172,7 @@ class Application(Qt.QApplication):
         """
         Starts the exam.
         """
-        self.client.server.start_exam(exam_id)
+        self.client.server.start_exam(exam_id, self.client.user['rowid'])
         self.display_exam(exam_id)
 
     @safe
@@ -180,7 +180,7 @@ class Application(Qt.QApplication):
         """
         Finishes the exam.
         """
-        self.client.server.finish_exam(exam_id)
+        self.client.server.finish_exam(exam_id, self.client.user['rowid'])
         self.display_exam(exam_id)
 
     @safe
@@ -205,55 +205,57 @@ class Application(Qt.QApplication):
         Displays selected question.
         """
         exam_id = self.widget.exam_id
-        exam_data = self.client.server.get_exam_data_student(exam_id, self.client.user)
+        user_id = self.client.user['rowid']
+        exam_data = self.client.server.get_exam_data_student(exam_id, user_id)
+        question_data = self.client.server.get_question_data(question_id)
+        question_result = self.client.server.get_question_result(question_id, user_id)
         questions_ids = self.client.server.get_questions_ids(exam_id)
-        questions_results = self.client.server.get_questions_results(exam_id, self.client.user)
-        question_data = self.client.server.get_question_data_student(question_id, self.client.user)
+        questions_results = self.client.server.get_questions_results(exam_id, user_id)
         self.widget.questions_ids = questions_ids
         self.widget.questions_results = questions_results
-        self.widget.display_question(exam_data, question_data)
+        self.widget.display_question(exam_data, question_data, question_result)
 
     def get_exam_status_widget(self, exam_data):
         """
         Returns exam status widget.
         """
+        if not exam_data:
+            return Qt.QWidget()
         if exam_data['state'] == 'Running':
             return ExamRunning(self, exam_data)
-        return ExamFinished(self)
+        return ExamFinished(exam_data)
 
-    def get_question_widget(self, exam_data, question_data):
+    def get_question_widget(self, exam_data, question_data, question_result):
         """
         Returns the question widget depending on it's type.
         """
         if not question_data:
             return ErrorWidget()
+        number = self.widget.questions_ids.index(question_data['rowid'])
+        if number < len(self.widget.questions_ids) - 1:
+            next_question_id = self.widget.questions_ids[number + 1]
+        else:
+            next_question_id = -1
         if question_data['type'] == 'Short':
             if exam_data['state'] == 'Finished':
-                return QuestionShortDetails(self, question_data)
-            if question_data['score'] is not False:
-                return QuestionShortChecked(self, question_data)
+                return QuestionShortDetails(question_data, question_result)
+            if question_result:
+                return QuestionShortChecked(self, question_data, question_result, next_question_id)
             return QuestionShort(self, question_data)
         if question_data['type'] == 'Long':
             if exam_data['state'] == 'Finished':
-                return QuestionLongDetails(self, question_data)
-            return QuestionLong(self, question_data)
+                return QuestionLongDetails(question_data, question_result)
+            return QuestionLong(self, question_data, question_result, next_question_id)
+        return ErrorWidget()
 
     @safe
-    def check_short(self, exam, question, answer):
+    def send_submission(self, question_id, answer):
         """
-        Checks the student's answer to the short question and refreshes the page.
+        Sends the answer.
         """
-        self.user.check_short(exam, question, answer)
-        self.view_question(exam, question)
-
-    @safe
-    def check_long(self, exam, question, answer):
-        """
-        Checks the student's answer to the long question and refreshes the page.
-        """
-        self.user.check_long(exam, question, answer)
-        self.view_question(exam, question)
-        self.widget.widget.update_saved_status()
+        exam_id = self.widget.exam_id
+        self.client.server.add_submission(exam_id, question_id, answer, self.client.user['rowid'])
+        self.view_exam_question(question_id)
 
 
 if __name__ == "__main__":

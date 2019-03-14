@@ -14,25 +14,25 @@ def return_lambda(function, *args, **kwargs):
     return lambda: function(*args, **kwargs)
 
 
-def upper_question_style(question_data, question, current_question):
+def upper_question_style(question_result, question, current_question):
     """
     Returns style of current question on the upper panel depending on the result.
     """
-    background_color = 'white'
-    foreground_color = 'black'
-    border_color = 'grey'
-    if question_data['score'] == '-1':
+    if not question_result:
+        background_color = 'white'
+    elif question_result['score'] == -1:
         background_color = '#FFFA95'
-    elif question_data['score'] == question_data['maxscore']:
+    elif question_result['score'] == 1:
         background_color = '#9CFB8E'
     else:
         background_color = '#F94D51'
-    if question_data['score'] is False:
-        background_color = 'white'
     if question == current_question:
         foreground_color = 'blue'
         background_color = '#CCE8FF'
         border_color = '#99D1FF'
+    else:
+        foreground_color = 'black'
+        border_color = 'grey'
     return (
         'color: ' + foreground_color + ';'
         'background: ' + background_color + ';'
@@ -45,14 +45,17 @@ def upper_question_style(question_data, question, current_question):
     )
 
 
-def main_question_style(question_data):
+def main_question_style(question_result):
     """
     Returns main style of current question depending on the result.
     """
-    if question_data['score'] == '-1':
+    if not question_result:
+        main_color = RED
+        main_picture = Qt.QPixmap(CROSS)
+    elif question_result['score'] == -1:
         main_color = YELLOW
         main_picture = Qt.QPixmap(WARNING)
-    elif question_data['score'] == question_data['maxscore']:
+    elif question_result['score'] == 1:
         main_color = GREEN
         main_picture = Qt.QPixmap(TICK)
     else:
@@ -61,6 +64,25 @@ def main_question_style(question_data):
     return {
         'main_color': main_color,
         'main_picture': main_picture
+    }
+
+
+def get_question_details(question_data, question_results):
+    """
+    Returns score and last answer.
+    """
+    if not question_results:
+        score = '0'
+        answer = ''
+    elif question_results['score'] == -1:
+        score = '?'
+        answer = question_results['answer']
+    else:
+        score = str(int(question_results['score'] * question_data['maxscore']))
+        answer = question_results['answer']
+    return {
+        'score': score,
+        'answer': answer
     }
 
 

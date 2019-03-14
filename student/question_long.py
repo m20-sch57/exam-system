@@ -12,38 +12,43 @@ class QuestionLong(QuestionBase):
     """
     Returns widget for long question.
     """
-    def __init__(self, parent, check_function, view_question_function):
-        super().__init__(parent)
+    def __init__(self, app, question_data, question_result, next_question_id):
+        super().__init__()
+        self.answer = question_result['answer'] if question_result else ''
 
-        statement_label = Qt.QLabel(self.question_data['statement'])
+        statement_label = Qt.QLabel(question_data['statement'])
         statement_label.setFont(Qt.QFont('Arial', 20))
         statement_label.setWordWrap(True)
 
-        self.status_label = Qt.QLabel()
-        self.status_label.setFont(Qt.QFont('Arial', 20))
-
         self.answer_input = Qt.QPlainTextEdit()
         self.answer_input.setFont(Qt.QFont('Arial', 20))
-        if self.question_data['answer'] is not False:
-            self.answer_input.setPlainText(self.question_data['answer'])
+        self.answer_input.setPlainText(self.answer)
         self.answer_input.textChanged.connect(self.update_saved_status)
 
         save_button = Qt.QPushButton('Сохранить')
         save_button.setFont(Qt.QFont('Arial', 20))
         save_button.clicked.connect(
-            lambda: check_function(parent.exam, parent.question, self.answer_input.toPlainText()))
+            lambda: app.send_submission(question_data['rowid'], self.answer_input.toPlainText()))
+
+        self.status_img = Qt.QLabel()
+        self.status_img.setScaledContents(True)
+        self.status_img.setFixedSize(Qt.QSize(50, 50))
+
+        self.status_label = Qt.QLabel()
+        self.status_label.setFont(Qt.QFont('Arial', 20))
+        self.update_saved_status()
 
         next_button = Qt.QPushButton('Далее')
         next_button.setFont(Qt.QFont('Arial', 20))
-        next_button.clicked.connect(
-            lambda: view_question_function(parent.exam, parent.question + 1))
+        next_button.clicked.connect(lambda: app.view_exam_question(next_question_id))
 
         self.lower_layout.addWidget(save_button)
         self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
+        self.lower_layout.addWidget(self.status_img)
         self.lower_layout.addWidget(self.status_label)
+        self.lower_layout.addSpacerItem(Qt.QSpacerItem(10, 0))
         self.lower_layout.addStretch(1)
-        if parent.question < len(parent.exam_data):
-            self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
+        if next_question_id != -1:
             self.lower_layout.addWidget(next_button)
 
         self.layout.addWidget(statement_label)
@@ -54,12 +59,14 @@ class QuestionLong(QuestionBase):
         """
         Call after modifying.
         """
-        answer = self.question_data['answer']
+        answer = self.answer
         saved_answer = self.answer_input.toPlainText()
         if saved_answer != answer:
+            self.status_img.setPixmap(Qt.QPixmap(common.WARNING))
             self.status_label.setText('Сохраните')
             self.status_label.setStyleSheet('color: ' + common.YELLOW)
         else:
+            self.status_img.setPixmap(Qt.QPixmap(common.TICK))
             self.status_label.setText('Сохранено')
             self.status_label.setStyleSheet('color: ' + common.GREEN)
 
@@ -68,30 +75,24 @@ class QuestionLongDetails(QuestionBase):
     """
     Returns widget for details of long question.
     """
-    def __init__(self, parent):
-        super().__init__(parent)
-        current_answer = self.question_data['answer']
-        if current_answer is False:
-            current_answer = ''
-        current_score = self.question_data['score']
-        if current_score is False:
-            current_score = '0'
-        if current_score == '-1':
-            current_score = 'Неизв.'
-        question_style = common.main_question_style(self.question_data)
+    def __init__(self, question_data, question_result):
+        super().__init__()
+        question_details = common.get_question_details(question_data, question_result)
+        question_style = common.main_question_style(question_result)
 
-        statement_label = Qt.QLabel(self.question_data['statement'])
+        statement_label = Qt.QLabel(question_data['statement'])
         statement_label.setFont(Qt.QFont('Arial', 20))
         statement_label.setWordWrap(True)
 
-        answer_input = Qt.QPlainTextEdit(current_answer)
+        answer_input = Qt.QPlainTextEdit(question_details['answer'])
         answer_input.setFont(Qt.QFont('Arial', 20))
         answer_input.setReadOnly(True)
 
         score_title = Qt.QLabel('Получено баллов:')
         score_title.setFont(Qt.QFont('Arial', 25))
 
-        score_label = Qt.QLabel(current_score + ' (' + self.question_data['maxscore'] + ')')
+        score_label = Qt.QLabel(question_details['score'] + ' (' +
+                                str(question_data['maxscore']) + ')')
         score_label.setFont(Qt.QFont('Arial', 20))
         score_label.setStyleSheet('color: ' + question_style['main_color'])
 

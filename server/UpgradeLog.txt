@@ -1,0 +1,384 @@
+﻿Starting upgrade process.
+Discovered exams:
+Test
+Тренировка №1 по теме 'средние века'
+Тренировка №2 по теме 'средние века'
+Тренировка №3 по теме 'средние века'
+Тренировка №4 по теме 'средние века'
+Тренировка №5 по теме 'средние века'
+Тренировка №6 по теме 'средние века'
+Тренировка №7 по теме 'средние века'
+Тренировка №8 по теме 'средние века'
+Тренировка №9 по теме 'средние века'
+ЧГК-раунд №1
+ЧГК-раунд №2
+ЧГК-раунд №3
+ЧГК-раунд №4
+Это очень длинное название экзамена
+Test:
+name=Test, duration=100000, published=1, rowid=1.
+question #1: type=Short
+OK
+question #2: type=Long
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+Тренировка №1 по теме 'средние века':
+name=Тренировка №1 по теме 'средние века', duration=5, published=1, rowid=2.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+Тренировка №2 по теме 'средние века':
+name=Тренировка №2 по теме 'средние века', duration=5, published=1, rowid=3.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+Тренировка №3 по теме 'средние века':
+name=Тренировка №3 по теме 'средние века', duration=5, published=1, rowid=4.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+Тренировка №4 по теме 'средние века':
+name=Тренировка №4 по теме 'средние века', duration=5, published=1, rowid=5.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+Тренировка №5 по теме 'средние века':
+name=Тренировка №5 по теме 'средние века', duration=5, published=1, rowid=6.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+Тренировка №6 по теме 'средние века':
+name=Тренировка №6 по теме 'средние века', duration=5, published=1, rowid=7.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+Тренировка №7 по теме 'средние века':
+name=Тренировка №7 по теме 'средние века', duration=5, published=1, rowid=8.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+Тренировка №8 по теме 'средние века':
+name=Тренировка №8 по теме 'средние века', duration=5, published=1, rowid=9.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+Тренировка №9 по теме 'средние века':
+name=Тренировка №9 по теме 'средние века', duration=5, published=1, rowid=10.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+ЧГК-раунд №1:
+name=ЧГК-раунд №1, duration=5, published=1, rowid=11.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+question #11: type=Short
+OK
+question #12: type=Short
+OK
+question #13: type=Short
+OK
+question #14: type=Short
+OK
+question #15: type=Short
+OK
+ЧГК-раунд №2:
+name=ЧГК-раунд №2, duration=5, published=1, rowid=12.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+ЧГК-раунд №3:
+name=ЧГК-раунд №3, duration=5, published=1, rowid=13.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+ЧГК-раунд №4:
+name=ЧГК-раунд №4, duration=15, published=1, rowid=14.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+question #11: type=Short
+OK
+question #12: type=Short
+OK
+question #13: type=Short
+OK
+question #14: type=Short
+OK
+question #15: type=Short
+OK
+Это очень длинное название экзамена:
+name=Это очень длинное название экзамена, duration=1, published=1, rowid=15.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+question #11: type=Short
+OK
+question #12: type=Short
+OK
+question #13: type=Short
+OK
+question #14: type=Short
+OK
+question #15: type=Short
+OK
+question #16: type=Short
+OK
+question #17: type=Short
+OK
+question #18: type=Short
+OK
+question #19: type=Short
+OK
+question #20: type=Short
+OK
+Upgrade process completed.

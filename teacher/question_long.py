@@ -40,6 +40,7 @@ class QuestionLongEdit(ExamWidgetBase):
                 'type': self.question_data['type'],
                 'statement': self.statement_input.toPlainText(),
                 'correct': '',
+                'maxsubs': 1000,
                 'maxscore': int(self.maxscore_input.text())
             }
         ))
@@ -74,6 +75,7 @@ class QuestionLongEdit(ExamWidgetBase):
         self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         self.lower_layout.addWidget(self.status_img)
         self.lower_layout.addWidget(self.status_label)
+        self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         self.lower_layout.addStretch(1)
         self.lower_layout.addWidget(delete_button)
 

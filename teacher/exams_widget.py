@@ -47,7 +47,7 @@ class ExamsWidget(Qt.QWidget):
         create_button = FlatButton(Qt.QIcon(common.CREATE), 'Создать экзамен')
         create_button.setIconSize(Qt.QSize(40, 40))
         create_button.setFont(Qt.QFont('Arial', 20))
-        create_button.clicked.connect(lambda: app.create_exam(''))
+        create_button.clicked.connect(lambda _: app.create_exam())
 
         info_label = Qt.QLabel('Всего экзаменов - ' + str(len(list_of_exams)))
         info_label.setFont(Qt.QFont('Arial', 20))
