@@ -4,7 +4,6 @@ Login page for student.
 
 
 from PyQt5 import Qt
-from mywidgets import FlatButton
 import common
 
 
@@ -37,6 +36,7 @@ class LoginPage(Qt.QWidget):
             password_input.setText(app.client.password)
 
         enter_button = Qt.QPushButton('Войти в систему')
+        enter_button.setObjectName('Button')
         enter_button.setFont(Qt.QFont('Arial', 20))
         enter_button.clicked.connect(lambda: app.login(user_input.text(), password_input.text()))
 
@@ -44,11 +44,15 @@ class LoginPage(Qt.QWidget):
         self.status_label.setFont(Qt.QFont('Arial', 20))
         self.status_label.setMinimumWidth(270)
 
-        settings_button = FlatButton(Qt.QIcon(common.SETTINGS), '')
+        settings_button = Qt.QPushButton(Qt.QIcon(common.SETTINGS), '')
+        settings_button.setObjectName('Flat')
+        settings_button.setCursor(Qt.Qt.PointingHandCursor)
         settings_button.setIconSize(Qt.QSize(40, 40))
         settings_button.clicked.connect(app.display_settings_page)
 
-        register_button = FlatButton('Регистрация')
+        register_button = Qt.QPushButton('Регистрация')
+        register_button.setObjectName('Flat')
+        register_button.setCursor(Qt.Qt.PointingHandCursor)
         register_button.setFont(Qt.QFont('Arial', 20))
         register_button.clicked.connect(app.display_register_page)
         register_button.setStyleSheet('color: ' + common.GREY)

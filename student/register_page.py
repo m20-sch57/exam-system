@@ -4,7 +4,6 @@ Register page for student.
 
 
 from PyQt5 import Qt
-from mywidgets import FlatButton
 import common
 
 
@@ -52,6 +51,7 @@ class RegisterPage(Qt.QWidget):
         self.repeat_input.textChanged.connect(self.update_button_state)
 
         self.register_button = Qt.QPushButton('Зарегистрироваться')
+        self.register_button.setObjectName('Button')
         self.register_button.setFont(Qt.QFont('Arial', 20))
         self.register_button.clicked.connect(lambda: app.register(
             group_input.text(), user_input.text(), self.password_input.text()))
@@ -60,11 +60,15 @@ class RegisterPage(Qt.QWidget):
         self.status_label.setFont(Qt.QFont('Arial', 20))
         self.status_label.setMinimumWidth(380)
 
-        settings_button = FlatButton(Qt.QIcon(common.SETTINGS), '')
+        settings_button = Qt.QPushButton(Qt.QIcon(common.SETTINGS), '')
+        settings_button.setObjectName('Flat')
+        settings_button.setCursor(Qt.Qt.PointingHandCursor)
         settings_button.setIconSize(Qt.QSize(40, 40))
         settings_button.clicked.connect(app.display_settings_page)
 
-        enter_button = FlatButton('Вход')
+        enter_button = Qt.QPushButton('Вход')
+        enter_button.setObjectName('Flat')
+        enter_button.setCursor(Qt.Qt.PointingHandCursor)
         enter_button.setFont(Qt.QFont('Arial', 20))
         enter_button.clicked.connect(app.display_login_page)
         enter_button.setStyleSheet('color: ' + common.GREY)

@@ -1,30 +1,42 @@
-.QPushButton {
-    background-color: #CCE8FF;
+QPushButton#Button {
+    background-color: rgb(204, 232, 255);
     color: black;
-    border: 2px solid #99D1FF;
+    border: 2px solid rgb(153, 209, 255);
     border-radius: 15px;
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 10px;
     padding-bottom: 10px;
 }
-.QPushButton:hover {
-    background-color: #99D1FF;
+QPushButton#Button:hover {
+    background-color: rgb(153, 209, 255);
 }
-.QPushButton:pressed {
-    background-color: #3DD3ED;
-    border-color: #3DD3ED;
+QPushButton#Button:pressed {
+    background-color: rgb(61, 210, 237);
+    border-color: rgb(61, 210, 237);
 }
-.QPushButton:disabled {
+QPushButton#Button:disabled {
     color: grey;
 }
-FlatButton {
-    border-width: 0px;
+QPushButton#Flat {
+    border-radius: 25px;
+    padding: 10px;
+}
+QPushButton#Flat:hover {
+    background-color: rgba(179, 179, 179, 0.5);
+}
+QPushButton#Flat:pressed {
+    background-color: rgba(179, 179, 179, 0.8);
+}
+QPushButton#Link {
     border-radius: 0px;
     padding: 5px;
 }
-FlatButton:hover {
-    color: #2CA9FD;
+QPushButton#Link:hover {
+    color: rgb(44, 169, 253);
+}
+QPushButton#Link:pressed {
+    color: rgb(44, 169, 253);
 }
 QPlainTextEdit, QLineEdit {
     background-color: white;
@@ -34,21 +46,21 @@ QPlainTextEdit, QLineEdit {
     padding: 5px;
 }
 QPlainTextEdit:focus, QLineEdit:focus {
-    border-color: #99D1FF;
+    border-color: rgb(153, 209, 255);
 }
 .QFrame {
     border: 1px solid grey;
     border-radius: 10px;
 }
 QComboBox {
-    background-color: #F0F0F0;
+    background-color: rgb(240, 240, 240);
     color: black;
     border: 1px solid grey;
     border-radius: 10px;
     padding: 5px;
 }
 QComboBox:focus {
-    border-color: #99D1FF;
+    border-color: rgb(153, 209, 255);
 }
 QComboBox::drop-down {
     width: 30px;

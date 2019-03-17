@@ -32,7 +32,8 @@ class QuestionLongEdit(ExamWidgetBase):
         self.maxscore_input.textChanged.connect(self.update_saved_status)
 
         self.save_button = Qt.QPushButton(Qt.QIcon(common.SAVE), 'Сохранить')
-        self.save_button.setIconSize(Qt.QSize(40, 40))
+        self.save_button.setObjectName('Button')
+        self.save_button.setIconSize(Qt.QSize(35, 35))
         self.save_button.setFont(Qt.QFont('Arial', 20))
         self.save_button.clicked.connect(lambda: app.save_question_data(
             {
@@ -54,7 +55,8 @@ class QuestionLongEdit(ExamWidgetBase):
         self.update_saved_status()
 
         delete_button = Qt.QPushButton(Qt.QIcon(common.DELETE), 'Удалить')
-        delete_button.setIconSize(Qt.QSize(40, 40))
+        delete_button.setObjectName('Button')
+        delete_button.setIconSize(Qt.QSize(35, 35))
         delete_button.setFont(Qt.QFont('Arial', 20))
         delete_button.clicked.connect(lambda: app.delete_question(self.question_data['rowid']))
 

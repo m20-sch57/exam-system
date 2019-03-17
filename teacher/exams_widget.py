@@ -4,7 +4,6 @@ Widget for home page with list of exams.
 
 
 from PyQt5 import Qt
-from mywidgets import FlatButton
 import common
 
 
@@ -26,7 +25,9 @@ class ExamsWidget(Qt.QWidget):
             exam_id = exam['rowid']
             exam_name = exam['name']
 
-            exam_button = FlatButton(Qt.QIcon(common.EXAM30), exam_name)
+            exam_button = Qt.QPushButton(Qt.QIcon(common.EXAM30), exam_name)
+            exam_button.setObjectName('Flat')
+            exam_button.setCursor(Qt.Qt.PointingHandCursor)
             exam_button.setIconSize(Qt.QSize(30, 30))
             exam_button.setFont(Qt.QFont('Arial', 20))
             exam_button.clicked.connect(common.return_lambda(app.display_exam, exam_id))
@@ -36,7 +37,6 @@ class ExamsWidget(Qt.QWidget):
             exam_layout.addStretch(1)
 
             scroll_layout.addLayout(exam_layout)
-            scroll_layout.addSpacerItem(Qt.QSpacerItem(0, 10))
 
         scroll_layout.addStretch(1)
 
@@ -44,8 +44,10 @@ class ExamsWidget(Qt.QWidget):
         scroll_widget.setLayout(scroll_layout)
         scroll_area.setWidget(scroll_widget)
 
-        create_button = FlatButton(Qt.QIcon(common.CREATE), 'Создать экзамен')
-        create_button.setIconSize(Qt.QSize(40, 40))
+        create_button = Qt.QPushButton(Qt.QIcon(common.CREATE), 'Создать экзамен')
+        create_button.setObjectName('Flat')
+        create_button.setCursor(Qt.Qt.PointingHandCursor)
+        create_button.setIconSize(Qt.QSize(35, 35))
         create_button.setFont(Qt.QFont('Arial', 20))
         create_button.clicked.connect(lambda _: app.create_exam())
 

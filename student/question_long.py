@@ -26,6 +26,7 @@ class QuestionLong(QuestionBase):
         self.answer_input.textChanged.connect(self.update_saved_status)
 
         save_button = Qt.QPushButton('Сохранить')
+        save_button.setObjectName('Button')
         save_button.setFont(Qt.QFont('Arial', 20))
         save_button.clicked.connect(
             lambda: app.send_submission(question_data['rowid'], self.answer_input.toPlainText()))
@@ -39,6 +40,7 @@ class QuestionLong(QuestionBase):
         self.update_saved_status()
 
         next_button = Qt.QPushButton('Далее')
+        next_button.setObjectName('Button')
         next_button.setFont(Qt.QFont('Arial', 20))
         next_button.clicked.connect(lambda: app.view_exam_question(next_question_id))
 

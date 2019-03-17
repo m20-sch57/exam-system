@@ -4,7 +4,6 @@ Page before starting the exam.
 
 
 from PyQt5 import Qt
-from mywidgets import FlatButton
 import common
 
 
@@ -19,9 +18,11 @@ class StartExamPage(Qt.QWidget):
             'Количество заданий - ' + str(cnt_questions)
         )
 
-        back_button = FlatButton(Qt.QIcon(common.LEFT), '')
+        back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '')
+        back_button.setObjectName('Flat')
+        back_button.setCursor(Qt.Qt.PointingHandCursor)
         back_button.setIconSize(Qt.QSize(40, 40))
-        back_button.setFixedSize(back_button.sizeHint())
+        back_button.setFixedSize(Qt.QSize(60, 60))
         back_button.clicked.connect(app.display_home_page)
 
         exam_title = Qt.QLabel(exam_data['name'])
@@ -37,6 +38,7 @@ class StartExamPage(Qt.QWidget):
         info_label.setWordWrap(True)
 
         start_button = Qt.QPushButton('Начать экзамен')
+        start_button.setObjectName('Button')
         start_button.setFont(Qt.QFont('Arial', 20))
         start_button.clicked.connect(lambda: app.start_exam(exam_data['rowid']))
 

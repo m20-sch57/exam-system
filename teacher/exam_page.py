@@ -4,7 +4,6 @@ Exam page for teacher.
 
 
 from PyQt5 import Qt
-from mywidgets import FlatButton
 import common
 
 
@@ -19,9 +18,11 @@ class ExamPage(Qt.QWidget):
         self.question_id = None
         self.questions_ids = []
 
-        back_button = FlatButton(Qt.QIcon(common.LEFT), '')
+        back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '')
+        back_button.setObjectName('Flat')
+        back_button.setCursor(Qt.Qt.PointingHandCursor)
         back_button.setIconSize(Qt.QSize(40, 40))
-        back_button.setFixedSize(back_button.sizeHint())
+        back_button.setFixedSize(Qt.QSize(60, 60))
         back_button.clicked.connect(app.display_home_page)
 
         scroll_area = Qt.QScrollArea()
@@ -30,7 +31,8 @@ class ExamPage(Qt.QWidget):
         scroll_area.setMinimumHeight(50 + scroll_area.verticalScrollBar().sizeHint().height())
         scroll_area.setSizePolicy(Qt.QSizePolicy.Minimum, Qt.QSizePolicy.Minimum)
 
-        self.settings_button = FlatButton(Qt.QIcon(common.SETTINGS), '')
+        self.settings_button = Qt.QPushButton(Qt.QIcon(common.SETTINGS), '')
+        self.settings_button.setObjectName('Flat')
         self.settings_button.setCursor(Qt.Qt.PointingHandCursor)
         self.settings_button.setFixedSize(Qt.QSize(50, 50))
         self.settings_button.setIconSize(Qt.QSize(30, 30))
@@ -51,11 +53,12 @@ class ExamPage(Qt.QWidget):
         long_question_action.triggered.connect(
             lambda: self.app.create_question(self.exam_id, 'Long'))
 
-        create_menu = Qt.QMenu()
+        create_menu = Qt.QMenu(self)
         create_menu.addAction(short_question_action)
         create_menu.addAction(long_question_action)
 
-        create_button = FlatButton(Qt.QIcon(common.CREATE), '')
+        create_button = Qt.QPushButton(Qt.QIcon(common.CREATE), '')
+        create_button.setObjectName('Flat')
         create_button.setCursor(Qt.Qt.PointingHandCursor)
         create_button.setFixedSize(Qt.QSize(50, 50))
         create_button.setIconSize(Qt.QSize(40, 40))
@@ -123,6 +126,7 @@ class ExamPage(Qt.QWidget):
         for question in range(len(self.questions_ids)):
             question_id = self.questions_ids[question]
             question_button = Qt.QPushButton(str(question + 1))
+            question_button.setObjectName('Flat')
             question_button.setCursor(Qt.Qt.PointingHandCursor)
             question_button.setFixedSize(Qt.QSize(50, 50))
             question_button.clicked.connect(

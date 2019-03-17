@@ -4,7 +4,6 @@ Exam page for student.
 
 
 from PyQt5 import Qt
-from mywidgets import FlatButton
 import common
 
 
@@ -20,9 +19,11 @@ class ExamPage(Qt.QWidget):
         self.questions_ids = []
         self.questions_results = []
 
-        back_button = FlatButton(Qt.QIcon(common.LEFT), '')
+        back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '')
+        back_button.setObjectName('Flat')
+        back_button.setCursor(Qt.Qt.PointingHandCursor)
         back_button.setIconSize(Qt.QSize(40, 40))
-        back_button.setFixedSize(back_button.sizeHint())
+        back_button.setFixedSize(Qt.QSize(60, 60))
         back_button.clicked.connect(app.display_home_page)
 
         scroll_area = Qt.QScrollArea()

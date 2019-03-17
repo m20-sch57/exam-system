@@ -5,7 +5,7 @@ Contains all widgets for exam status.
 
 from time import time
 from PyQt5 import Qt
-from mywidgets import Timer
+from timer import Timer
 
 
 class ExamRunning(Qt.QWidget):
@@ -16,11 +16,12 @@ class ExamRunning(Qt.QWidget):
         super().__init__()
 
         finish_button = Qt.QPushButton('Закончить экзамен')
+        finish_button.setObjectName('Button')
         finish_button.setFont(Qt.QFont('Arial', 20))
         finish_button.clicked.connect(lambda: app.finish_exam(exam_data['rowid']))
 
         info_str = (
-            'Баллы: ' + str(int(exam_data['total_score'])) +
+            ' Всего баллов: ' + str(int(exam_data['total_score'])) +
             ' (из ' + str(int(exam_data['total_maxscore'])) + ')'
         )
 

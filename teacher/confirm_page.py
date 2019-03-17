@@ -4,7 +4,6 @@ Page that asks to confirm the action.
 
 
 from PyQt5 import Qt
-from mywidgets import FlatButton
 import common
 
 
@@ -15,7 +14,9 @@ class ConfirmPage(Qt.QWidget):
     def __init__(self, text, back_function, main_function):
         super().__init__()
 
-        back_button = FlatButton(Qt.QIcon(common.LEFT), '')
+        back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '')
+        back_button.setObjectName('Flat')
+        back_button.setCursor(Qt.Qt.PointingHandCursor)
         back_button.setIconSize(Qt.QSize(40, 40))
         back_button.clicked.connect(lambda _: back_function())
 
@@ -29,12 +30,14 @@ class ConfirmPage(Qt.QWidget):
         confirm_label.setStyleSheet('color: red')
 
         yes_button = Qt.QPushButton(Qt.QIcon(common.TICK), 'Да, продолжить')
-        yes_button.setIconSize(Qt.QSize(40, 40))
+        yes_button.setObjectName('Button')
+        yes_button.setIconSize(Qt.QSize(35, 35))
         yes_button.setFont(Qt.QFont('Arial', 20))
         yes_button.clicked.connect(lambda _: main_function())
 
         no_button = Qt.QPushButton(Qt.QIcon(common.CROSS), 'Нет, отменить')
-        no_button.setIconSize(Qt.QSize(40, 40))
+        no_button.setObjectName('Button')
+        no_button.setIconSize(Qt.QSize(35, 35))
         no_button.setFont(Qt.QFont('Arial', 20))
         no_button.clicked.connect(lambda _: back_function())
 

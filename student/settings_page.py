@@ -4,7 +4,6 @@ Settings page.
 
 
 from PyQt5 import Qt
-from mywidgets import FlatButton
 import common
 
 
@@ -16,7 +15,9 @@ class SettingsPage(Qt.QWidget):
         super().__init__()
         settings = app.client.get_settings()
 
-        back_button = FlatButton(Qt.QIcon(common.LEFT), '')
+        back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '')
+        back_button.setObjectName('Flat')
+        back_button.setCursor(Qt.Qt.PointingHandCursor)
         back_button.setIconSize(Qt.QSize(40, 40))
         back_button.clicked.connect(app.display_login_page)
 
@@ -34,6 +35,7 @@ class SettingsPage(Qt.QWidget):
         server_ip_input.setMinimumWidth(350)
 
         server_check_button = Qt.QPushButton('Проверить соединение')
+        server_check_button.setObjectName('Button')
         server_check_button.setFont(Qt.QFont('Arial', 20))
         server_check_button.clicked.connect(lambda: app.check_ip(server_ip_input.text()))
 
@@ -50,6 +52,7 @@ class SettingsPage(Qt.QWidget):
             autosave_password_checkbox.setChecked(True)
 
         save_button = Qt.QPushButton('Сохранить')
+        save_button.setObjectName('Button')
         save_button.setFont(Qt.QFont('Arial', 20))
         save_button.clicked.connect(lambda: app.save_settings(
             {

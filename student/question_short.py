@@ -27,6 +27,7 @@ class QuestionShort(QuestionBase):
         answer_input.setMinimumWidth(500)
 
         check_button = Qt.QPushButton('Проверить')
+        check_button.setObjectName('Button')
         check_button.setFont(Qt.QFont('Arial', 20))
         check_button.clicked.connect(
             lambda: app.send_submission(question_data['rowid'], answer_input.text()))
@@ -72,6 +73,7 @@ class QuestionShortChecked(QuestionBase):
         status_img.setFixedSize(Qt.QSize(50, 50))
 
         next_button = Qt.QPushButton('Далее')
+        next_button.setObjectName('Button')
         next_button.setFont(Qt.QFont('Arial', 20))
         next_button.clicked.connect(lambda: app.view_exam_question(next_question_id))
 
