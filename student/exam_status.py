@@ -59,7 +59,7 @@ class ExamFinished(Qt.QWidget):
             str(int(exam_data['total_maxscore'])) + ')'
         )
 
-        info_label = Qt.QLabel(info_str)
+        info_label = Qt.QLabel(info_str, self)
         info_label.setFont(Qt.QFont('Arial', 25))
         info_label.setWordWrap(True)
 
