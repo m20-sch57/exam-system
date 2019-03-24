@@ -12,38 +12,38 @@ class ExamSettings(ExamWidgetBase):
     """
     Settings widget for the exam.
     """
-    def __init__(self, app, exam_data):
+    def __init__(self, app, parent):
         super().__init__()
-        self.exam_data = exam_data
+        self.exam_data = parent.exam_data
 
-        settings_title = Qt.QLabel('Настройки экзамена')
+        settings_title = Qt.QLabel('Настройки экзамена', self)
         settings_title.setFont(Qt.QFont('Arial', 30))
 
-        name_title = Qt.QLabel('Название экзамена:')
+        name_title = Qt.QLabel('Название экзамена:', self)
         name_title.setFont(Qt.QFont('Arial', 20))
 
-        self.name_input = Qt.QLineEdit(self.exam_data['name'])
+        self.name_input = Qt.QLineEdit(self.exam_data['name'], self)
         self.name_input.setFont(Qt.QFont('Arial', 20))
         self.name_input.setCursorPosition(0)
         self.name_input.textChanged.connect(self.update_saved_status)
 
-        duration_title = Qt.QLabel('Продолжительность (в минутах):')
+        duration_title = Qt.QLabel('Продолжительность (в минутах):', self)
         duration_title.setFont(Qt.QFont('Arial', 20))
 
-        self.duration_input = Qt.QLineEdit(str(self.exam_data['duration']))
+        self.duration_input = Qt.QLineEdit(str(self.exam_data['duration']), self)
         self.duration_input.setFont(Qt.QFont('Arial', 20))
         self.duration_input.textChanged.connect(self.update_saved_status)
 
-        state_title = Qt.QLabel('Для участия:')
+        state_title = Qt.QLabel('Для участия:', self)
         state_title.setFont(Qt.QFont('Arial', 20))
 
-        self.state_box = Qt.QComboBox()
+        self.state_box = Qt.QComboBox(self)
         self.state_box.setFont(Qt.QFont('Arial', 20))
         self.state_box.addItems(['Недоступен', 'Открыт'])
         self.state_box.setCurrentIndex(self.exam_data['published'])
         self.state_box.currentIndexChanged.connect(self.update_saved_status)
 
-        self.save_button = Qt.QPushButton(Qt.QIcon(common.SAVE), 'Сохранить')
+        self.save_button = Qt.QPushButton(Qt.QIcon(common.SAVE), 'Сохранить', self)
         self.save_button.setObjectName('Button')
         self.save_button.setIconSize(Qt.QSize(35, 35))
         self.save_button.setFont(Qt.QFont('Arial', 20))
@@ -56,15 +56,15 @@ class ExamSettings(ExamWidgetBase):
             }
         ))
 
-        self.status_img = Qt.QLabel()
+        self.status_img = Qt.QLabel(self)
         self.status_img.setScaledContents(True)
         self.status_img.setFixedSize(Qt.QSize(50, 50))
 
-        self.status_label = Qt.QLabel()
+        self.status_label = Qt.QLabel(self)
         self.status_label.setFont(Qt.QFont('Arial', 20))
         self.update_saved_status()
 
-        delete_button = Qt.QPushButton(Qt.QIcon(common.DELETE), 'Удалить экзамен')
+        delete_button = Qt.QPushButton(Qt.QIcon(common.DELETE), 'Удалить экзамен', self)
         delete_button.setObjectName('Button')
         delete_button.setIconSize(Qt.QSize(35, 35))
         delete_button.setFont(Qt.QFont('Arial', 20))

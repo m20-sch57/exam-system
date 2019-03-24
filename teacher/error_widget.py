@@ -14,8 +14,8 @@ class ErrorWidget(Qt.QWidget):
         super().__init__()
 
         error_title = Qt.QLabel(
-            'Произошла ошибка при чтении данных. Возможно, эти данные удалены или недействительны.'
-        )
+            'Произошла ошибка при чтении данных. Возможно, эти данные удалены или недействительны.',
+            self)
         error_title.setFont(Qt.QFont('Arial', 25))
         error_title.setWordWrap(True)
 

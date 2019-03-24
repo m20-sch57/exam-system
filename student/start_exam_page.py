@@ -18,26 +18,26 @@ class StartExamPage(Qt.QWidget):
             'Количество заданий - ' + str(cnt_questions)
         )
 
-        back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '')
+        back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '', self)
         back_button.setObjectName('Flat')
         back_button.setCursor(Qt.Qt.PointingHandCursor)
-        back_button.setIconSize(Qt.QSize(40, 40))
-        back_button.setFixedSize(Qt.QSize(60, 60))
+        back_button.setIconSize(Qt.QSize(35, 35))
+        back_button.setFixedSize(Qt.QSize(55, 55))
         back_button.clicked.connect(app.display_home_page)
 
-        exam_title = Qt.QLabel(exam_data['name'])
+        exam_title = Qt.QLabel(exam_data['name'], self)
         exam_title.setFont(Qt.QFont('Arial', 30))
         exam_title.setAlignment(Qt.Qt.AlignCenter)
         exam_title.setWordWrap(True)
 
-        info_title = Qt.QLabel('Информация')
+        info_title = Qt.QLabel('Информация', self)
         info_title.setFont(Qt.QFont('Arial', 25))
 
-        info_label = Qt.QLabel(info_str)
+        info_label = Qt.QLabel(info_str, self)
         info_label.setFont(Qt.QFont('Arial', 20))
         info_label.setWordWrap(True)
 
-        start_button = Qt.QPushButton('Начать экзамен')
+        start_button = Qt.QPushButton('Начать экзамен', self)
         start_button.setObjectName('Button')
         start_button.setFont(Qt.QFont('Arial', 20))
         start_button.clicked.connect(lambda: app.start_exam(exam_data['rowid']))

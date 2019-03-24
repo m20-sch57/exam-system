@@ -12,10 +12,11 @@ class ExamRunning(Qt.QWidget):
     """
     Returns widget for running exam.
     """
-    def __init__(self, app, exam_data):
+    def __init__(self, app, parent):
         super().__init__()
+        exam_data = parent.exam_data
 
-        finish_button = Qt.QPushButton('Закончить экзамен')
+        finish_button = Qt.QPushButton('Закончить экзамен', self)
         finish_button.setObjectName('Button')
         finish_button.setFont(Qt.QFont('Arial', 20))
         finish_button.clicked.connect(lambda: app.finish_exam(exam_data['rowid']))
@@ -25,10 +26,10 @@ class ExamRunning(Qt.QWidget):
             ' (из ' + str(int(exam_data['total_maxscore'])) + ')'
         )
 
-        info_label = Qt.QLabel(info_str)
+        info_label = Qt.QLabel(info_str, self)
         info_label.setFont(Qt.QFont('Arial', 20))
 
-        timer_label = Qt.QLabel()
+        timer_label = Qt.QLabel(self)
         timer_label.setFont(Qt.QFont('Arial', 25))
 
         timer = Timer()
@@ -49,8 +50,9 @@ class ExamFinished(Qt.QWidget):
     """
     Contains widget for finished exam.
     """
-    def __init__(self, exam_data):
+    def __init__(self, parent):
         super().__init__()
+        exam_data = parent.exam_data
         info_str = (
             'Экзамен завершён. Суммарный балл - ' +
             str(int(exam_data['total_score'])) + ' (из ' +

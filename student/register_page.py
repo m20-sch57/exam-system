@@ -14,59 +14,53 @@ class RegisterPage(Qt.QWidget):
     def __init__(self, app):
         super().__init__()
 
-        register_title = Qt.QLabel('Регистрация')
+        register_title = Qt.QLabel('Регистрация пользователя', self)
         register_title.setFont(Qt.QFont('Arial', 30))
         register_title.setAlignment(Qt.Qt.AlignCenter)
 
-        group_title = Qt.QLabel('Название группы:')
+        group_title = Qt.QLabel('Название группы:', self)
         group_title.setFont(Qt.QFont('Arial', 20))
 
-        group_input = Qt.QLineEdit()
+        group_input = Qt.QLineEdit(self)
         group_input.setFont(Qt.QFont('Arial', 20))
         group_input.setMinimumWidth(400)
 
-        user_title = Qt.QLabel('Ваш логин:')
+        user_title = Qt.QLabel('Ваш логин:', self)
         user_title.setFont(Qt.QFont('Arial', 20))
 
-        user_input = Qt.QLineEdit()
+        user_input = Qt.QLineEdit(self)
         user_input.setFont(Qt.QFont('Arial', 20))
         user_input.setMinimumWidth(400)
 
-        password_title = Qt.QLabel('Придумайте пароль:')
+        password_title = Qt.QLabel('Придумайте пароль:', self)
         password_title.setFont(Qt.QFont('Arial', 20))
 
-        self.password_input = Qt.QLineEdit()
+        self.password_input = Qt.QLineEdit(self)
         self.password_input.setFont(Qt.QFont('Arial', 20))
         self.password_input.setMinimumWidth(400)
         self.password_input.setEchoMode(Qt.QLineEdit.Password)
         self.password_input.textChanged.connect(self.update_button_state)
 
-        repeat_title = Qt.QLabel('Повторите пароль:')
+        repeat_title = Qt.QLabel('Повторите пароль:', self)
         repeat_title.setFont(Qt.QFont('Arial', 20))
 
-        self.repeat_input = Qt.QLineEdit()
+        self.repeat_input = Qt.QLineEdit(self)
         self.repeat_input.setFont(Qt.QFont('Arial', 20))
         self.repeat_input.setMinimumWidth(400)
         self.repeat_input.setEchoMode(Qt.QLineEdit.Password)
         self.repeat_input.textChanged.connect(self.update_button_state)
 
-        self.register_button = Qt.QPushButton('Зарегистрироваться')
+        self.register_button = Qt.QPushButton('Зарегистрироваться', self)
         self.register_button.setObjectName('Button')
         self.register_button.setFont(Qt.QFont('Arial', 20))
         self.register_button.clicked.connect(lambda: app.register(
             group_input.text(), user_input.text(), self.password_input.text()))
 
-        self.status_label = Qt.QLabel()
+        self.status_label = Qt.QLabel(self)
         self.status_label.setFont(Qt.QFont('Arial', 20))
         self.status_label.setMinimumWidth(380)
 
-        settings_button = Qt.QPushButton(Qt.QIcon(common.SETTINGS), '')
-        settings_button.setObjectName('Flat')
-        settings_button.setCursor(Qt.Qt.PointingHandCursor)
-        settings_button.setIconSize(Qt.QSize(40, 40))
-        settings_button.clicked.connect(app.display_settings_page)
-
-        enter_button = Qt.QPushButton('Вход')
+        enter_button = Qt.QPushButton('Вход', self)
         enter_button.setObjectName('Flat')
         enter_button.setCursor(Qt.Qt.PointingHandCursor)
         enter_button.setFont(Qt.QFont('Arial', 20))
@@ -106,7 +100,6 @@ class RegisterPage(Qt.QWidget):
         button_layout.addStretch(1)
 
         lower_layout = Qt.QHBoxLayout()
-        lower_layout.addWidget(settings_button)
         lower_layout.addStretch(1)
         lower_layout.addWidget(enter_button)
 

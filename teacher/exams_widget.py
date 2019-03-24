@@ -25,7 +25,7 @@ class ExamsWidget(Qt.QWidget):
             exam_id = exam['rowid']
             exam_name = exam['name']
 
-            exam_button = Qt.QPushButton(Qt.QIcon(common.EXAM30), exam_name)
+            exam_button = Qt.QPushButton(Qt.QIcon(common.EXAM30), exam_name, self)
             exam_button.setObjectName('Flat')
             exam_button.setCursor(Qt.Qt.PointingHandCursor)
             exam_button.setIconSize(Qt.QSize(30, 30))
@@ -40,18 +40,18 @@ class ExamsWidget(Qt.QWidget):
 
         scroll_layout.addStretch(1)
 
-        scroll_widget = Qt.QWidget()
+        scroll_widget = Qt.QWidget(self)
         scroll_widget.setLayout(scroll_layout)
         scroll_area.setWidget(scroll_widget)
 
-        create_button = Qt.QPushButton(Qt.QIcon(common.CREATE), 'Создать экзамен')
+        create_button = Qt.QPushButton(Qt.QIcon(common.CREATE), 'Создать экзамен', self)
         create_button.setObjectName('Flat')
         create_button.setCursor(Qt.Qt.PointingHandCursor)
         create_button.setIconSize(Qt.QSize(35, 35))
         create_button.setFont(Qt.QFont('Arial', 20))
         create_button.clicked.connect(lambda _: app.create_exam())
 
-        info_label = Qt.QLabel('Всего экзаменов - ' + str(len(list_of_exams)))
+        info_label = Qt.QLabel('Всего экзаменов - ' + str(len(list_of_exams)), self)
         info_label.setFont(Qt.QFont('Arial', 20))
 
         lower_layout = Qt.QHBoxLayout()

@@ -15,43 +15,43 @@ class SettingsPage(Qt.QWidget):
         super().__init__()
         settings = app.client.get_settings()
 
-        back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '')
+        back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '', self)
         back_button.setObjectName('Flat')
         back_button.setCursor(Qt.Qt.PointingHandCursor)
-        back_button.setIconSize(Qt.QSize(40, 40))
+        back_button.setIconSize(Qt.QSize(35, 35))
         back_button.clicked.connect(app.display_login_page)
 
-        settings_title = Qt.QLabel('Настройки')
+        settings_title = Qt.QLabel('Настройки', self)
         settings_title.setFont(Qt.QFont('Arial', 30))
 
-        server_title = Qt.QLabel('Соединение с сервером')
+        server_title = Qt.QLabel('Соединение с сервером', self)
         server_title.setFont(Qt.QFont('Arial', 25))
 
-        server_ip_title = Qt.QLabel('IP-адрес сервера:')
+        server_ip_title = Qt.QLabel('IP-адрес сервера:', self)
         server_ip_title.setFont(Qt.QFont('Arial', 20))
 
-        server_ip_input = Qt.QLineEdit(settings['server'])
+        server_ip_input = Qt.QLineEdit(settings['server'], self)
         server_ip_input.setFont(Qt.QFont('Arial', 20))
         server_ip_input.setMinimumWidth(350)
 
-        server_check_button = Qt.QPushButton('Проверить соединение')
+        server_check_button = Qt.QPushButton('Проверить соединение', self)
         server_check_button.setObjectName('Button')
         server_check_button.setFont(Qt.QFont('Arial', 20))
         server_check_button.clicked.connect(lambda: app.check_ip(server_ip_input.text()))
 
-        self.server_status_label = Qt.QLabel()
+        self.server_status_label = Qt.QLabel(self)
         self.server_status_label.setFont(Qt.QFont('Arial', 20))
         self.server_status_label.setMinimumWidth(270)
 
-        autosave_title = Qt.QLabel('Автозаполнение форм')
+        autosave_title = Qt.QLabel('Автозаполнение форм', self)
         autosave_title.setFont(Qt.QFont('Arial', 25))
 
-        autosave_password_checkbox = Qt.QCheckBox('Сохранять пароль')
+        autosave_password_checkbox = Qt.QCheckBox('Сохранять пароль', self)
         autosave_password_checkbox.setFont(Qt.QFont('Arial', 20))
         if settings['autofill'] == 'True':
             autosave_password_checkbox.setChecked(True)
 
-        save_button = Qt.QPushButton('Сохранить')
+        save_button = Qt.QPushButton('Сохранить', self)
         save_button.setObjectName('Button')
         save_button.setFont(Qt.QFont('Arial', 20))
         save_button.clicked.connect(lambda: app.save_settings(

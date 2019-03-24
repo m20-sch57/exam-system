@@ -29,11 +29,11 @@ class HomePage(Qt.QWidget):
         user_menu.addAction(view_profile_action)
         user_menu.addAction(exit_action)
 
-        user_button = Qt.QPushButton(Qt.QIcon(common.USER), '')
+        user_button = Qt.QPushButton(Qt.QIcon(common.USER), '', self)
         user_button.setObjectName('Flat')
         user_button.setCursor(Qt.Qt.PointingHandCursor)
-        user_button.setIconSize(Qt.QSize(40, 40))
-        user_button.setFixedSize(Qt.QSize(60, 60))
+        user_button.setIconSize(Qt.QSize(35, 35))
+        user_button.setFixedSize(Qt.QSize(55, 55))
         user_button.setMenu(user_menu)
 
         self.widget_layout = Qt.QHBoxLayout()
@@ -43,7 +43,7 @@ class HomePage(Qt.QWidget):
         upper_layout.addLayout(self.widget_layout)
         upper_layout.addWidget(user_button)
 
-        upper_panel = Qt.QFrame()
+        upper_panel = Qt.QFrame(self)
         upper_panel.setLayout(upper_layout)
 
         layout = Qt.QVBoxLayout()
@@ -62,7 +62,7 @@ class HomePage(Qt.QWidget):
             self.widget_layout.removeWidget(old_widget)
 
         for widget_name in self.widget_map.keys():
-            widget_button = Qt.QPushButton(widget_name)
+            widget_button = Qt.QPushButton(widget_name, self)
             widget_button.setObjectName('Link')
             widget_button.setCursor(Qt.Qt.PointingHandCursor)
             widget_button.setFont(Qt.QFont('Arial', 20))

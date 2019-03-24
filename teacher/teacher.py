@@ -14,6 +14,7 @@ from client import Client
 from settings_page import SettingsPage
 from login_page import LoginPage
 from register_page import RegisterPage
+from new_group_page import NewGroupPage
 from home_page import HomePage
 from confirm_page import ConfirmPage
 from exams_widget import ExamsWidget
@@ -86,7 +87,6 @@ class Application(Qt.QApplication):
         except socket.error:
             self.widget.set_failed_state()
 
-    @safe
     def save_settings(self, settings):
         """
         Saves all settings.
@@ -112,6 +112,24 @@ class Application(Qt.QApplication):
         Displays register page for teacher.
         """
         self.display_widget(RegisterPage(self))
+
+    def display_new_group_page(self):
+        """
+        Displays page for creating new group.
+        """
+        self.display_widget(NewGroupPage(self))
+
+    @safe
+    def create_group(self, group_name):
+        """
+        Creates the group.
+        """
+        self.widget.set_waiting_state()
+        success = self.client.server.create_group(group_name)
+        if not success:
+            self.widget.set_failed_state()
+        else:
+            self.display_register_page()
 
     @safe
     def register(self, group_name, user_name, password):
@@ -205,10 +223,11 @@ class Application(Qt.QApplication):
         Displays exam settings.
         """
         exam_id = self.widget.exam_id
-        exam_data = self.client.server.get_exam_data(exam_id)
-        questions_ids = self.client.server.get_questions_ids(exam_id)
-        self.widget.questions_ids = questions_ids
-        self.widget.display_settings(exam_data)
+        self.widget.question_id = None
+        self.widget.exam_data = self.client.server.get_exam_data(exam_id)
+        self.widget.questions_ids = self.client.server.get_questions_ids(exam_id)
+        self.widget.refresh()
+        self.widget.display_current_settings()
 
     @safe
     def view_exam_question(self, question_id):
@@ -216,29 +235,30 @@ class Application(Qt.QApplication):
         Displays selected question.
         """
         exam_id = self.widget.exam_id
-        question_data = self.client.server.get_question_data(question_id)
-        questions_ids = self.client.server.get_questions_ids(exam_id)
-        self.widget.questions_ids = questions_ids
-        self.widget.display_question(question_data)
+        self.widget.question_id = question_id
+        self.widget.question_data = self.client.server.get_question_data(question_id)
+        self.widget.questions_ids = self.client.server.get_questions_ids(exam_id)
+        self.widget.refresh()
+        self.widget.display_current_question()
 
-    def get_settings_widget(self, exam_data):
+    def get_settings_widget(self):
         """
         Returns the settings widget for the exam.
         """
-        if not exam_data:
+        if not self.widget.exam_data:
             return ErrorWidget()
-        return ExamSettings(self, exam_data)
+        return ExamSettings(self, self.widget)
 
-    def get_question_widget(self, question_data):
+    def get_question_widget(self):
         """
         Returns the question widget depending on it's type.
         """
-        if not question_data:
+        if not self.widget.question_data:
             return ErrorWidget()
-        if question_data['type'] == 'Short':
-            return QuestionShortEdit(self, question_data)
-        if question_data['type'] == 'Long':
-            return QuestionLongEdit(self, question_data)
+        if self.widget.question_data['type'] == 'Short':
+            return QuestionShortEdit(self, self.widget)
+        if self.widget.question_data['type'] == 'Long':
+            return QuestionLongEdit(self, self.widget)
         return ErrorWidget()
 
     @safe

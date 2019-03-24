@@ -12,34 +12,34 @@ class QuestionShortEdit(ExamWidgetBase):
     """
     Widget to edit the short question.
     """
-    def __init__(self, app, question_data):
+    def __init__(self, app, parent):
         super().__init__()
-        self.question_data = question_data
+        self.question_data = parent.question_data
 
-        statement_title = Qt.QLabel('Текст вопроса:')
+        statement_title = Qt.QLabel('Текст вопроса:', self)
         statement_title.setFont(Qt.QFont('Arial', 25))
 
-        self.statement_input = Qt.QPlainTextEdit(self.question_data['statement'])
+        self.statement_input = Qt.QPlainTextEdit(self.question_data['statement'], self)
         self.statement_input.setFont(Qt.QFont('Arial', 20))
         self.statement_input.setMinimumHeight(220)
         self.statement_input.textChanged.connect(self.update_saved_status)
 
-        answer_title = Qt.QLabel('Правильный ответ:')
+        answer_title = Qt.QLabel('Правильный ответ:', self)
         answer_title.setFont(Qt.QFont('Arial', 25))
 
-        self.answer_input = Qt.QLineEdit(self.question_data['correct'])
+        self.answer_input = Qt.QLineEdit(self.question_data['correct'], self)
         self.answer_input.setFont(Qt.QFont('Arial', 20))
         self.answer_input.setCursorPosition(0)
         self.answer_input.textChanged.connect(self.update_saved_status)
 
-        maxscore_title = Qt.QLabel('Максимальный балл:')
+        maxscore_title = Qt.QLabel('Максимальный балл:', self)
         maxscore_title.setFont(Qt.QFont('Arial', 25))
 
-        self.maxscore_input = Qt.QLineEdit(str(self.question_data['maxscore']))
+        self.maxscore_input = Qt.QLineEdit(str(self.question_data['maxscore']), self)
         self.maxscore_input.setFont(Qt.QFont('Arial', 20))
         self.maxscore_input.textChanged.connect(self.update_saved_status)
 
-        self.save_button = Qt.QPushButton(Qt.QIcon(common.SAVE), 'Сохранить')
+        self.save_button = Qt.QPushButton(Qt.QIcon(common.SAVE), 'Сохранить', self)
         self.save_button.setObjectName('Button')
         self.save_button.setIconSize(Qt.QSize(35, 35))
         self.save_button.setFont(Qt.QFont('Arial', 20))
@@ -54,15 +54,15 @@ class QuestionShortEdit(ExamWidgetBase):
             }
         ))
 
-        self.status_img = Qt.QLabel()
+        self.status_img = Qt.QLabel(self)
         self.status_img.setScaledContents(True)
         self.status_img.setFixedSize(Qt.QSize(50, 50))
 
-        self.status_label = Qt.QLabel()
+        self.status_label = Qt.QLabel(self)
         self.status_label.setFont(Qt.QFont('Arial', 20))
         self.update_saved_status()
 
-        delete_button = Qt.QPushButton(Qt.QIcon(common.DELETE), 'Удалить')
+        delete_button = Qt.QPushButton(Qt.QIcon(common.DELETE), 'Удалить', self)
         delete_button.setObjectName('Button')
         delete_button.setIconSize(Qt.QSize(35, 35))
         delete_button.setFont(Qt.QFont('Arial', 20))

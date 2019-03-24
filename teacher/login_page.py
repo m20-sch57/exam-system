@@ -14,43 +14,43 @@ class LoginPage(Qt.QWidget):
     def __init__(self, app):
         super().__init__()
 
-        enter_title = Qt.QLabel('Вход в систему')
+        enter_title = Qt.QLabel('Вход в систему', self)
         enter_title.setFont(Qt.QFont('Arial', 30))
         enter_title.setAlignment(Qt.Qt.AlignCenter)
 
-        user_title = Qt.QLabel('Логин:')
+        user_title = Qt.QLabel('Логин:', self)
         user_title.setFont(Qt.QFont('Arial', 20))
 
-        user_input = Qt.QLineEdit(app.client.user_name)
+        user_input = Qt.QLineEdit(app.client.user_name, self)
         user_input.setFont(Qt.QFont('Arial', 20))
         user_input.setMinimumWidth(400)
 
-        password_title = Qt.QLabel('Пароль:')
+        password_title = Qt.QLabel('Пароль:', self)
         password_title.setFont(Qt.QFont('Arial', 20))
 
-        password_input = Qt.QLineEdit()
+        password_input = Qt.QLineEdit(self)
         password_input.setFont(Qt.QFont('Arial', 20))
         password_input.setMinimumWidth(400)
         password_input.setEchoMode(Qt.QLineEdit.Password)
         if app.client.get_item('autofill') == 'True':
             password_input.setText(app.client.password)
 
-        enter_button = Qt.QPushButton('Войти в систему')
+        enter_button = Qt.QPushButton('Войти в систему', self)
         enter_button.setObjectName('Button')
         enter_button.setFont(Qt.QFont('Arial', 20))
         enter_button.clicked.connect(lambda: app.login(user_input.text(), password_input.text()))
 
-        self.status_label = Qt.QLabel()
+        self.status_label = Qt.QLabel(self)
         self.status_label.setFont(Qt.QFont('Arial', 20))
         self.status_label.setMinimumWidth(270)
 
-        settings_button = Qt.QPushButton(Qt.QIcon(common.SETTINGS), '')
+        settings_button = Qt.QPushButton(Qt.QIcon(common.SETTINGS), '', self)
         settings_button.setObjectName('Flat')
         settings_button.setCursor(Qt.Qt.PointingHandCursor)
-        settings_button.setIconSize(Qt.QSize(40, 40))
+        settings_button.setIconSize(Qt.QSize(35, 35))
         settings_button.clicked.connect(app.display_settings_page)
 
-        register_button = Qt.QPushButton('Регистрация')
+        register_button = Qt.QPushButton('Регистрация', self)
         register_button.setObjectName('Flat')
         register_button.setCursor(Qt.Qt.PointingHandCursor)
         register_button.setFont(Qt.QFont('Arial', 20))

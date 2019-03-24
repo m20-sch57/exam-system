@@ -15,7 +15,7 @@ class HomePage(Qt.QWidget):
         super().__init__()
         list_of_exams = app.list_of_exams()
 
-        exams_title = Qt.QLabel('Доступные экзамены')
+        exams_title = Qt.QLabel('Доступные экзамены', self)
         exams_title.setFont(Qt.QFont('Arial', 30))
 
         view_profile_action = Qt.QWidgetAction(self)
@@ -32,11 +32,11 @@ class HomePage(Qt.QWidget):
         user_menu.addAction(view_profile_action)
         user_menu.addAction(exit_action)
 
-        user_button = Qt.QPushButton(Qt.QIcon(common.USER), '')
+        user_button = Qt.QPushButton(Qt.QIcon(common.USER), '', self)
         user_button.setObjectName('Flat')
         user_button.setCursor(Qt.Qt.PointingHandCursor)
-        user_button.setIconSize(Qt.QSize(40, 40))
-        user_button.setFixedSize(Qt.QSize(60, 60))
+        user_button.setIconSize(Qt.QSize(35, 35))
+        user_button.setFixedSize(Qt.QSize(55, 55))
         user_button.setMenu(user_menu)
 
         scroll_area = Qt.QScrollArea()
@@ -49,7 +49,7 @@ class HomePage(Qt.QWidget):
             exam_id = exam['rowid']
             exam_name = exam['name']
 
-            exam_button = Qt.QPushButton(Qt.QIcon(common.EXAM30), exam_name)
+            exam_button = Qt.QPushButton(Qt.QIcon(common.EXAM30), exam_name, self)
             exam_button.setObjectName('Flat')
             exam_button.setCursor(Qt.Qt.PointingHandCursor)
             exam_button.setIconSize(Qt.QSize(30, 30))
@@ -64,7 +64,7 @@ class HomePage(Qt.QWidget):
 
         scroll_layout.addStretch(1)
 
-        scroll_widget = Qt.QWidget()
+        scroll_widget = Qt.QWidget(self)
         scroll_widget.setLayout(scroll_layout)
         scroll_area.setWidget(scroll_widget)
 

@@ -22,10 +22,32 @@ def get_last(data):
     return dict(data[-1]) if data else False
 
 
+def create_group(group_name):
+    """
+    Creates the group.
+    """
+    if not group_name:
+        return False
+    CURSOR.execute(
+        "SELECT * FROM groups WHERE name=?",
+        (group_name,)
+    )
+    group = get_last(CURSOR.fetchall())
+    if group is not False:
+        return False
+    CURSOR.execute(
+        "INSERT INTO groups VALUES (?)",
+        (group_name,)
+    )
+    return True
+
+
 def register(user_name, password, is_admin, group_name):
     """
     Tries to register the user.
     """
+    if not user_name:
+        return False
     CURSOR.execute(
         "SELECT rowid, * FROM groups WHERE name=?",
         (group_name,)
@@ -303,7 +325,7 @@ def add_submission(exam_id, question_id, submission_text, user_id):
     Adds submission with submission_text.
     """
     question_data = get_question_data(question_id)
-    if not question_data:
+    if not question_data or not submission_text:
         return False
     CURSOR.execute(
         "SELECT * FROM submissions WHERE student_id=? AND question_id=?",
@@ -373,6 +395,7 @@ CURSOR = CONNECTION.cursor()
 SERVER = SimpleXMLRPCServer(('', 8000))
 
 SERVER.register_function(ping)
+SERVER.register_function(create_group)
 SERVER.register_function(register)
 SERVER.register_function(login)
 SERVER.register_function(list_of_published_exams)

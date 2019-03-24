@@ -83,7 +83,6 @@ class Application(Qt.QApplication):
         except socket.error:
             self.widget.set_failed_state()
 
-    @safe
     def save_settings(self, settings):
         """
         Saves all settings.
@@ -206,46 +205,40 @@ class Application(Qt.QApplication):
         """
         exam_id = self.widget.exam_id
         user_id = self.client.user['rowid']
-        exam_data = self.client.server.get_exam_data_student(exam_id, user_id)
-        question_data = self.client.server.get_question_data(question_id)
-        question_result = self.client.server.get_question_result(question_id, user_id)
-        questions_ids = self.client.server.get_questions_ids(exam_id)
-        questions_results = self.client.server.get_questions_results(exam_id, user_id)
-        self.widget.questions_ids = questions_ids
-        self.widget.questions_results = questions_results
-        self.widget.display_question(exam_data, question_data, question_result)
+        self.widget.question_id = question_id
+        self.widget.exam_data = self.client.server.get_exam_data_student(exam_id, user_id)
+        self.widget.question_data = self.client.server.get_question_data(question_id)
+        self.widget.questions_ids = self.client.server.get_questions_ids(exam_id)
+        self.widget.questions_results = self.client.server.get_questions_results(exam_id, user_id)
+        self.widget.refresh()
+        self.widget.display_current_question()
 
-    def get_exam_status_widget(self, exam_data):
+    def get_exam_status_widget(self):
         """
         Returns exam status widget.
         """
-        if not exam_data:
+        if not self.widget.exam_data:
             return Qt.QWidget()
-        if exam_data['state'] == 'Running':
-            return ExamRunning(self, exam_data)
-        return ExamFinished(exam_data)
+        if self.widget.exam_data['state'] == 'Running':
+            return ExamRunning(self, self.widget)
+        return ExamFinished(self.widget)
 
-    def get_question_widget(self, exam_data, question_data, question_result):
+    def get_question_widget(self):
         """
         Returns the question widget depending on it's type.
         """
-        if not question_data:
+        if not self.widget.question_data:
             return ErrorWidget()
-        number = self.widget.questions_ids.index(question_data['rowid'])
-        if number < len(self.widget.questions_ids) - 1:
-            next_question_id = self.widget.questions_ids[number + 1]
-        else:
-            next_question_id = -1
-        if question_data['type'] == 'Short':
-            if exam_data['state'] == 'Finished':
-                return QuestionShortDetails(question_data, question_result)
-            if question_result:
-                return QuestionShortChecked(self, question_data, question_result, next_question_id)
-            return QuestionShort(self, question_data)
-        if question_data['type'] == 'Long':
-            if exam_data['state'] == 'Finished':
-                return QuestionLongDetails(question_data, question_result)
-            return QuestionLong(self, question_data, question_result, next_question_id)
+        if self.widget.question_data['type'] == 'Short':
+            if self.widget.exam_data['state'] == 'Finished':
+                return QuestionShortDetails(self.widget)
+            if self.widget.question_result:
+                return QuestionShortChecked(self, self.widget)
+            return QuestionShort(self, self.widget)
+        if self.widget.question_data['type'] == 'Long':
+            if self.widget.exam_data['state'] == 'Finished':
+                return QuestionLongDetails(self.widget)
+            return QuestionLong(self, self.widget)
         return ErrorWidget()
 
     @safe

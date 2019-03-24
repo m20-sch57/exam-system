@@ -16,13 +16,16 @@ class ExamPage(Qt.QWidget):
         self.app = app
         self.exam_id = exam_id
         self.question_id = None
+        self.question_number = None
+        self.exam_data = None
+        self.question_data = None
         self.questions_ids = []
 
-        back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '')
+        back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '', self)
         back_button.setObjectName('Flat')
         back_button.setCursor(Qt.Qt.PointingHandCursor)
-        back_button.setIconSize(Qt.QSize(40, 40))
-        back_button.setFixedSize(Qt.QSize(60, 60))
+        back_button.setIconSize(Qt.QSize(35, 35))
+        back_button.setFixedSize(Qt.QSize(55, 55))
         back_button.clicked.connect(app.display_home_page)
 
         scroll_area = Qt.QScrollArea()
@@ -31,7 +34,7 @@ class ExamPage(Qt.QWidget):
         scroll_area.setMinimumHeight(50 + scroll_area.verticalScrollBar().sizeHint().height())
         scroll_area.setSizePolicy(Qt.QSizePolicy.Minimum, Qt.QSizePolicy.Minimum)
 
-        self.settings_button = Qt.QPushButton(Qt.QIcon(common.SETTINGS), '')
+        self.settings_button = Qt.QPushButton(Qt.QIcon(common.SETTINGS), '', self)
         self.settings_button.setObjectName('Flat')
         self.settings_button.setCursor(Qt.Qt.PointingHandCursor)
         self.settings_button.setFixedSize(Qt.QSize(50, 50))
@@ -57,14 +60,14 @@ class ExamPage(Qt.QWidget):
         create_menu.addAction(short_question_action)
         create_menu.addAction(long_question_action)
 
-        create_button = Qt.QPushButton(Qt.QIcon(common.CREATE), '')
+        create_button = Qt.QPushButton(Qt.QIcon(common.CREATE), '', self)
         create_button.setObjectName('Flat')
         create_button.setCursor(Qt.Qt.PointingHandCursor)
         create_button.setFixedSize(Qt.QSize(50, 50))
         create_button.setIconSize(Qt.QSize(40, 40))
         create_button.setMenu(create_menu)
 
-        self.widget = Qt.QWidget()
+        self.widget = Qt.QWidget(self)
 
         scroll_layout = Qt.QHBoxLayout()
         scroll_layout.setSpacing(0)
@@ -75,7 +78,7 @@ class ExamPage(Qt.QWidget):
         scroll_layout.addWidget(create_button)
         scroll_layout.addStretch(1)
 
-        scroll_widget = Qt.QWidget()
+        scroll_widget = Qt.QWidget(self)
         scroll_widget.setLayout(scroll_layout)
         scroll_area.setWidget(scroll_widget)
 
@@ -90,42 +93,41 @@ class ExamPage(Qt.QWidget):
         layout.addWidget(self.widget)
         self.setLayout(layout)
 
-    def display_question(self, question_data):
+    def display_current_question(self):
         """
         Displays current question.
         """
-        self.question_id = question_data['rowid'] if question_data else -1
-        self.refresh()
         old_widget = self.layout().itemAt(2).widget()
         old_widget.deleteLater()
         self.layout().removeWidget(old_widget)
-        self.widget = self.app.get_question_widget(question_data)
+        self.widget = self.app.get_question_widget()
         self.layout().addWidget(self.widget)
 
-    def display_settings(self, exam_data):
+    def display_current_settings(self):
         """
         Displays exam settings.
         """
-        self.question_id = None
-        self.refresh()
         old_widget = self.layout().itemAt(2).widget()
         old_widget.deleteLater()
         self.layout().removeWidget(old_widget)
-        self.widget = self.app.get_settings_widget(exam_data)
+        self.widget = self.app.get_settings_widget()
         self.layout().addWidget(self.widget)
 
     def refresh(self):
         """
-        Updates exam information and refreshes upper panel.
+        Refreshes upper panel.
         """
         self.settings_button.setStyleSheet(common.upper_question_style(None, self.question_id))
+        self.question_number = None
         while self.questions_layout.count() > 0:
             old_widget = self.questions_layout.itemAt(0).widget()
             old_widget.deleteLater()
             self.questions_layout.removeWidget(old_widget)
         for question in range(len(self.questions_ids)):
             question_id = self.questions_ids[question]
-            question_button = Qt.QPushButton(str(question + 1))
+            if question_id == self.question_id:
+                self.question_number = question + 1
+            question_button = Qt.QPushButton(str(question + 1), self)
             question_button.setObjectName('Flat')
             question_button.setCursor(Qt.Qt.PointingHandCursor)
             question_button.setFixedSize(Qt.QSize(50, 50))

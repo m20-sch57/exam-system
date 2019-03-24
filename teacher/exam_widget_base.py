@@ -21,7 +21,7 @@ class ExamWidgetBase(Qt.QWidget):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.lower_layout = Qt.QHBoxLayout()
 
-        scroll_widget = Qt.QWidget()
+        scroll_widget = Qt.QWidget(self)
         scroll_widget.setLayout(self.layout)
         scroll_area.setWidget(scroll_widget)
 

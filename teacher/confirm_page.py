@@ -14,28 +14,28 @@ class ConfirmPage(Qt.QWidget):
     def __init__(self, text, back_function, main_function):
         super().__init__()
 
-        back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '')
+        back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '', self)
         back_button.setObjectName('Flat')
         back_button.setCursor(Qt.Qt.PointingHandCursor)
-        back_button.setIconSize(Qt.QSize(40, 40))
+        back_button.setIconSize(Qt.QSize(35, 35))
         back_button.clicked.connect(lambda _: back_function())
 
-        confirm_title = Qt.QLabel('Подтвердите действие')
+        confirm_title = Qt.QLabel('Подтвердите действие', self)
         confirm_title.setFont(Qt.QFont('Arial', 30))
 
-        confirm_label = Qt.QLabel(text)
+        confirm_label = Qt.QLabel(text, self)
         confirm_label.setFont(Qt.QFont('Arial', 25))
         confirm_label.setAlignment(Qt.Qt.AlignCenter)
         confirm_label.setWordWrap(True)
         confirm_label.setStyleSheet('color: red')
 
-        yes_button = Qt.QPushButton(Qt.QIcon(common.TICK), 'Да, продолжить')
+        yes_button = Qt.QPushButton(Qt.QIcon(common.TICK), 'Да, продолжить', self)
         yes_button.setObjectName('Button')
         yes_button.setIconSize(Qt.QSize(35, 35))
         yes_button.setFont(Qt.QFont('Arial', 20))
         yes_button.clicked.connect(lambda _: main_function())
 
-        no_button = Qt.QPushButton(Qt.QIcon(common.CROSS), 'Нет, отменить')
+        no_button = Qt.QPushButton(Qt.QIcon(common.CROSS), 'Нет, отменить', self)
         no_button.setObjectName('Button')
         no_button.setIconSize(Qt.QSize(35, 35))
         no_button.setFont(Qt.QFont('Arial', 20))

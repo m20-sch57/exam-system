@@ -10,8 +10,8 @@ class QuestionBase(Qt.QWidget):
     """
     Question basic class.
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
 
         scroll_area = Qt.QScrollArea()
         scroll_area.setWidgetResizable(True)
@@ -21,7 +21,7 @@ class QuestionBase(Qt.QWidget):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.lower_layout = Qt.QHBoxLayout()
 
-        scroll_widget = Qt.QWidget()
+        scroll_widget = Qt.QWidget(self)
         scroll_widget.setLayout(self.layout)
         scroll_area.setWidget(scroll_widget)
 
