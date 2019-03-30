@@ -14,6 +14,7 @@ Test
 ЧГК-раунд №2
 ЧГК-раунд №3
 ЧГК-раунд №4
+Эпоха просвещения-1
 Это очень длинное название экзамена
 Test:
 name=Test, duration=100000, published=1, rowid=1.
@@ -26,12 +27,6 @@ OK
 question #4: type=Short
 OK
 question #5: type=Short
-OK
-question #6: type=Short
-OK
-question #7: type=Short
-OK
-question #8: type=Short
 OK
 Тренировка №1 по теме 'средние века':
 name=Тренировка №1 по теме 'средние века', duration=5, published=1, rowid=2.
@@ -339,8 +334,50 @@ question #14: type=Short
 OK
 question #15: type=Short
 OK
+Эпоха просвещения-1:
+name=Эпоха просвещения-1, duration=15, published=1, rowid=15.
+question #1: type=Short
+OK
+question #2: type=Short
+OK
+question #3: type=Short
+OK
+question #4: type=Short
+OK
+question #5: type=Short
+OK
+question #6: type=Short
+OK
+question #7: type=Short
+OK
+question #8: type=Short
+OK
+question #9: type=Short
+OK
+question #10: type=Short
+OK
+question #11: type=Short
+OK
+question #12: type=Short
+OK
+question #13: type=Short
+OK
+question #14: type=Short
+OK
+question #15: type=Short
+OK
+question #16: type=Short
+OK
+question #17: type=Short
+OK
+question #18: type=Short
+OK
+question #19: type=Short
+OK
+question #20: type=Short
+OK
 Это очень длинное название экзамена:
-name=Это очень длинное название экзамена, duration=1, published=1, rowid=15.
+name=Это очень длинное название экзамена, duration=1, published=1, rowid=16.
 question #1: type=Short
 OK
 question #2: type=Short

@@ -46,13 +46,13 @@ class ExamPage(Qt.QWidget):
 
         short_question_action = Qt.QWidgetAction(self)
         short_question_action.setFont(Qt.QFont('Arial', 15))
-        short_question_action.setText('Вопрос SHORT')
+        short_question_action.setText('Вопрос с кратким ответом')
         short_question_action.triggered.connect(
             lambda: self.app.create_question(self.exam_id, 'Short'))
 
         long_question_action = Qt.QWidgetAction(self)
         long_question_action.setFont(Qt.QFont('Arial', 15))
-        long_question_action.setText('Вопрос LONG')
+        long_question_action.setText('Вопрос с развёрнутым ответом')
         long_question_action.triggered.connect(
             lambda: self.app.create_question(self.exam_id, 'Long'))
 

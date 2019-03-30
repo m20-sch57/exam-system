@@ -43,6 +43,10 @@ class ExamSettings(ExamWidgetBase):
         self.state_box.setCurrentIndex(self.exam_data['published'])
         self.state_box.currentIndexChanged.connect(self.update_saved_status)
 
+        results_button = Qt.QPushButton('Таблица результатов', self)
+        results_button.setObjectName('Button')
+        results_button.setFont(Qt.QFont('Arial', 20))
+
         self.save_button = Qt.QPushButton(Qt.QIcon(common.SAVE), 'Сохранить', self)
         self.save_button.setObjectName('Button')
         self.save_button.setIconSize(Qt.QSize(35, 35))
@@ -93,6 +97,10 @@ class ExamSettings(ExamWidgetBase):
         main_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         main_layout.addLayout(input_layout)
 
+        results_layout = Qt.QHBoxLayout()
+        results_layout.addWidget(results_button)
+        results_layout.addStretch(1)
+
         self.lower_layout.addWidget(self.save_button)
         self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         self.lower_layout.addWidget(self.status_img)
@@ -104,6 +112,8 @@ class ExamSettings(ExamWidgetBase):
         self.layout.addWidget(settings_title)
         self.layout.addSpacerItem(Qt.QSpacerItem(0, 40))
         self.layout.addLayout(main_layout)
+        self.layout.addSpacerItem(Qt.QSpacerItem(0, 40))
+        self.layout.addLayout(results_layout)
         self.layout.addStretch(1)
 
     def update_saved_status(self):
@@ -120,10 +130,12 @@ class ExamSettings(ExamWidgetBase):
             self.status_img.setPixmap(Qt.QPixmap(common.WARNING))
             self.status_label.setText('Сохраните')
             self.status_label.setStyleSheet('color: ' + common.YELLOW)
+            self.save_button.setStyleSheet('border-color: ' + common.YELLOW)
         else:
             self.status_img.setPixmap(Qt.QPixmap(common.TICK))
             self.status_label.setText('Сохранено')
             self.status_label.setStyleSheet('color: ' + common.GREEN)
+            self.save_button.setStyleSheet('border-color: ' + common.GREEN)
         if saved_name != name:
             self.name_input.setStyleSheet('border-color: ' + common.YELLOW)
         else:
@@ -141,6 +153,7 @@ class ExamSettings(ExamWidgetBase):
             self.status_img.setPixmap(Qt.QPixmap(common.CROSS))
             self.status_label.setText('Недопустимо')
             self.status_label.setStyleSheet('color: ' + common.RED)
+            self.save_button.setStyleSheet('border-color: ' + common.RED)
             self.save_button.setDisabled(True)
         else:
             self.save_button.setEnabled(True)

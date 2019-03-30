@@ -54,7 +54,7 @@ class QuestionLongEdit(ExamWidgetBase):
         self.status_label.setFont(Qt.QFont('Arial', 20))
         self.update_saved_status()
 
-        delete_button = Qt.QPushButton(Qt.QIcon(common.DELETE), 'Удалить', self)
+        delete_button = Qt.QPushButton(Qt.QIcon(common.DELETE), 'Удалить вопрос', self)
         delete_button.setObjectName('Button')
         delete_button.setIconSize(Qt.QSize(35, 35))
         delete_button.setFont(Qt.QFont('Arial', 20))
@@ -99,10 +99,12 @@ class QuestionLongEdit(ExamWidgetBase):
             self.status_img.setPixmap(Qt.QPixmap(common.WARNING))
             self.status_label.setText('Сохраните')
             self.status_label.setStyleSheet('color: ' + common.YELLOW)
+            self.save_button.setStyleSheet('border-color: ' + common.YELLOW)
         else:
             self.status_img.setPixmap(Qt.QPixmap(common.TICK))
             self.status_label.setText('Сохранено')
             self.status_label.setStyleSheet('color: ' + common.GREEN)
+            self.save_button.setStyleSheet('border-color: ' + common.GREEN)
         if saved_maxscore != maxscore:
             self.maxscore_input.setStyleSheet('border-color: ' + common.YELLOW)
         else:
@@ -112,6 +114,7 @@ class QuestionLongEdit(ExamWidgetBase):
             self.status_img.setPixmap(Qt.QPixmap(common.CROSS))
             self.status_label.setText('Недопустимо')
             self.status_label.setStyleSheet('color: ' + common.RED)
+            self.save_button.setStyleSheet('border-color: ' + common.RED)
             self.save_button.setDisabled(True)
         else:
             self.save_button.setEnabled(True)

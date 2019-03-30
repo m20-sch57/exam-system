@@ -115,13 +115,13 @@ class Application(Qt.QApplication):
         Tries to register the student.
         """
         self.widget.set_waiting_state()
-        self.client.user_name = user_name
-        self.client.password = password
         password_hash = hashlib.sha1(password.encode('utf-8')).hexdigest()
         success = self.client.server.register(user_name, password_hash, 0, group_name)
         if not success:
             self.widget.set_failed_state()
         else:
+            self.client.user_name = user_name
+            self.client.password = password
             self.display_login_page()
 
     @safe

@@ -30,10 +30,10 @@ class QuestionLong(QuestionBase):
         self.answer_input.setPlainText(self.answer)
         self.answer_input.textChanged.connect(self.update_saved_status)
 
-        save_button = Qt.QPushButton('Сохранить', self)
-        save_button.setObjectName('Button')
-        save_button.setFont(Qt.QFont('Arial', 20))
-        save_button.clicked.connect(
+        self.save_button = Qt.QPushButton('Сохранить', self)
+        self.save_button.setObjectName('Button')
+        self.save_button.setFont(Qt.QFont('Arial', 20))
+        self.save_button.clicked.connect(
             lambda: app.send_submission(question_data['rowid'], self.answer_input.toPlainText()))
 
         self.status_img = Qt.QLabel(self)
@@ -53,7 +53,7 @@ class QuestionLong(QuestionBase):
         if next_question_id is None:
             next_button.setDisabled(True)
 
-        self.lower_layout.addWidget(save_button)
+        self.lower_layout.addWidget(self.save_button)
         self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         self.lower_layout.addWidget(self.status_img)
         self.lower_layout.addWidget(self.status_label)
@@ -75,10 +75,12 @@ class QuestionLong(QuestionBase):
             self.status_img.setPixmap(Qt.QPixmap(common.WARNING))
             self.status_label.setText('Сохраните')
             self.status_label.setStyleSheet('color: ' + common.YELLOW)
+            self.save_button.setStyleSheet('border-color: ' + common.YELLOW)
         else:
             self.status_img.setPixmap(Qt.QPixmap(common.TICK))
             self.status_label.setText('Сохранено')
             self.status_label.setStyleSheet('color: ' + common.GREEN)
+            self.save_button.setStyleSheet('border-color: ' + common.GREEN)
 
 
 class QuestionLongDetails(QuestionBase):
