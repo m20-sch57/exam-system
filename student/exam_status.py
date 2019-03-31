@@ -22,8 +22,8 @@ class ExamRunning(Qt.QWidget):
         finish_button.clicked.connect(lambda: app.finish_exam(exam_data['rowid']))
 
         info_str = (
-            ' Всего баллов: ' + str(int(exam_data['total_score'])) +
-            ' (из ' + str(int(exam_data['total_maxscore'])) + ')'
+            ' Всего баллов: ' + str(exam_data['total_score']) +
+            ' (из ' + str(exam_data['total_maxscore']) + ')'
         )
 
         info_label = Qt.QLabel(info_str, self)
@@ -55,8 +55,8 @@ class ExamFinished(Qt.QWidget):
         exam_data = parent.exam_data
         info_str = (
             'Экзамен завершён. Суммарный балл - ' +
-            str(int(exam_data['total_score'])) + ' (из ' +
-            str(int(exam_data['total_maxscore'])) + ')'
+            str(exam_data['total_score']) + ' (из ' +
+            str(exam_data['total_maxscore']) + ')'
         )
 
         info_label = Qt.QLabel(info_str, self)
