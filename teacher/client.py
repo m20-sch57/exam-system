@@ -15,8 +15,10 @@ class Client:
     def __init__(self):
         self.path = os.path.join('client')
         self.user = False
-        self.user_name = 'Админ'
-        self.password = '12345'
+        # self.user_name = 'Админ'
+        # self.password = '12345'
+        self.user_name = ''
+        self.password = ''
         self.update_server()
 
     def get_item(self, item):
