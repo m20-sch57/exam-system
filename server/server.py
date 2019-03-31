@@ -173,6 +173,18 @@ def finish_exam(exam_id, user_id):
     return True
 
 
+def get_users_by_exam(exam_id):
+    """
+    Returns users that participated in the exam.
+    """
+    CURSOR.execute(
+        "SELECT rowid, * FROM users WHERE rowid IN " +
+        "(SELECT student_id FROM examrequests WHERE exam_id=?)",
+        (exam_id,)
+    )
+    return [dict(user) for user in CURSOR.fetchall()]
+
+
 def get_exam_data(exam_id):
     """
     Returns exam data.
@@ -217,7 +229,14 @@ def get_question_result(question_id, user_id):
         "SELECT * FROM submissions WHERE student_id=? AND question_id=?",
         (user_id, question_id)
     )
-    return get_last(CURSOR.fetchall())
+    result = get_last(CURSOR.fetchall())
+    if not result:
+        return result
+    if result['share'] != -1:
+        result['score'] = int(get_question_data(question_id)['maxscore'] * result['share'])
+    else:
+        result['score'] = 0
+    return result
 
 
 def get_questions_results(exam_id, user_id):
@@ -225,6 +244,13 @@ def get_questions_results(exam_id, user_id):
     Returns user's results of the exam.
     """
     return [get_question_result(question_id, user_id) for question_id in get_questions_ids(exam_id)]
+
+
+def get_results_table(exam_id):
+    """
+    Returns results table of the exam.
+    """
+    return [get_questions_results(exam_id, user['rowid']) for user in get_users_by_exam(exam_id)]
 
 
 def get_exam_data_student(exam_id, user_id):
@@ -254,8 +280,7 @@ def get_exam_data_student(exam_id, user_id):
         maxscore = get_question_data(question_id)['maxscore']
         score = result['score'] if result else 0
         total_maxscore += maxscore
-        if score != -1:
-            total_score += score * maxscore
+        total_score += score
     return {
         **exam_data,
         'state': state,
@@ -355,14 +380,14 @@ def judge_submission(submission_id):
     if not submission or not question_data:
         return False
     if question_data['type'] == 'Short':
-        score = judge_short(submission, question_data)
+        share = judge_short(submission, question_data)
     elif question_data['type'] == 'Long':
-        score = judge_long(submission, question_data)
+        share = judge_long(submission, question_data)
     else:
-        score = -1
+        share = -1
     CURSOR.execute(
-        "UPDATE submissions SET score=? WHERE rowid=?",
-        (score, submission_id)
+        "UPDATE submissions SET share=? WHERE rowid=?",
+        (share, submission_id)
     )
     CONNECTION.commit()
     return True
@@ -372,13 +397,14 @@ def judge_short(submission, question_data):
     """
     Judges short question.
     """
-    score = -1
+    share = -1
     correct_list = question_data['correct'].split('; ')
-    if submission['answer'] in correct_list:
-        score = 1
+    correct_list = [s.lower() for s in correct_list]
+    if submission['answer'].lower() in correct_list:
+        share = 1
     else:
-        score = 0
-    return score
+        share = 0
+    return share
 
 
 def judge_long(submission_text, question_data):
@@ -404,11 +430,13 @@ SERVER.register_function(create_exam)
 SERVER.register_function(delete_exam)
 SERVER.register_function(start_exam)
 SERVER.register_function(finish_exam)
+SERVER.register_function(get_users_by_exam)
 SERVER.register_function(get_exam_data)
 SERVER.register_function(set_exam_data)
 SERVER.register_function(get_questions_ids)
 SERVER.register_function(get_question_result)
 SERVER.register_function(get_questions_results)
+SERVER.register_function(get_results_table)
 SERVER.register_function(get_exam_data_student)
 SERVER.register_function(create_question)
 SERVER.register_function(delete_question)

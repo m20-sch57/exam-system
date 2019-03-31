@@ -31,7 +31,6 @@ class ExamPage(Qt.QWidget):
         scroll_area = Qt.QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setFrameShape(Qt.QFrame.NoFrame)
-        scroll_area.setMinimumHeight(50 + scroll_area.verticalScrollBar().sizeHint().height())
         scroll_area.setSizePolicy(Qt.QSizePolicy.Minimum, Qt.QSizePolicy.Minimum)
 
         self.settings_button = Qt.QPushButton(Qt.QIcon(common.SETTINGS), '', self)
@@ -71,6 +70,7 @@ class ExamPage(Qt.QWidget):
 
         scroll_layout = Qt.QHBoxLayout()
         scroll_layout.setSpacing(0)
+        scroll_layout.setContentsMargins(0, 0, 0, 0)
         scroll_layout.setSizeConstraint(Qt.QLayout.SetMinimumSize)
         scroll_layout.addWidget(self.settings_button)
         scroll_layout.addLayout(self.questions_layout)
@@ -117,7 +117,7 @@ class ExamPage(Qt.QWidget):
         """
         Refreshes upper panel.
         """
-        self.settings_button.setStyleSheet(common.upper_question_style(None, self.question_id))
+        self.settings_button.setStyleSheet(common.upper_question_style(self.question_id is None))
         self.question_number = None
         while self.questions_layout.count() > 0:
             old_widget = self.questions_layout.itemAt(0).widget()
@@ -134,5 +134,5 @@ class ExamPage(Qt.QWidget):
             question_button.clicked.connect(
                 common.return_lambda(self.app.view_exam_question, question_id))
             question_button.setStyleSheet(
-                common.upper_question_style(question_id, self.question_id))
+                common.upper_question_style(question_id == self.question_id))
             self.questions_layout.addWidget(question_button)

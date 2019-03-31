@@ -46,6 +46,7 @@ class ExamSettings(ExamWidgetBase):
         results_button = Qt.QPushButton('Таблица результатов', self)
         results_button.setObjectName('Button')
         results_button.setFont(Qt.QFont('Arial', 20))
+        results_button.clicked.connect(lambda: app.display_results_page(self.exam_data['rowid']))
 
         self.save_button = Qt.QPushButton(Qt.QIcon(common.SAVE), 'Сохранить', self)
         self.save_button.setObjectName('Button')

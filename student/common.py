@@ -14,19 +14,19 @@ def return_lambda(function, *args, **kwargs):
     return lambda: function(*args, **kwargs)
 
 
-def upper_question_style(question_result, question, current_question):
+def upper_question_style(question_result, equal):
     """
     Returns style of current question on the upper panel depending on the result.
     """
     if not question_result:
         background_color = 'white'
-    elif question_result['score'] == -1:
+    elif question_result['share'] == -1:
         background_color = '#FFFA95'
-    elif question_result['score'] == 1:
+    elif question_result['share'] == 1:
         background_color = '#9CFB8E'
     else:
         background_color = '#F94D51'
-    if question == current_question:
+    if equal:
         foreground_color = 'blue'
         background_color = '#CCE8FF'
         border_color = '#99D1FF'
@@ -52,10 +52,10 @@ def main_question_style(question_result):
     if not question_result:
         main_color = RED
         main_picture = Qt.QPixmap(CROSS)
-    elif question_result['score'] == -1:
+    elif question_result['share'] == -1:
         main_color = YELLOW
         main_picture = Qt.QPixmap(WARNING)
-    elif question_result['score'] == 1:
+    elif question_result['share'] == 1:
         main_color = GREEN
         main_picture = Qt.QPixmap(TICK)
     else:
@@ -67,18 +67,18 @@ def main_question_style(question_result):
     }
 
 
-def get_question_details(question_data, question_results):
+def get_question_details(question_results):
     """
     Returns score and last answer.
     """
     if not question_results:
         score = '0'
         answer = ''
-    elif question_results['score'] == -1:
+    elif question_results['share'] == -1:
         score = '?'
         answer = question_results['answer']
     else:
-        score = str(int(question_results['score'] * question_data['maxscore']))
+        score = str(question_results['score'])
         answer = question_results['answer']
     return {
         'score': score,

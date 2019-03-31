@@ -4,6 +4,7 @@ Upgrades exams from older version.
 
 
 import os
+import sys
 from xmlrpc.client import ServerProxy
 
 
@@ -35,17 +36,18 @@ def upgrade_exams(folder):
     """
     Upgrades all exams in this folder.
     """
-    log = open('UpgradeLog.txt', 'w', encoding=ENCODING)
-    log.write('Starting upgrade process.\n')
+    out = sys.stdout
+    #out = open('UpgradeLog.txt', 'w', encoding=ENCODING)
+    out.write('Starting upgrade process.\n')
     exams = os.listdir(folder)
-    log.write('Discovered exams:\n')
-    log.write('\n'.join(exams))
-    log.write('\n')
+    out.write('Discovered exams:\n')
+    out.write('\n'.join(exams))
+    out.write('\n')
     for exam in exams:
-        log.write(exam + ':\n')
+        out.write(exam + ':\n')
         exam_id = SERVER.create_exam(1)
         settings_item = Item(os.path.join(folder, exam, 'settings'))
-        log.write('name=' + exam + ', ' +
+        out.write('name=' + exam + ', ' +
                   'duration=' + settings_item.get_item('duration') + ', ' +
                   'published=' + settings_item.get_item('published') + ', ' +
                   'rowid=' + str(exam_id) + '.\n')
@@ -58,8 +60,8 @@ def upgrade_exams(folder):
         for question in range(len(os.listdir(os.path.join(folder, exam))) - 1):
             question_item = Item(os.path.join(folder, exam, str(question + 1)))
             question_id = SERVER.create_question(exam_id, question_item.get_item('type'))
-            log.write('question #' + str(question + 1) + ': ')
-            log.write('type=' + question_item.get_item('type') + '\n')
+            out.write('question #' + str(question + 1) + ': ')
+            out.write('type=' + question_item.get_item('type') + '\n')
             if question_item.get_item('type') == 'Short':
                 SERVER.set_question_data({
                     'type': 'Short',
@@ -69,7 +71,7 @@ def upgrade_exams(folder):
                     'maxscore': int(question_item.get_item('maxscore')),
                     'rowid': question_id
                 })
-                log.write('OK\n')
+                out.write('OK\n')
             elif question_item.get_item('type') == 'Long':
                 SERVER.set_question_data({
                     'type': 'Long',
@@ -79,10 +81,10 @@ def upgrade_exams(folder):
                     'maxscore': int(question_item.get_item('maxscore')),
                     'rowid': question_id
                 })
-                log.write('OK\n')
+                out.write('OK\n')
             else:
-                log.write('ERROR: Undefined type\n')
-    log.write('Upgrade process completed.\n')
+                out.write('ERROR: Undefined type\n')
+    out.write('Upgrade process completed.\n')
 
 
 ENCODING = 'utf-8-sig'

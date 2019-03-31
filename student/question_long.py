@@ -91,7 +91,7 @@ class QuestionLongDetails(QuestionBase):
         super().__init__(parent)
         question_data = parent.question_data
         question_result = parent.question_result
-        question_details = common.get_question_details(question_data, question_result)
+        question_details = common.get_question_details(question_result)
         question_style = common.main_question_style(question_result)
 
         statement_label = Qt.QLabel(question_data['statement'], self)

@@ -33,7 +33,6 @@ class ExamPage(Qt.QWidget):
         scroll_area = Qt.QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setFrameShape(Qt.QFrame.NoFrame)
-        scroll_area.setMinimumHeight(50 + scroll_area.verticalScrollBar().sizeHint().height())
         scroll_area.setSizePolicy(Qt.QSizePolicy.Minimum, Qt.QSizePolicy.Minimum)
 
         self.questions_layout = Qt.QHBoxLayout()
@@ -41,6 +40,8 @@ class ExamPage(Qt.QWidget):
         self.widget = Qt.QWidget(self)
 
         scroll_layout = Qt.QHBoxLayout()
+        scroll_layout.setSpacing(0)
+        scroll_layout.setContentsMargins(0, 0, 0, 0)
         scroll_layout.setSizeConstraint(Qt.QLayout.SetMinimumSize)
         scroll_layout.addStretch(1)
         scroll_layout.addLayout(self.questions_layout)
@@ -98,5 +99,5 @@ class ExamPage(Qt.QWidget):
             question_button.clicked.connect(
                 common.return_lambda(self.app.view_exam_question, question_id))
             question_button.setStyleSheet(
-                common.upper_question_style(question_result, question_id, self.question_id))
+                common.upper_question_style(question_result, question_id == self.question_id))
             self.questions_layout.addWidget(question_button)

@@ -25,6 +25,7 @@ from exam_page import ExamPage
 from exam_settings import ExamSettings
 from question_short import QuestionShortEdit
 from question_long import QuestionLongEdit
+from results_page import ResultsPage
 
 
 def safe(function):
@@ -295,6 +296,16 @@ class Application(Qt.QApplication):
         self.client.server.set_question_data(question_data)
         self.view_exam_question(question_id)
         self.widget.widget.update_saved_status()
+
+    @safe
+    def display_results_page(self, exam_id):
+        """
+        Displays results table of the exam.
+        """
+        users = self.client.server.get_users_by_exam(exam_id)
+        questions_ids = self.client.server.get_questions_ids(exam_id)
+        results_table = self.client.server.get_results_table(exam_id)
+        self.display_widget(ResultsPage(self, exam_id, users, questions_ids, results_table))
 
 
 if __name__ == "__main__":

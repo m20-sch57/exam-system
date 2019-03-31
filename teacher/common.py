@@ -13,14 +13,14 @@ def return_lambda(function, *args, **kwargs):
     return lambda: function(*args, **kwargs)
 
 
-def upper_question_style(question_id, current_question_id):
+def upper_question_style(equal):
     """
     Returns style of current question depending on the result.
     """
     background_color = 'white'
     foreground_color = 'black'
     border_color = 'grey'
-    if question_id == current_question_id:
+    if equal:
         foreground_color = 'blue'
         background_color = '#CCE8FF'
         border_color = '#99D1FF'

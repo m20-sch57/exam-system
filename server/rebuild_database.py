@@ -45,7 +45,7 @@ CURSOR.execute(
 CURSOR.execute(
     """
     CREATE TABLE submissions
-    (student_id integer, exam_id integer, question_id integer, answer text, score real)
+    (student_id integer, exam_id integer, question_id integer, answer text, share real)
     """
 )
 
