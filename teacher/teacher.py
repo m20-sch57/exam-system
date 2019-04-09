@@ -26,6 +26,7 @@ from exam_settings import ExamSettings
 from question_short import QuestionShortEdit
 from question_long import QuestionLongEdit
 from results_page import ResultsPage
+from student_answer_page import StudentAnswerPage
 
 
 def safe(function):
@@ -306,6 +307,16 @@ class Application(Qt.QApplication):
         questions_ids = self.client.server.get_questions_ids(exam_id)
         results_table = self.client.server.get_results_table(exam_id)
         self.display_widget(ResultsPage(self, exam_id, users, questions_ids, results_table))
+
+    @safe
+    def display_student_answer_page(self, exam_id, question_id, user_id):
+        """
+        Page to display student's answer for the question.
+        """
+        question_data = self.client.server.get_question_data(question_id)
+        question_result = self.client.server.get_question_result(question_id, user_id)
+        self.display_widget(StudentAnswerPage(
+            self, exam_id, question_id, user_id, question_data, question_result))
 
 
 if __name__ == "__main__":

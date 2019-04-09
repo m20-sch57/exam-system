@@ -67,19 +67,19 @@ def main_question_style(question_result):
     }
 
 
-def get_question_details(question_results):
+def get_question_details(question_result):
     """
     Returns score and last answer.
     """
-    if not question_results:
+    if not question_result:
         score = '0'
         answer = ''
-    elif question_results['share'] == -1:
+    elif question_result['share'] == -1:
         score = '?'
-        answer = question_results['answer']
+        answer = question_result['answer']
     else:
-        score = str(question_results['score'])
-        answer = question_results['answer']
+        score = str(question_result['score'])
+        answer = question_result['answer']
     return {
         'score': score,
         'answer': answer

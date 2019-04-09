@@ -4,6 +4,7 @@ Contains common functions and variables.
 
 
 import os
+from PyQt5 import Qt
 
 
 def return_lambda(function, *args, **kwargs):
@@ -36,6 +37,47 @@ def upper_question_style(equal):
     )
 
 
+def main_question_style(question_result):
+    """
+    Returns main style of current question depending on the result.
+    """
+    if not question_result:
+        main_color = RED
+        main_picture = Qt.QPixmap(CROSS)
+    elif question_result['share'] == -1:
+        main_color = YELLOW
+        main_picture = Qt.QPixmap(WARNING)
+    elif question_result['share'] == 1:
+        main_color = GREEN
+        main_picture = Qt.QPixmap(TICK)
+    else:
+        main_color = RED
+        main_picture = Qt.QPixmap(CROSS)
+    return {
+        'main_color': main_color,
+        'main_picture': main_picture
+    }
+
+
+def get_question_details(question_result):
+    """
+    Returns score and last answer.
+    """
+    if not question_result:
+        score = '0'
+        answer = ''
+    elif question_result['share'] == -1:
+        score = '?'
+        answer = question_result['answer']
+    else:
+        score = str(question_result['score'])
+        answer = question_result['answer']
+    return {
+        'score': score,
+        'answer': answer
+    }
+
+
 GREEN = '#6DC180'
 RED = '#FF6643'
 YELLOW = '#FFA500'
@@ -50,3 +92,4 @@ SETTINGS = os.path.join('images', 'settings.png')
 CREATE = os.path.join('images', 'create.png')
 DELETE = os.path.join('images', 'delete.png')
 SAVE = os.path.join('images', 'save.png')
+UPDATE = os.path.join('images', 'update.png')
