@@ -315,8 +315,7 @@ class Application(Qt.QApplication):
         """
         question_data = self.client.server.get_question_data(question_id)
         question_result = self.client.server.get_question_result(question_id, user_id)
-        self.display_widget(StudentAnswerPage(
-            self, exam_id, question_id, user_id, question_data, question_result))
+        self.display_widget(StudentAnswerPage(self, exam_id, question_data, question_result))
 
 
 if __name__ == "__main__":

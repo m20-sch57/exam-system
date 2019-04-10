@@ -226,7 +226,7 @@ def get_question_result(question_id, user_id):
     Returns user's result of the question.
     """
     CURSOR.execute(
-        "SELECT * FROM submissions WHERE student_id=? AND question_id=?",
+        "SELECT rowid, * FROM submissions WHERE student_id=? AND question_id=?",
         (user_id, question_id)
     )
     result = get_last(CURSOR.fetchall())
