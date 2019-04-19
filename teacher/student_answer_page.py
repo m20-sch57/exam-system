@@ -42,8 +42,16 @@ class StudentAnswerPage(Qt.QWidget):
         answer_label.setFont(Qt.QFont('Arial', 20))
         answer_label.setWordWrap(True)
 
-        score_title = Qt.QLabel('Получено баллов:', self)
+        score_title = Qt.QLabel('Баллы (из ' + str(question_data['maxscore']) + '):', self)
         score_title.setFont(Qt.QFont('Arial', 25))
+
+        score_input = Qt.QLineEdit(question_details['score'], self)
+        score_input.setFont(Qt.QFont('Arial', 20))
+        score_input.setMaximumWidth(600)
+
+        save_button = Qt.QPushButton('Сохранить', self)
+        save_button.setObjectName('Button')
+        save_button.setFont(Qt.QFont('Arial', 20))
 
         upper_layout = Qt.QHBoxLayout()
         upper_layout.addWidget(back_button)
@@ -51,24 +59,42 @@ class StudentAnswerPage(Qt.QWidget):
         upper_layout.addWidget(check_title)
         upper_layout.addStretch(1)
 
+        statement_layout = Qt.QVBoxLayout()
+        statement_layout.addWidget(statement_title)
+        statement_layout.addSpacerItem(Qt.QSpacerItem(0, 10))
+        statement_layout.addWidget(statement_label)
+
+        answer_layout = Qt.QVBoxLayout()
+        answer_layout.addWidget(answer_title)
+        answer_layout.addSpacerItem(Qt.QSpacerItem(0, 10))
+        answer_layout.addWidget(answer_label)
+
+        score_layout = Qt.QVBoxLayout()
+        score_layout.addWidget(score_title)
+        score_layout.addSpacerItem(Qt.QSpacerItem(0, 10))
+        score_layout.addWidget(score_input)
+        score_layout.addStretch(1)
+
         scroll_layout = Qt.QVBoxLayout()
-        scroll_layout.addWidget(statement_title)
-        scroll_layout.addSpacerItem(Qt.QSpacerItem(0, 10))
-        scroll_layout.addWidget(statement_label)
+        scroll_layout.addLayout(statement_layout)
         scroll_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        scroll_layout.addWidget(answer_title)
-        scroll_layout.addSpacerItem(Qt.QSpacerItem(0, 10))
-        scroll_layout.addWidget(answer_label)
+        scroll_layout.addLayout(answer_layout)
         scroll_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        scroll_layout.addWidget(score_title)
+        scroll_layout.addLayout(score_layout)
         scroll_layout.addStretch(1)
 
         scroll_widget = Qt.QWidget(self)
         scroll_widget.setLayout(scroll_layout)
         scroll_area.setWidget(scroll_widget)
 
+        save_layout = Qt.QHBoxLayout()
+        save_layout.addWidget(save_button)
+        save_layout.addStretch(1)
+
         layout = Qt.QVBoxLayout()
         layout.addLayout(upper_layout)
         layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         layout.addWidget(scroll_area)
+        layout.addSpacerItem(Qt.QSpacerItem(0, 20))
+        layout.addLayout(save_layout)
         self.setLayout(layout)
