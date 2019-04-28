@@ -4,7 +4,6 @@ Examiner project, student module.
 
 
 import sys
-import os
 import socket
 import hashlib
 import functools
@@ -45,8 +44,8 @@ class Application(Qt.QApplication):
         super().__init__(sys.argv)
         self.client = Client()
         self.window = Qt.QWidget()
-        self.window.setStyleSheet(open(os.path.join('css', 'common_style.css')).read())
-        self.window.setWindowTitle('Школьник')
+        self.window.setStyleSheet(open('client\\style.css').read())
+        self.window.setWindowTitle('Student')
         self.window.setGeometry(200, 100, 1000, 700)
         self.widget = Qt.QWidget(self.window)
         self.layout = Qt.QHBoxLayout(self.window)
@@ -76,7 +75,7 @@ class Application(Qt.QApplication):
         """
         try:
             self.widget.set_waiting_state()
-            self.client.set_item('server', ip_address)
+            self.client.update_data({'server': ip_address})
             self.client.update_server()
             self.client.server.ping()
             self.widget.set_succeeded_state()
@@ -87,8 +86,7 @@ class Application(Qt.QApplication):
         """
         Saves all settings.
         """
-        for item in settings.keys():
-            self.client.set_item(item, str(settings[item]))
+        self.client.set_data(settings)
         self.display_login_page()
 
     def display_settings_page(self):

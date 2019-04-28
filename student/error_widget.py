@@ -24,7 +24,7 @@ class ErrorWidget(Qt.QWidget):
         layout.addStretch(1)
         self.setLayout(layout)
 
-    def update_saved_status(self):
+    def update_status(self):
         """
         Kostyl.
         """

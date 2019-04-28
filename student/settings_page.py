@@ -13,7 +13,7 @@ class SettingsPage(Qt.QWidget):
     """
     def __init__(self, app):
         super().__init__()
-        settings = app.client.get_settings()
+        settings = app.client.get_data()
 
         back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '', self)
         back_button.setObjectName('Flat')
@@ -48,7 +48,7 @@ class SettingsPage(Qt.QWidget):
 
         autosave_password_checkbox = Qt.QCheckBox('Сохранять пароль', self)
         autosave_password_checkbox.setFont(Qt.QFont('Arial', 20))
-        if settings['autofill'] == 'True':
+        if settings['autofill']:
             autosave_password_checkbox.setChecked(True)
 
         save_button = Qt.QPushButton('Сохранить', self)

@@ -4,7 +4,6 @@ Examiner project, teacher module.
 
 
 import sys
-import os
 import socket
 import hashlib
 import functools
@@ -51,8 +50,8 @@ class Application(Qt.QApplication):
         super().__init__(sys.argv)
         self.client = Client()
         self.window = Qt.QWidget()
-        self.window.setStyleSheet(open(os.path.join('css', 'common_style.css')).read())
-        self.window.setWindowTitle('Учитель')
+        self.window.setStyleSheet(open('client\\style.css').read())
+        self.window.setWindowTitle('Teacher')
         self.window.setGeometry(200, 100, 1000, 700)
         self.widget = Qt.QWidget(self.window)
         self.layout = Qt.QHBoxLayout(self.window)
@@ -82,7 +81,7 @@ class Application(Qt.QApplication):
         """
         try:
             self.widget.set_waiting_state()
-            self.client.set_item('server', ip_address)
+            self.client.update_data({'server': ip_address})
             self.client.update_server()
             self.client.server.ping()
             self.widget.set_succeeded_state()
@@ -93,8 +92,7 @@ class Application(Qt.QApplication):
         """
         Saves all settings.
         """
-        for item in settings.keys():
-            self.client.set_item(item, str(settings[item]))
+        self.client.set_data(settings)
         self.display_login_page()
 
     def display_settings_page(self):
@@ -286,7 +284,7 @@ class Application(Qt.QApplication):
         """
         self.client.server.set_exam_data(exam_data)
         self.view_exam_settings()
-        self.widget.widget.update_saved_status()
+        self.widget.widget.update_status()
 
     @safe
     def save_question_data(self, question_data):
@@ -296,7 +294,7 @@ class Application(Qt.QApplication):
         question_id = question_data['rowid']
         self.client.server.set_question_data(question_data)
         self.view_exam_question(question_id)
-        self.widget.widget.update_saved_status()
+        self.widget.widget.update_status()
 
     @safe
     def display_results_page(self, exam_id):

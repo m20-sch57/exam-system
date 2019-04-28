@@ -22,14 +22,14 @@ class QuestionLongEdit(ExamWidgetBase):
         self.statement_input = Qt.QPlainTextEdit(self.question_data['statement'], self)
         self.statement_input.setFont(Qt.QFont('Arial', 20))
         self.statement_input.setMinimumHeight(220)
-        self.statement_input.textChanged.connect(self.update_saved_status)
+        self.statement_input.textChanged.connect(self.update_status)
 
         maxscore_title = Qt.QLabel('Максимальный балл:', self)
         maxscore_title.setFont(Qt.QFont('Arial', 25))
 
         self.maxscore_input = Qt.QLineEdit(str(self.question_data['maxscore']), self)
         self.maxscore_input.setFont(Qt.QFont('Arial', 20))
-        self.maxscore_input.textChanged.connect(self.update_saved_status)
+        self.maxscore_input.textChanged.connect(self.update_status)
 
         self.save_button = Qt.QPushButton(Qt.QIcon(common.SAVE), 'Сохранить', self)
         self.save_button.setObjectName('Button')
@@ -52,7 +52,7 @@ class QuestionLongEdit(ExamWidgetBase):
 
         self.status_label = Qt.QLabel(self)
         self.status_label.setFont(Qt.QFont('Arial', 20))
-        self.update_saved_status()
+        self.update_status()
 
         delete_button = Qt.QPushButton(Qt.QIcon(common.DELETE), 'Удалить вопрос', self)
         delete_button.setObjectName('Button')
@@ -87,7 +87,7 @@ class QuestionLongEdit(ExamWidgetBase):
         self.layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         self.layout.addLayout(main_layout)
 
-    def update_saved_status(self):
+    def update_status(self):
         """
         Call after modifying.
         """
@@ -99,12 +99,10 @@ class QuestionLongEdit(ExamWidgetBase):
             self.status_img.setPixmap(Qt.QPixmap(common.WARNING))
             self.status_label.setText('Сохраните')
             self.status_label.setStyleSheet('color: ' + common.YELLOW)
-            self.save_button.setStyleSheet('border-color: ' + common.YELLOW)
         else:
             self.status_img.setPixmap(Qt.QPixmap(common.TICK))
             self.status_label.setText('Сохранено')
             self.status_label.setStyleSheet('color: ' + common.GREEN)
-            self.save_button.setStyleSheet('border-color: ' + common.GREEN)
         if saved_maxscore != maxscore:
             self.maxscore_input.setStyleSheet('border-color: ' + common.YELLOW)
         else:
@@ -114,7 +112,6 @@ class QuestionLongEdit(ExamWidgetBase):
             self.status_img.setPixmap(Qt.QPixmap(common.CROSS))
             self.status_label.setText('Недопустимо')
             self.status_label.setStyleSheet('color: ' + common.RED)
-            self.save_button.setStyleSheet('border-color: ' + common.RED)
             self.save_button.setDisabled(True)
         else:
             self.save_button.setEnabled(True)

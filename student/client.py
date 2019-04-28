@@ -3,7 +3,7 @@ Contains client settings and server.
 """
 
 
-import os
+import json
 import socket
 from xmlrpc.client import ServerProxy
 
@@ -13,40 +13,40 @@ class Client:
     Contains client settings and server.
     """
     def __init__(self):
-        self.path = os.path.join('client')
+        self.path = 'client\\settings.json'
         self.user = False
-        # self.user_name = 'Фёдор Куянов'
-        # self.password = '12345'
-        self.user_name = ''
-        self.password = ''
+        self.user_name = 'Фёдор Куянов'
+        self.password = '12345'
+        # self.user_name = ''
+        # self.password = ''
         self.update_server()
 
-    def get_item(self, item):
+    def get_data(self):
         """
-        Returns value of the item.
+        Returns json data.
         """
-        return open(os.path.join(self.path, item), encoding='utf-8-sig').read()
+        return json.load(open(self.path, 'r'))
 
-    def set_item(self, item, value):
+    def set_data(self, data):
         """
-        Sets value of the item.
+        Assigns json data to data.
         """
-        open(os.path.join(self.path, item), 'w', encoding='utf-8-sig').write(value)
+        json.dump(data, open(self.path, 'w'), indent=4)
 
-    def get_settings(self):
+    def update_data(self, data):
         """
-        Returns map of all settings.
+        Updates json data.
         """
-        settings = {}
-        for item in os.listdir(self.path):
-            settings[item] = self.get_item(item)
-        return settings
+        current_data = self.get_data()
+        for key, value in data.items():
+            current_data[key] = value
+        self.set_data(current_data)
 
     def update_server(self):
         """
         Updates self.server.
         """
-        self.server = ServerProxy('http://' + self.get_item('server'))
+        self.server = ServerProxy('http://' + self.get_data()['server'])
 
 
 socket.setdefaulttimeout(3)

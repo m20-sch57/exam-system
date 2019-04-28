@@ -13,7 +13,8 @@ class StudentAnswerPage(Qt.QWidget):
     """
     def __init__(self, app, exam_id, question_data, question_result):
         super().__init__()
-        question_details = common.get_question_details(question_result)
+        self.question_data = question_data
+        self.question_details = common.get_question_details(question_result)
 
         back_button = Qt.QPushButton(Qt.QIcon(common.LEFT), '', self)
         back_button.setObjectName('Flat')
@@ -31,27 +32,36 @@ class StudentAnswerPage(Qt.QWidget):
         statement_title = Qt.QLabel('Текст вопроса:', self)
         statement_title.setFont(Qt.QFont('Arial', 25))
 
-        statement_label = Qt.QLabel(question_data['statement'], self)
+        statement_label = Qt.QLabel(self.question_data['statement'], self)
         statement_label.setFont(Qt.QFont('Arial', 20))
         statement_label.setWordWrap(True)
 
         answer_title = Qt.QLabel('Ответ участника:', self)
         answer_title.setFont(Qt.QFont('Arial', 25))
 
-        answer_label = Qt.QLabel(question_details['answer'], self)
+        answer_label = Qt.QLabel(self.question_details['answer'], self)
         answer_label.setFont(Qt.QFont('Arial', 20))
         answer_label.setWordWrap(True)
 
-        save_button = Qt.QPushButton('Сохранить', self)
-        save_button.setObjectName('Button')
-        save_button.setFont(Qt.QFont('Arial', 20))
+        self.save_button = Qt.QPushButton('Сохранить', self)
+        self.save_button.setObjectName('Button')
+        self.save_button.setFont(Qt.QFont('Arial', 20))
 
-        score_title = Qt.QLabel('Баллы (из ' + str(question_data['maxscore']) + '):', self)
+        score_title = Qt.QLabel('Баллы (из ' + str(self.question_data['maxscore']) + '):', self)
         score_title.setFont(Qt.QFont('Arial', 20))
 
-        score_input = Qt.QLineEdit(question_details['score'], self)
-        score_input.setFont(Qt.QFont('Arial', 20))
-        score_input.setMinimumWidth(200)
+        self.score_input = Qt.QLineEdit(self.question_details['score'], self)
+        self.score_input.setFont(Qt.QFont('Arial', 20))
+        self.score_input.setMinimumWidth(200)
+        self.score_input.textChanged.connect(self.update_status)
+
+        self.status_img = Qt.QLabel(self)
+        self.status_img.setScaledContents(True)
+        self.status_img.setFixedSize(Qt.QSize(50, 50))
+
+        self.status_label = Qt.QLabel(self)
+        self.status_label.setFont(Qt.QFont('Arial', 20))
+        self.update_status()
 
         upper_layout = Qt.QHBoxLayout()
         upper_layout.addWidget(back_button)
@@ -82,10 +92,14 @@ class StudentAnswerPage(Qt.QWidget):
         score_layout = Qt.QHBoxLayout()
         score_layout.addWidget(score_title)
         score_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
-        score_layout.addWidget(score_input)
+        score_layout.addWidget(self.score_input)
 
         save_layout = Qt.QHBoxLayout()
-        save_layout.addWidget(save_button)
+        save_layout.addWidget(self.save_button)
+        save_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
+        save_layout.addWidget(self.status_img)
+        save_layout.addWidget(self.status_label)
+        save_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
         save_layout.addStretch(1)
         save_layout.addLayout(score_layout)
 
@@ -96,3 +110,26 @@ class StudentAnswerPage(Qt.QWidget):
         layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         layout.addLayout(save_layout)
         self.setLayout(layout)
+
+    def update_status(self):
+        """
+        Call after modifying.
+        """
+        score = self.score_input.text()
+        saved_score = self.question_details['score']
+        maxscore = self.question_data['maxscore']
+        if saved_score != score:
+            self.status_img.setPixmap(Qt.QPixmap(common.WARNING))
+            self.status_label.setText('Сохраните')
+            self.status_label.setStyleSheet('color: ' + common.YELLOW)
+        else:
+            self.status_img.setPixmap(Qt.QPixmap(common.TICK))
+            self.status_label.setText('Сохранено')
+            self.status_label.setStyleSheet('color: ' + common.GREEN)
+        if score != '?' and (not score.isdigit() or not int(score) <= maxscore):
+            self.status_img.setPixmap(Qt.QPixmap(common.CROSS))
+            self.status_label.setText('Недопустимо')
+            self.status_label.setStyleSheet('color: ' + common.RED)
+            self.save_button.setDisabled(True)
+        else:
+            self.save_button.setEnabled(True)

@@ -32,7 +32,7 @@ class LoginPage(Qt.QWidget):
         password_input.setFont(Qt.QFont('Arial', 20))
         password_input.setMinimumWidth(400)
         password_input.setEchoMode(Qt.QLineEdit.Password)
-        if app.client.get_item('autofill') == 'True':
+        if app.client.get_data()['autofill']:
             password_input.setText(app.client.password)
 
         enter_button = Qt.QPushButton('Войти в систему', self)

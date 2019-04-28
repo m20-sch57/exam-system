@@ -25,14 +25,14 @@ class ExamSettings(ExamWidgetBase):
         self.name_input = Qt.QLineEdit(self.exam_data['name'], self)
         self.name_input.setFont(Qt.QFont('Arial', 20))
         self.name_input.setCursorPosition(0)
-        self.name_input.textChanged.connect(self.update_saved_status)
+        self.name_input.textChanged.connect(self.update_status)
 
         duration_title = Qt.QLabel('Продолжительность (в минутах):', self)
         duration_title.setFont(Qt.QFont('Arial', 20))
 
         self.duration_input = Qt.QLineEdit(str(self.exam_data['duration']), self)
         self.duration_input.setFont(Qt.QFont('Arial', 20))
-        self.duration_input.textChanged.connect(self.update_saved_status)
+        self.duration_input.textChanged.connect(self.update_status)
 
         state_title = Qt.QLabel('Для участия:', self)
         state_title.setFont(Qt.QFont('Arial', 20))
@@ -41,7 +41,7 @@ class ExamSettings(ExamWidgetBase):
         self.state_box.setFont(Qt.QFont('Arial', 20))
         self.state_box.addItems(['Недоступен', 'Открыт'])
         self.state_box.setCurrentIndex(self.exam_data['published'])
-        self.state_box.currentIndexChanged.connect(self.update_saved_status)
+        self.state_box.currentIndexChanged.connect(self.update_status)
 
         results_button = Qt.QPushButton('Таблица результатов', self)
         results_button.setObjectName('Button')
@@ -67,7 +67,7 @@ class ExamSettings(ExamWidgetBase):
 
         self.status_label = Qt.QLabel(self)
         self.status_label.setFont(Qt.QFont('Arial', 20))
-        self.update_saved_status()
+        self.update_status()
 
         delete_button = Qt.QPushButton(Qt.QIcon(common.DELETE), 'Удалить экзамен', self)
         delete_button.setObjectName('Button')
@@ -117,7 +117,7 @@ class ExamSettings(ExamWidgetBase):
         self.layout.addLayout(results_layout)
         self.layout.addStretch(1)
 
-    def update_saved_status(self):
+    def update_status(self):
         """
         Call after modifying.
         """
@@ -131,12 +131,10 @@ class ExamSettings(ExamWidgetBase):
             self.status_img.setPixmap(Qt.QPixmap(common.WARNING))
             self.status_label.setText('Сохраните')
             self.status_label.setStyleSheet('color: ' + common.YELLOW)
-            self.save_button.setStyleSheet('border-color: ' + common.YELLOW)
         else:
             self.status_img.setPixmap(Qt.QPixmap(common.TICK))
             self.status_label.setText('Сохранено')
             self.status_label.setStyleSheet('color: ' + common.GREEN)
-            self.save_button.setStyleSheet('border-color: ' + common.GREEN)
         if saved_name != name:
             self.name_input.setStyleSheet('border-color: ' + common.YELLOW)
         else:
@@ -154,7 +152,6 @@ class ExamSettings(ExamWidgetBase):
             self.status_img.setPixmap(Qt.QPixmap(common.CROSS))
             self.status_label.setText('Недопустимо')
             self.status_label.setStyleSheet('color: ' + common.RED)
-            self.save_button.setStyleSheet('border-color: ' + common.RED)
             self.save_button.setDisabled(True)
         else:
             self.save_button.setEnabled(True)
