@@ -46,6 +46,10 @@ class StudentAnswerPage(Qt.QWidget):
         self.save_button = Qt.QPushButton('Сохранить', self)
         self.save_button.setObjectName('Button')
         self.save_button.setFont(Qt.QFont('Arial', 20))
+        self.save_button.clicked.connect(lambda: app.save_submission_score(
+            exam_id, self.question_data['rowid'],
+            question_result['rowid'], self.score_input.text()
+        ))
 
         score_title = Qt.QLabel('Баллы (из ' + str(self.question_data['maxscore']) + '):', self)
         score_title.setFont(Qt.QFont('Arial', 20))
@@ -54,6 +58,10 @@ class StudentAnswerPage(Qt.QWidget):
         self.score_input.setFont(Qt.QFont('Arial', 20))
         self.score_input.setMinimumWidth(200)
         self.score_input.textChanged.connect(self.update_status)
+        self.score_input.returnPressed.connect(lambda: app.save_submission_score(
+            exam_id, self.question_data['rowid'],
+            question_result['rowid'], self.score_input.text()
+        ))
 
         self.status_img = Qt.QLabel(self)
         self.status_img.setScaledContents(True)

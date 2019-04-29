@@ -113,7 +113,7 @@ class Application(Qt.QApplication):
         Tries to register the student.
         """
         self.widget.set_waiting_state()
-        password_hash = hashlib.sha1(password.encode('utf-8')).hexdigest()
+        password_hash = hashlib.sha1((password + self.client.salt).encode('utf-8')).hexdigest()
         success = self.client.server.register(user_name, password_hash, 0, group_name)
         if not success:
             self.widget.set_failed_state()
@@ -130,7 +130,7 @@ class Application(Qt.QApplication):
         self.widget.set_waiting_state()
         self.client.user_name = user_name
         self.client.password = password
-        password_hash = hashlib.sha1(password.encode('utf-8')).hexdigest()
+        password_hash = hashlib.sha1((password + self.client.salt).encode('utf-8')).hexdigest()
         self.client.user = self.client.server.login(user_name, password_hash, 0)
         if not self.client.user:
             self.widget.set_failed_state()

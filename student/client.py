@@ -19,6 +19,7 @@ class Client:
         self.password = '12345'
         # self.user_name = ''
         # self.password = ''
+        self.salt = ':sdg436fregak'
         self.update_server()
 
     def get_data(self):

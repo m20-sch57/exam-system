@@ -137,7 +137,7 @@ class Application(Qt.QApplication):
         Tries to register the teacher.
         """
         self.widget.set_waiting_state()
-        password_hash = hashlib.sha1(password.encode('utf-8')).hexdigest()
+        password_hash = hashlib.sha1((password + self.client.salt).encode('utf-8')).hexdigest()
         success = self.client.server.register(user_name, password_hash, 1, group_name)
         if not success:
             self.widget.set_failed_state()
@@ -154,7 +154,7 @@ class Application(Qt.QApplication):
         self.widget.set_waiting_state()
         self.client.user_name = user_name
         self.client.password = password
-        password_hash = hashlib.sha1(password.encode('utf-8')).hexdigest()
+        password_hash = hashlib.sha1((password + self.client.salt).encode('utf-8')).hexdigest()
         self.client.user = self.client.server.login(user_name, password_hash, 1)
         if not self.client.user:
             self.widget.set_failed_state()
@@ -314,6 +314,16 @@ class Application(Qt.QApplication):
         question_data = self.client.server.get_question_data(question_id)
         question_result = self.client.server.get_question_result(question_id, user_id)
         self.display_widget(StudentAnswerPage(self, exam_id, question_data, question_result))
+
+    @safe
+    def save_submission_score(self, exam_id, question_id, submission_id, score):
+        """
+        Saves score (share) of the submission.
+        """
+        question_data = self.client.server.get_question_data(question_id)
+        share = -1 if score == '?' else int(score) / question_data['maxscore']
+        self.client.server.save_submission_score(submission_id, share)
+        self.display_results_page(exam_id)
 
 
 if __name__ == "__main__":

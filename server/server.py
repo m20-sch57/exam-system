@@ -414,6 +414,17 @@ def judge_long(submission_text, question_data):
     return -1
 
 
+def save_submission_score(submission_id, share):
+    """
+    Saves share of the submission.
+    """
+    CURSOR.execute(
+        "UPDATE submissions SET share=? WHERE rowid=?",
+        (share, submission_id)
+    )
+    return True
+
+
 CONNECTION = sqlite3.connect('database.db')
 CONNECTION.row_factory = sqlite3.Row
 CURSOR = CONNECTION.cursor()
@@ -443,5 +454,6 @@ SERVER.register_function(delete_question)
 SERVER.register_function(get_question_data)
 SERVER.register_function(set_question_data)
 SERVER.register_function(add_submission)
+SERVER.register_function(save_submission_score)
 
 SERVER.serve_forever()
