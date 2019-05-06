@@ -48,6 +48,7 @@ class LoginPage(Qt.QWidget):
         settings_button.setObjectName('Flat')
         settings_button.setCursor(Qt.Qt.PointingHandCursor)
         settings_button.setIconSize(Qt.QSize(35, 35))
+        settings_button.setFixedSize(Qt.QSize(55, 55))
         settings_button.clicked.connect(app.display_settings_page)
 
         register_button = Qt.QPushButton('Регистрация', self)

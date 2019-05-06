@@ -46,6 +46,7 @@ class ResultsPage(Qt.QWidget):
         back_button.setObjectName('Flat')
         back_button.setCursor(Qt.Qt.PointingHandCursor)
         back_button.setIconSize(Qt.QSize(35, 35))
+        back_button.setFixedSize(Qt.QSize(55, 55))
         back_button.clicked.connect(lambda: app.display_exam(exam_id))
 
         results_title = Qt.QLabel('Таблица результатов', self)
@@ -55,6 +56,7 @@ class ResultsPage(Qt.QWidget):
         update_button.setObjectName('Flat')
         update_button.setCursor(Qt.Qt.PointingHandCursor)
         update_button.setIconSize(Qt.QSize(35, 35))
+        update_button.setFixedSize(Qt.QSize(55, 55))
         update_button.clicked.connect(lambda: app.display_results_page(exam_id))
 
         scroll_area = Qt.QScrollArea()

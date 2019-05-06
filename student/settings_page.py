@@ -19,6 +19,7 @@ class SettingsPage(Qt.QWidget):
         back_button.setObjectName('Flat')
         back_button.setCursor(Qt.Qt.PointingHandCursor)
         back_button.setIconSize(Qt.QSize(35, 35))
+        back_button.setFixedSize(Qt.QSize(55, 55))
         back_button.clicked.connect(app.display_login_page)
 
         settings_title = Qt.QLabel('Настройки', self)

@@ -54,7 +54,7 @@ class ExamFinished(Qt.QWidget):
         super().__init__()
         exam_data = parent.exam_data
         info_str = (
-            'Экзамен завершён. Суммарный балл - ' +
+            'Экзамен завершён. Суммарный балл: ' +
             str(exam_data['total_score']) + ' (из ' +
             str(exam_data['total_maxscore']) + ')'
         )

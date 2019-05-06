@@ -158,6 +158,13 @@ class Application(Qt.QApplication):
         self.display_widget(StartExamPage(self, exam_data, cnt_questions))
 
     @safe
+    def current_group_name(self):
+        """
+        Returns group name of current user.
+        """
+        return self.client.server.get_group_data(self.client.user['group_id'])['name']
+
+    @safe
     def list_of_exams(self):
         """
         Returns list of exams.

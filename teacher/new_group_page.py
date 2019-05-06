@@ -18,6 +18,7 @@ class NewGroupPage(Qt.QWidget):
         back_button.setObjectName('Flat')
         back_button.setCursor(Qt.Qt.PointingHandCursor)
         back_button.setIconSize(Qt.QSize(35, 35))
+        back_button.setFixedSize(Qt.QSize(55, 55))
         back_button.clicked.connect(app.display_register_page)
 
         new_group_title = Qt.QLabel('Новая группа', self)

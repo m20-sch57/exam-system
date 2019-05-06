@@ -13,9 +13,17 @@ class HomePage(Qt.QWidget):
     """
     def __init__(self, app):
         super().__init__()
+        group_name = app.current_group_name()
         list_of_exams = app.list_of_exams()
 
-        exams_title = Qt.QLabel('Доступные экзамены', self)
+        update_button = Qt.QPushButton(Qt.QIcon(common.UPDATE), '', self)
+        update_button.setObjectName('Flat')
+        update_button.setCursor(Qt.Qt.PointingHandCursor)
+        update_button.setIconSize(Qt.QSize(35, 35))
+        update_button.setFixedSize(Qt.QSize(55, 55))
+        update_button.clicked.connect(app.display_home_page)
+
+        exams_title = Qt.QLabel('Экзамены группы ' + group_name, self)
         exams_title.setFont(Qt.QFont('Arial', 30))
 
         view_profile_action = Qt.QWidgetAction(self)
@@ -85,6 +93,7 @@ class HomePage(Qt.QWidget):
         lower_layout.addSpacerItem(Qt.QSpacerItem(10, 0))
 
         upper_layout = Qt.QHBoxLayout()
+        upper_layout.addWidget(update_button)
         upper_layout.addStretch(1)
         upper_layout.addWidget(exams_title)
         upper_layout.addStretch(1)
@@ -94,6 +103,6 @@ class HomePage(Qt.QWidget):
         layout.addLayout(upper_layout)
         layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         layout.addWidget(scroll_area)
-        layout.addSpacerItem(Qt.QSpacerItem(0, 20))
+        layout.addSpacerItem(Qt.QSpacerItem(0, 10))
         layout.addLayout(lower_layout)
         self.setLayout(layout)

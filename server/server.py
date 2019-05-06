@@ -86,6 +86,17 @@ def login(user_name, password, is_admin):
     return user
 
 
+def get_group_data(group_id):
+    """
+    Returns group data.
+    """
+    CURSOR.execute(
+        "SELECT name FROM groups WHERE rowid=?",
+        (group_id,)
+    )
+    return get_last(CURSOR.fetchall())
+
+
 def list_of_published_exams(group_id):
     """
     Returns list of all published exams in the group.
@@ -435,6 +446,7 @@ SERVER.register_function(ping)
 SERVER.register_function(create_group)
 SERVER.register_function(register)
 SERVER.register_function(login)
+SERVER.register_function(get_group_data)
 SERVER.register_function(list_of_published_exams)
 SERVER.register_function(list_of_all_exams)
 SERVER.register_function(create_exam)

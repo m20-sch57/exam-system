@@ -36,8 +36,8 @@ class ExamPage(Qt.QWidget):
         self.settings_button = Qt.QPushButton(Qt.QIcon(common.SETTINGS), '', self)
         self.settings_button.setObjectName('Flat')
         self.settings_button.setCursor(Qt.Qt.PointingHandCursor)
-        self.settings_button.setFixedSize(Qt.QSize(50, 50))
         self.settings_button.setIconSize(Qt.QSize(30, 30))
+        self.settings_button.setFixedSize(Qt.QSize(50, 50))
         self.settings_button.clicked.connect(lambda _: self.app.view_exam_settings())
 
         self.questions_layout = Qt.QHBoxLayout()
@@ -62,8 +62,8 @@ class ExamPage(Qt.QWidget):
         create_button = Qt.QPushButton(Qt.QIcon(common.CREATE), '', self)
         create_button.setObjectName('Flat')
         create_button.setCursor(Qt.Qt.PointingHandCursor)
-        create_button.setFixedSize(Qt.QSize(50, 50))
         create_button.setIconSize(Qt.QSize(40, 40))
+        create_button.setFixedSize(Qt.QSize(50, 50))
         create_button.setMenu(create_menu)
 
         self.widget = Qt.QWidget(self)

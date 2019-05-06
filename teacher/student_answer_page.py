@@ -20,6 +20,7 @@ class StudentAnswerPage(Qt.QWidget):
         back_button.setObjectName('Flat')
         back_button.setCursor(Qt.Qt.PointingHandCursor)
         back_button.setIconSize(Qt.QSize(35, 35))
+        back_button.setFixedSize(Qt.QSize(55, 55))
         back_button.clicked.connect(lambda: app.display_results_page(exam_id))
 
         check_title = Qt.QLabel('Результаты проверки', self)
