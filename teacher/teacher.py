@@ -16,9 +16,6 @@ from register_page import RegisterPage
 from new_group_page import NewGroupPage
 from home_page import HomePage
 from confirm_page import ConfirmPage
-from exams_widget import ExamsWidget
-from messages_widget import MessagesWidget
-from group_widget import GroupWidget
 from error_widget import ErrorWidget
 from exam_page import ExamPage
 from exam_settings import ExamSettings
@@ -173,13 +170,7 @@ class Application(Qt.QApplication):
         """
         Displays home page with list of exams.
         """
-        widget_map = {
-            'Экзамены': lambda: ExamsWidget(self),
-            'Сообщения': MessagesWidget,
-            'Группа': GroupWidget
-        }
-        self.display_widget(HomePage(self, widget_map))
-        self.widget.display('Экзамены')
+        self.display_widget(HomePage(self))
 
     @safe
     def list_of_exams(self):

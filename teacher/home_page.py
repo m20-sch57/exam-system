@@ -11,9 +11,12 @@ class HomePage(Qt.QWidget):
     """
     Teacher's home page.
     """
-    def __init__(self, app, widget_map):
+    def __init__(self, app):
         super().__init__()
-        self.widget_map = widget_map
+        list_of_exams = app.list_of_exams()
+
+        exams_title = Qt.QLabel('Доступные экзамены', self)
+        exams_title.setFont(Qt.QFont('Arial', 30))
 
         view_profile_action = Qt.QWidgetAction(self)
         view_profile_action.setFont(Qt.QFont('Arial', 15))
@@ -36,47 +39,61 @@ class HomePage(Qt.QWidget):
         user_button.setFixedSize(Qt.QSize(55, 55))
         user_button.setMenu(user_menu)
 
-        self.widget_layout = Qt.QHBoxLayout()
-        self.widget_layout.setSpacing(0)
+        scroll_area = Qt.QScrollArea()
+        scroll_area.setFrameShape(Qt.QFrame.NoFrame)
+
+        scroll_layout = Qt.QVBoxLayout()
+        scroll_layout.setSizeConstraint(Qt.QLayout.SetMinimumSize)
+
+        for exam in list_of_exams:
+            exam_id = exam['rowid']
+            exam_name = exam['name']
+
+            exam_button = Qt.QPushButton(Qt.QIcon(common.EXAM30), exam_name, self)
+            exam_button.setObjectName('Flat')
+            exam_button.setCursor(Qt.Qt.PointingHandCursor)
+            exam_button.setIconSize(Qt.QSize(30, 30))
+            exam_button.setFont(Qt.QFont('Arial', 20))
+            exam_button.clicked.connect(common.return_lambda(app.display_exam, exam_id))
+
+            exam_layout = Qt.QHBoxLayout()
+            exam_layout.addWidget(exam_button)
+            exam_layout.addStretch(1)
+
+            scroll_layout.addLayout(exam_layout)
+
+        scroll_layout.addStretch(1)
+
+        scroll_widget = Qt.QWidget(self)
+        scroll_widget.setLayout(scroll_layout)
+        scroll_area.setWidget(scroll_widget)
+
+        create_button = Qt.QPushButton(Qt.QIcon(common.CREATE), 'Создать экзамен', self)
+        create_button.setObjectName('Button')
+        create_button.setIconSize(Qt.QSize(35, 35))
+        create_button.setFont(Qt.QFont('Arial', 20))
+        create_button.clicked.connect(lambda _: app.create_exam())
+
+        info_label = Qt.QLabel('Всего экзаменов - ' + str(len(list_of_exams)), self)
+        info_label.setFont(Qt.QFont('Arial', 20))
+
+        lower_layout = Qt.QHBoxLayout()
+        lower_layout.addWidget(create_button)
+        lower_layout.addStretch(1)
+        lower_layout.addSpacerItem(Qt.QSpacerItem(10, 0))
+        lower_layout.addWidget(info_label)
+        lower_layout.addSpacerItem(Qt.QSpacerItem(10, 0))
 
         upper_layout = Qt.QHBoxLayout()
-        upper_layout.addLayout(self.widget_layout)
+        upper_layout.addStretch(1)
+        upper_layout.addWidget(exams_title)
+        upper_layout.addStretch(1)
         upper_layout.addWidget(user_button)
 
-        upper_panel = Qt.QFrame(self)
-        upper_panel.setLayout(upper_layout)
-
         layout = Qt.QVBoxLayout()
-        layout.addWidget(upper_panel)
+        layout.addLayout(upper_layout)
         layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        layout.addWidget(Qt.QWidget())
+        layout.addWidget(scroll_area)
+        layout.addSpacerItem(Qt.QSpacerItem(0, 20))
+        layout.addLayout(lower_layout)
         self.setLayout(layout)
-
-    def display(self, current_widget_name):
-        """
-        Displays the widget.
-        """
-        while self.widget_layout.count() > 0:
-            old_widget = self.widget_layout.itemAt(0).widget()
-            old_widget.deleteLater()
-            self.widget_layout.removeWidget(old_widget)
-
-        for widget_name in self.widget_map.keys():
-            widget_button = Qt.QPushButton(widget_name, self)
-            widget_button.setObjectName('Link')
-            widget_button.setCursor(Qt.Qt.PointingHandCursor)
-            widget_button.setFont(Qt.QFont('Arial', 20))
-            widget_button.clicked.connect(
-                common.return_lambda(self.display, widget_name))
-            if widget_name == current_widget_name:
-                widget_button.setStyleSheet(
-                    'color: #2CA9FD;'
-                    'border-bottom: 3px solid #2CA9FD;'
-                )
-            self.widget_layout.addWidget(widget_button)
-
-        main_widget = self.widget_map[current_widget_name]()
-        old_widget = self.layout().itemAt(2).widget()
-        old_widget.deleteLater()
-        self.layout().removeWidget(old_widget)
-        self.layout().addWidget(main_widget)
