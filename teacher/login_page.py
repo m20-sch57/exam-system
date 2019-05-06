@@ -39,6 +39,8 @@ class LoginPage(Qt.QWidget):
         enter_button.setObjectName('Button')
         enter_button.setFont(Qt.QFont('Arial', 20))
         enter_button.clicked.connect(lambda: app.login(user_input.text(), password_input.text()))
+        password_input.returnPressed.connect(enter_button.click)
+        user_input.returnPressed.connect(enter_button.click)
 
         self.status_label = Qt.QLabel(self)
         self.status_label.setFont(Qt.QFont('Arial', 20))

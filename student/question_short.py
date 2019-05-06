@@ -26,8 +26,6 @@ class QuestionShort(QuestionBase):
         answer_input = Qt.QLineEdit(self)
         answer_input.setFont(Qt.QFont('Arial', 20))
         answer_input.setMinimumWidth(500)
-        answer_input.returnPressed.connect(
-            lambda: app.send_submission(question_data['rowid'], answer_input.text()))
         answer_input.setFocus()
 
         check_button = Qt.QPushButton('Проверить', self)
@@ -35,6 +33,7 @@ class QuestionShort(QuestionBase):
         check_button.setFont(Qt.QFont('Arial', 20))
         check_button.clicked.connect(
             lambda: app.send_submission(question_data['rowid'], answer_input.text()))
+        answer_input.returnPressed.connect(check_button.click)
 
         self.lower_layout.addWidget(answer_title)
         self.lower_layout.addSpacerItem(Qt.QSpacerItem(20, 0))

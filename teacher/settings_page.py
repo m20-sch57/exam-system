@@ -39,6 +39,7 @@ class SettingsPage(Qt.QWidget):
         server_check_button.setObjectName('Button')
         server_check_button.setFont(Qt.QFont('Arial', 20))
         server_check_button.clicked.connect(lambda: app.check_ip(server_ip_input.text()))
+        server_ip_input.returnPressed.connect(server_check_button.click)
 
         self.server_status_label = Qt.QLabel(self)
         self.server_status_label.setFont(Qt.QFont('Arial', 20))

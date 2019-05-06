@@ -36,6 +36,7 @@ class NewGroupPage(Qt.QWidget):
         create_button.setIconSize(Qt.QSize(35, 35))
         create_button.setFont(Qt.QFont('Arial', 20))
         create_button.clicked.connect(lambda: app.create_group(group_input.text()))
+        group_input.returnPressed.connect(create_button.click)
 
         self.status_label = Qt.QLabel(self)
         self.status_label.setFont(Qt.QFont('Arial', 20))

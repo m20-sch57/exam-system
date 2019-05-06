@@ -55,6 +55,10 @@ class RegisterPage(Qt.QWidget):
         self.register_button.setFont(Qt.QFont('Arial', 20))
         self.register_button.clicked.connect(lambda: app.register(
             group_input.text(), user_input.text(), self.password_input.text()))
+        self.repeat_input.returnPressed.connect(self.register_button.click)
+        self.password_input.returnPressed.connect(self.register_button.click)
+        user_input.returnPressed.connect(self.register_button.click)
+        group_input.returnPressed.connect(self.register_button.click)
 
         self.status_label = Qt.QLabel(self)
         self.status_label.setFont(Qt.QFont('Arial', 20))

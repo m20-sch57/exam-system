@@ -59,10 +59,7 @@ class StudentAnswerPage(Qt.QWidget):
         self.score_input.setFont(Qt.QFont('Arial', 20))
         self.score_input.setMinimumWidth(200)
         self.score_input.textChanged.connect(self.update_status)
-        self.score_input.returnPressed.connect(lambda: app.save_submission_score(
-            exam_id, self.question_data['rowid'],
-            question_result['rowid'], self.score_input.text()
-        ))
+        self.score_input.returnPressed.connect(self.save_button.click)
 
         self.status_img = Qt.QLabel(self)
         self.status_img.setScaledContents(True)
