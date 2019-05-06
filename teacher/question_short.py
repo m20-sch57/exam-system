@@ -125,7 +125,7 @@ class QuestionShortEdit(ExamWidgetBase):
             self.maxscore_input.setStyleSheet('border-color: ' + common.YELLOW)
         else:
             self.maxscore_input.setStyleSheet('border-color: ' + common.GREEN)
-        if len(maxscore) > 9 or not maxscore.isdigit():
+        if len(maxscore) > 9 or not maxscore.isdigit() or int(maxscore) == 0:
             self.maxscore_input.setStyleSheet('border-color: ' + common.RED)
             self.status_img.setPixmap(Qt.QPixmap(common.CROSS))
             self.status_label.setText('Недопустимо')

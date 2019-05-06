@@ -147,7 +147,7 @@ class ExamSettings(ExamWidgetBase):
             self.state_box.setStyleSheet('border-color: ' + common.YELLOW)
         else:
             self.state_box.setStyleSheet('border-color: ' + common.GREEN)
-        if len(duration) > 9 or not duration.isdigit():
+        if len(duration) > 9 or not duration.isdigit() or int(duration) == 0:
             self.duration_input.setStyleSheet('border-color: ' + common.RED)
             self.status_img.setPixmap(Qt.QPixmap(common.CROSS))
             self.status_label.setText('Недопустимо')
