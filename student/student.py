@@ -194,14 +194,14 @@ class Application(Qt.QApplication):
         """
         exam_data = self.client.server.get_exam_data_student(exam_id, self.client.user['rowid'])
         questions_ids = self.client.server.get_questions_ids(exam_id)
-        if not exam_data or not questions_ids:
-            self.display_widget(ErrorWidget())
+        if not exam_data:
+            self.display_widget(ErrorWidget(self))
             return
         if exam_data['state'] == 'Not started':
             self.display_start_exam_page(exam_data, len(questions_ids))
         else:
             self.display_widget(ExamPage(self, exam_id))
-            self.view_exam_question(questions_ids[0])
+            self.view_exam_question(questions_ids[0] if questions_ids else -1)
 
     @safe
     def view_exam_question(self, question_id):
@@ -233,7 +233,7 @@ class Application(Qt.QApplication):
         Returns the question widget depending on it's type.
         """
         if not self.widget.question_data:
-            return ErrorWidget()
+            return ErrorWidget(self)
         if self.widget.question_data['type'] == 'Short':
             if self.widget.exam_data['state'] == 'Finished':
                 return QuestionShortDetails(self.widget)
@@ -244,7 +244,7 @@ class Application(Qt.QApplication):
             if self.widget.exam_data['state'] == 'Finished':
                 return QuestionLongDetails(self.widget)
             return QuestionLong(self, self.widget)
-        return ErrorWidget()
+        return ErrorWidget(self)
 
     @safe
     def send_submission(self, question_id, answer):

@@ -404,14 +404,25 @@ def judge_submission(submission_id):
     return True
 
 
+def save_submission_score(submission_id, share):
+    """
+    Saves share of the submission.
+    """
+    CURSOR.execute(
+        "UPDATE submissions SET share=? WHERE rowid=?",
+        (share, submission_id)
+    )
+    return True
+
+
 def judge_short(submission, question_data):
     """
     Judges short question.
     """
     share = -1
-    correct_list = question_data['correct'].split('; ')
-    correct_list = [s.lower() for s in correct_list]
-    if submission['answer'].lower() in correct_list:
+    correct_list = question_data['correct'].split(';')
+    correct_list = [s.lower().strip() for s in correct_list]
+    if submission['answer'].lower().strip() in correct_list:
         share = 1
     else:
         share = 0
@@ -423,17 +434,6 @@ def judge_long(submission_text, question_data):
     Judges long question.
     """
     return -1
-
-
-def save_submission_score(submission_id, share):
-    """
-    Saves share of the submission.
-    """
-    CURSOR.execute(
-        "UPDATE submissions SET share=? WHERE rowid=?",
-        (share, submission_id)
-    )
-    return True
 
 
 CONNECTION = sqlite3.connect('database.db')
