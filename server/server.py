@@ -412,6 +412,7 @@ def save_submission_score(submission_id, share):
         "UPDATE submissions SET share=? WHERE rowid=?",
         (share, submission_id)
     )
+    CONNECTION.commit()
     return True
 
 
