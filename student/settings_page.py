@@ -43,6 +43,7 @@ class SettingsPage(Qt.QWidget):
 
         self.server_status_label = Qt.QLabel(self)
         self.server_status_label.setFont(Qt.QFont('Arial', 20))
+        self.server_status_label.setWordWrap(True)
         self.server_status_label.setMinimumWidth(270)
 
         autosave_title = Qt.QLabel('Автозаполнение форм', self)

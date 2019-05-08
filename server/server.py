@@ -26,28 +26,27 @@ def create_group(group_name):
     """
     Creates the group.
     """
-    if not group_name:
-        return False
     CURSOR.execute(
         "SELECT * FROM groups WHERE name=?",
         (group_name,)
     )
     group = get_last(CURSOR.fetchall())
+    if not group_name:
+        return (False, 'Пустое название группы')
     if group is not False:
-        return False
+        return (False, 'Такая группа уже есть')
     CURSOR.execute(
         "INSERT INTO groups VALUES (?)",
         (group_name,)
     )
-    return True
+    CONNECTION.commit()
+    return (True, '')
 
 
 def register(user_name, password, is_admin, group_name):
     """
     Tries to register the user.
     """
-    if not user_name:
-        return False
     CURSOR.execute(
         "SELECT rowid, * FROM groups WHERE name=?",
         (group_name,)
@@ -59,15 +58,17 @@ def register(user_name, password, is_admin, group_name):
     )
     user = get_last(CURSOR.fetchall())
     if group is False:
-        return False
+        return (False, 'Неверное название группы')
+    if not user_name:
+        return (False, 'Пустое имя пользователя')
     if user is not False:
-        return False
+        return (False, 'Такой пользователь уже есть')
     CURSOR.execute(
         "INSERT INTO users VALUES (?, ?, ?, ?)",
         (user_name, password, is_admin, group['rowid'])
     )
     CONNECTION.commit()
-    return True
+    return (True, '')
 
 
 def login(user_name, password, is_admin):
@@ -79,11 +80,9 @@ def login(user_name, password, is_admin):
         (user_name,)
     )
     user = get_last(CURSOR.fetchall())
-    if user is False:
-        return False
-    if user['password'] != password or user['is_admin'] != is_admin:
-        return False
-    return user
+    if user is False or user['password'] != password or user['is_admin'] != is_admin:
+        return (False, 'Неудачный вход')
+    return (True, user)
 
 
 def get_group_data(group_id):

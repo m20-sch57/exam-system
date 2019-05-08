@@ -40,6 +40,7 @@ class NewGroupPage(Qt.QWidget):
 
         self.status_label = Qt.QLabel(self)
         self.status_label.setFont(Qt.QFont('Arial', 20))
+        self.status_label.setWordWrap(True)
         self.status_label.setMinimumWidth(380)
 
         upper_layout = Qt.QHBoxLayout()
@@ -86,10 +87,10 @@ class NewGroupPage(Qt.QWidget):
         self.status_label.setStyleSheet('color: black')
         self.status_label.repaint()
 
-    def set_failed_state(self):
+    def set_failed_state(self, status):
         """
         Sets failed state.
         """
         self.setCursor(Qt.Qt.ArrowCursor)
-        self.status_label.setText('Недопустимое название')
+        self.status_label.setText(status)
         self.status_label.setStyleSheet('color: ' + common.RED)

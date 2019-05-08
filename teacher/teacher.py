@@ -122,9 +122,9 @@ class Application(Qt.QApplication):
         Creates the group.
         """
         self.widget.set_waiting_state()
-        success = self.client.server.create_group(group_name)
-        if not success:
-            self.widget.set_failed_state()
+        result = self.client.server.create_group(group_name)
+        if not result[0]:
+            self.widget.set_failed_state(result[1])
         else:
             self.display_register_page()
 
@@ -135,9 +135,9 @@ class Application(Qt.QApplication):
         """
         self.widget.set_waiting_state()
         password_hash = hashlib.sha1((password + self.client.salt).encode('utf-8')).hexdigest()
-        success = self.client.server.register(user_name, password_hash, 1, group_name)
-        if not success:
-            self.widget.set_failed_state()
+        result = self.client.server.register(user_name, password_hash, 1, group_name)
+        if not result[0]:
+            self.widget.set_failed_state(result[1])
         else:
             self.client.user_name = user_name
             self.client.password = password
@@ -152,10 +152,12 @@ class Application(Qt.QApplication):
         self.client.user_name = user_name
         self.client.password = password
         password_hash = hashlib.sha1((password + self.client.salt).encode('utf-8')).hexdigest()
-        self.client.user = self.client.server.login(user_name, password_hash, 1)
-        if not self.client.user:
-            self.widget.set_failed_state()
+        result = self.client.server.login(user_name, password_hash, 1)
+        if not result[0]:
+            self.client.user = False
+            self.widget.set_failed_state(result[1])
         else:
+            self.client.user = result[1]
             self.display_home_page()
 
     @safe
