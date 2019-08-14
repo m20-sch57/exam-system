@@ -15,10 +15,10 @@ class Client:
     def __init__(self):
         self.path = 'client\\settings.json'
         self.user = False
-        # self.user_name = 'Админ'
-        # self.password = '12345'
-        self.user_name = ''
-        self.password = ''
+        self.user_name = 'Админ'
+        self.password = '12345'
+        # self.user_name = ''
+        # self.password = ''
         self.salt = ':sdg436fregak'
         self.update_server()
 

@@ -19,7 +19,7 @@ class ProfilePage(Qt.QWidget):
         back_button.setCursor(Qt.Qt.PointingHandCursor)
         back_button.setIconSize(Qt.QSize(35, 35))
         back_button.setFixedSize(Qt.QSize(55, 55))
-        back_button.clicked.connect(app.display_home_page)
+        back_button.clicked.connect(lambda _: app.display_home_page())
 
         profile_title = Qt.QLabel('Профиль', self)
         profile_title.setFont(Qt.QFont('Arial', 30))

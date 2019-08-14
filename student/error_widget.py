@@ -23,7 +23,7 @@ class ErrorWidget(Qt.QWidget):
         home_button.setObjectName('Flat')
         home_button.setCursor(Qt.Qt.PointingHandCursor)
         home_button.setFont(Qt.QFont('Arial', 20))
-        home_button.clicked.connect(app.display_home_page)
+        home_button.clicked.connect(lambda _: app.display_home_page())
 
         button_layout = Qt.QHBoxLayout()
         button_layout.addWidget(home_button)

@@ -148,11 +148,26 @@ class Application(Qt.QApplication):
         self.client.user = False
         self.display_login_page()
 
+    def current_group_name(self):
+        """
+        Returns group name of current user.
+        """
+        return self.client.server.get_group_data(self.client.user['group_id'])['name']
+
+    def list_of_exams(self):
+        """
+        Returns list of exams.
+        """
+        return self.client.server.list_of_published_exams(self.client.user['group_id'])
+
+    @safe
     def display_home_page(self):
         """
         Displays home page with list of exams.
         """
-        self.display_widget(HomePage(self))
+        group_name = self.current_group_name()
+        list_of_exams = self.list_of_exams()
+        self.display_widget(HomePage(self, group_name, list_of_exams))
 
     def display_profile_page(self):
         """
@@ -165,20 +180,6 @@ class Application(Qt.QApplication):
         Displays page before starting the exam.
         """
         self.display_widget(StartExamPage(self, exam_data, cnt_questions))
-
-    @safe
-    def current_group_name(self):
-        """
-        Returns group name of current user.
-        """
-        return self.client.server.get_group_data(self.client.user['group_id'])['name']
-
-    @safe
-    def list_of_exams(self):
-        """
-        Returns list of exams.
-        """
-        return self.client.server.list_of_published_exams(self.client.user['group_id'])
 
     @safe
     def start_exam(self, exam_id):

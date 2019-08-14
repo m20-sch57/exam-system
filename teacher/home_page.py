@@ -11,17 +11,15 @@ class HomePage(Qt.QWidget):
     """
     Teacher's home page.
     """
-    def __init__(self, app):
+    def __init__(self, app, group_name, list_of_exams):
         super().__init__()
-        group_name = app.current_group_name()
-        list_of_exams = app.list_of_exams()
 
         update_button = Qt.QPushButton(Qt.QIcon(common.UPDATE), '', self)
         update_button.setObjectName('Flat')
         update_button.setCursor(Qt.Qt.PointingHandCursor)
         update_button.setIconSize(Qt.QSize(35, 35))
         update_button.setFixedSize(Qt.QSize(55, 55))
-        update_button.clicked.connect(app.display_home_page)
+        update_button.clicked.connect(lambda _: app.display_home_page())
 
         exams_title = Qt.QLabel('Экзамены группы ' + group_name, self)
         exams_title.setFont(Qt.QFont('Arial', 30))
