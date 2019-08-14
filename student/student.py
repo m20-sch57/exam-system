@@ -14,6 +14,7 @@ from settings_page import SettingsPage
 from login_page import LoginPage
 from register_page import RegisterPage
 from home_page import HomePage
+from profile_page import ProfilePage
 from start_exam_page import StartExamPage
 from error_widget import ErrorWidget
 from exam_page import ExamPage
@@ -152,6 +153,12 @@ class Application(Qt.QApplication):
         Displays home page with list of exams.
         """
         self.display_widget(HomePage(self))
+
+    def display_profile_page(self):
+        """
+        Displays user profile.
+        """
+        self.display_widget(ProfilePage(self))
 
     def display_start_exam_page(self, exam_data, cnt_questions):
         """
