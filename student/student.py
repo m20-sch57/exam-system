@@ -169,11 +169,14 @@ class Application(Qt.QApplication):
         list_of_exams = self.list_of_exams()
         self.display_widget(HomePage(self, group_name, list_of_exams))
 
+    @safe
     def display_profile_page(self):
         """
         Displays user profile.
         """
-        self.display_widget(ProfilePage(self))
+        group_name = self.current_group_name()
+        user_name = self.client.user['name']
+        self.display_widget(ProfilePage(self, group_name, user_name))
 
     def display_start_exam_page(self, exam_data, cnt_questions):
         """
