@@ -20,6 +20,7 @@ class Client:
         # self.user_name = ''
         # self.password = ''
         self.salt = ':sdg436fregak'
+        self.server = None
         self.update_server()
 
     def get_data(self):
