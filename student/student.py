@@ -148,6 +148,15 @@ class Application(Qt.QApplication):
         self.client.user = False
         self.display_login_page()
 
+    @safe
+    def change_password(self, old_password, new_password):
+        """
+        Changes password of current user.
+        """
+        self.widget.set_waiting_state()
+        #something
+        self.widget.set_failed_state('Ошибка')
+
     def current_group_name(self):
         """
         Returns group name of current user.

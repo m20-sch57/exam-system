@@ -50,30 +50,34 @@ class ProfilePage(Qt.QWidget):
         old_password_title = Qt.QLabel('Старый пароль:', self)
         old_password_title.setFont(Qt.QFont('Arial', 20))
 
-        old_password_input = Qt.QLineEdit(self)
-        old_password_input.setFont(Qt.QFont('Arial', 20))
-        old_password_input.setMinimumWidth(400)
-        old_password_input.setEchoMode(Qt.QLineEdit.Password)
+        self.old_password_input = Qt.QLineEdit(self)
+        self.old_password_input.setFont(Qt.QFont('Arial', 20))
+        self.old_password_input.setMinimumWidth(400)
+        self.old_password_input.setEchoMode(Qt.QLineEdit.Password)
 
         new_password_title = Qt.QLabel('Новый пароль:', self)
         new_password_title.setFont(Qt.QFont('Arial', 20))
 
-        new_password_input = Qt.QLineEdit(self)
-        new_password_input.setFont(Qt.QFont('Arial', 20))
-        new_password_input.setMinimumWidth(400)
-        new_password_input.setEchoMode(Qt.QLineEdit.Password)
+        self.new_password_input = Qt.QLineEdit(self)
+        self.new_password_input.setFont(Qt.QFont('Arial', 20))
+        self.new_password_input.setMinimumWidth(400)
+        self.new_password_input.setEchoMode(Qt.QLineEdit.Password)
+        self.new_password_input.textChanged.connect(self.update_change_password_button_state)
 
         repeat_title = Qt.QLabel('Повторите пароль:', self)
         repeat_title.setFont(Qt.QFont('Arial', 20))
 
-        repeat_input = Qt.QLineEdit(self)
-        repeat_input.setFont(Qt.QFont('Arial', 20))
-        repeat_input.setMinimumWidth(400)
-        repeat_input.setEchoMode(Qt.QLineEdit.Password)
+        self.repeat_input = Qt.QLineEdit(self)
+        self.repeat_input.setFont(Qt.QFont('Arial', 20))
+        self.repeat_input.setMinimumWidth(400)
+        self.repeat_input.setEchoMode(Qt.QLineEdit.Password)
+        self.repeat_input.textChanged.connect(self.update_change_password_button_state)
 
         self.change_password_button = Qt.QPushButton('Изменить пароль', self)
         self.change_password_button.setObjectName('Button')
         self.change_password_button.setFont(Qt.QFont('Arial', 20))
+        self.change_password_button.clicked.connect(lambda: app.change_password(
+            self.old_password_input.text(), self.new_password_input.text()))
 
         self.status_label = Qt.QLabel(self)
         self.status_label.setFont(Qt.QFont('Arial', 20))
@@ -108,11 +112,11 @@ class ProfilePage(Qt.QWidget):
         change_password_title_layout.addWidget(repeat_title)
 
         change_password_input_layout = Qt.QVBoxLayout()
-        change_password_input_layout.addWidget(old_password_input)
+        change_password_input_layout.addWidget(self.old_password_input)
         change_password_input_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        change_password_input_layout.addWidget(new_password_input)
+        change_password_input_layout.addWidget(self.new_password_input)
         change_password_input_layout.addSpacerItem(Qt.QSpacerItem(0, 20))
-        change_password_input_layout.addWidget(repeat_input)
+        change_password_input_layout.addWidget(self.repeat_input)
 
         change_password_main_layout = Qt.QHBoxLayout()
         change_password_main_layout.addSpacerItem(Qt.QSpacerItem(20, 0))
@@ -150,3 +154,31 @@ class ProfilePage(Qt.QWidget):
         layout.addSpacerItem(Qt.QSpacerItem(0, 20))
         layout.addWidget(scroll_area)
         self.setLayout(layout)
+
+    def update_change_password_button_state(self):
+        """
+        Determines the state of change_password_button.
+        """
+        if self.new_password_input.text() == self.repeat_input.text():
+            self.change_password_button.setEnabled(True)
+            self.repeat_input.setStyleSheet('border-color: ' + common.GREEN)
+        else:
+            self.change_password_button.setDisabled(True)
+            self.repeat_input.setStyleSheet('border-color: ' + common.RED)
+
+    def set_waiting_state(self):
+        """
+        Sets waiting state.
+        """
+        self.setCursor(Qt.Qt.WaitCursor)
+        self.status_label.setText('Подождите...')
+        self.status_label.setStyleSheet('color: black')
+        self.status_label.repaint()
+
+    def set_failed_state(self, status):
+        """
+        Sets failed state.
+        """
+        self.setCursor(Qt.Qt.ArrowCursor)
+        self.status_label.setText(status)
+        self.status_label.setStyleSheet('color: ' + common.RED)
