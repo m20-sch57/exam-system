@@ -45,7 +45,7 @@ class Application(Qt.QApplication):
         super().__init__(sys.argv)
         self.client = Client()
         self.window = Qt.QWidget()
-        self.window.setStyleSheet(open('client\\style.css').read())
+        self.window.setStyleSheet(open('client//style.css').read())
         self.window.setWindowTitle('Student')
         self.window.setGeometry(200, 100, 1000, 700)
         self.widget = Qt.QWidget(self.window)

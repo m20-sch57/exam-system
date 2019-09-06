@@ -13,7 +13,7 @@ class Client:
     Contains client settings and server.
     """
     def __init__(self):
-        self.path = 'client\\settings.json'
+        self.path = 'client//settings.json'
         self.user = False
         self.user_name = 'Фёдор Куянов'
         self.password = '12345'
