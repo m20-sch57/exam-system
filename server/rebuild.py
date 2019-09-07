@@ -49,14 +49,14 @@ CURSOR.execute(
     """
 )
 
-CURSOR.execute(
-    "INSERT INTO groups VALUES ('m20')"
-)
-CURSOR.execute(
-    "INSERT INTO users VALUES ('Фёдор Куянов', 'ab1dbbf93be316a67cb38ad2916ed1cd9e3af3a4', 0, 1)"
-)
-CURSOR.execute(
-    "INSERT INTO users VALUES ('Админ', 'ab1dbbf93be316a67cb38ad2916ed1cd9e3af3a4', 1, 1)"
-)
+# CURSOR.execute(
+#     "INSERT INTO groups VALUES ('m20')"
+# )
+# CURSOR.execute(
+#     "INSERT INTO users VALUES ('Фёдор Куянов', 'ab1dbbf93be316a67cb38ad2916ed1cd9e3af3a4', 0, 1)"
+# )
+# CURSOR.execute(
+#     "INSERT INTO users VALUES ('Админ', 'ab1dbbf93be316a67cb38ad2916ed1cd9e3af3a4', 1, 1)"
+# )
 
 CONNECTION.commit()
