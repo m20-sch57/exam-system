@@ -27,7 +27,7 @@ class HomePage(Qt.QWidget):
         view_profile_action = Qt.QWidgetAction(self)
         view_profile_action.setFont(Qt.QFont('Arial', 15))
         view_profile_action.setText('Профиль')
-        view_profile_action.triggered.connect(lambda _: app.logout())
+        view_profile_action.triggered.connect(lambda _: app.display_profile_page())
 
         exit_action = Qt.QWidgetAction(self)
         exit_action.setFont(Qt.QFont('Arial', 15))

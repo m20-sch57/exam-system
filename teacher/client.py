@@ -5,6 +5,7 @@ Contains client settings and server.
 
 import json
 import socket
+import hashlib
 from xmlrpc.client import ServerProxy
 
 
@@ -22,6 +23,12 @@ class Client:
         self.salt = ':sdg436fregak'
         self.server = None
         self.update_server()
+
+    def encode_password(self, password):
+        """
+        Encodes password to sha1.
+        """
+        return hashlib.sha1((password + self.salt).encode('utf-8')).hexdigest()
 
     def get_data(self):
         """

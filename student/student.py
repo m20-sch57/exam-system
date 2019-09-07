@@ -5,7 +5,6 @@ Examiner project, student module.
 
 import sys
 import socket
-import hashlib
 import functools
 
 from PyQt5 import Qt
@@ -114,7 +113,7 @@ class Application(Qt.QApplication):
         Tries to register the student.
         """
         self.widget.set_waiting_state()
-        password_hash = hashlib.sha1((password + self.client.salt).encode('utf-8')).hexdigest()
+        password_hash = self.client.encode_password(password)
         result = self.client.server.register(user_name, password_hash, 0, group_name)
         if not result[0]:
             self.widget.set_failed_state(result[1])
@@ -131,7 +130,7 @@ class Application(Qt.QApplication):
         self.widget.set_waiting_state()
         self.client.user_name = user_name
         self.client.password = password
-        password_hash = hashlib.sha1((password + self.client.salt).encode('utf-8')).hexdigest()
+        password_hash = self.client.encode_password(password)
         result = self.client.server.login(user_name, password_hash, 0)
         if not result[0]:
             self.client.user = False
@@ -154,8 +153,15 @@ class Application(Qt.QApplication):
         Changes password of current user.
         """
         self.widget.set_waiting_state()
-        #something
-        self.widget.set_failed_state('Ошибка')
+        old_password_hash = self.client.encode_password(old_password)
+        new_password_hash = self.client.encode_password(new_password)
+        result = self.client.server.change_password(
+            self.client.user['rowid'], old_password_hash, new_password_hash)
+        if not result[0]:
+            self.widget.set_failed_state(result[1])
+        else:
+            self.client.password = new_password
+            self.logout()
 
     def current_group_name(self):
         """

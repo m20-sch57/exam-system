@@ -85,6 +85,27 @@ def login(user_name, password, is_admin):
     return (True, user)
 
 
+def change_password(user_id, old_password, new_password):
+    """
+    Tries to change old_password to new_password of the user.
+    """
+    CURSOR.execute(
+        "SELECT * FROM users WHERE rowid=?",
+        (user_id,)
+    )
+    user = get_last(CURSOR.fetchall())
+    if user is False:
+        return (False, 'Неверный пользователь')
+    if user['password'] != old_password:
+        return (False, 'Неправильный пароль')
+    CURSOR.execute(
+        "UPDATE users SET password=? WHERE rowid=?",
+        (new_password, user_id)
+    )
+    CONNECTION.commit()
+    return (True, '')
+
+
 def get_group_data(group_id):
     """
     Returns group data.
@@ -446,6 +467,7 @@ SERVER.register_function(ping)
 SERVER.register_function(create_group)
 SERVER.register_function(register)
 SERVER.register_function(login)
+SERVER.register_function(change_password)
 SERVER.register_function(get_group_data)
 SERVER.register_function(list_of_published_exams)
 SERVER.register_function(list_of_all_exams)
