@@ -3,13 +3,9 @@ Examiner project, student module.
 """
 
 
-import os
 import sys
 import socket
 import functools
-
-if hasattr(sys, 'frozen'):
-    os.environ['PATH'] = sys._MEIPASS + ";" + os.environ['PATH']
 
 from PyQt5 import Qt
 from client import Client
